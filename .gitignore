@@ -3,6 +3,10 @@
 .env.local
 .env.*.local
 
+# Next.js Build
+.next/
+out/
+
 # Node & Package Managers
 node_modules/
 dist/

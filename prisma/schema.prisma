@@ -1,0 +1,163 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  IN_PREPARATION
+  READY_FOR_DELIVERY
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  DEPOSIT_PAID
+  FULLY_PAID
+  REFUNDED
+}
+
+enum ShipmentStatus {
+  PLANNED
+  IN_TRANSIT
+  CUSTOMS_CLEARANCE
+  ARRIVED_CENTRAL_WAREHOUSE
+  STOCKED
+}
+
+model Product {
+  id              String           @id @default(cuid())
+  name            String
+  slug            String           @unique
+  description     String
+  category        String           // e.g., "Fotelek", "Étkezőasztalok", "Székek", "Kanapék"
+  basePrice       Int              // Price in HUF
+  landedCostHuf   Int?             // Calculated landed cost in HUF
+  material        String?          // e.g., "Olasz bársony, Tömör diófa lábak"
+  dimensions      String?          // e.g., "85 x 90 x 78 cm"
+  images          String[]         // Image URLs
+  isFeatured      Boolean          @default(false)
+  isActive        Boolean          @default(true)
+  variants        ProductVariant[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model ProductVariant {
+  id                 String          @id @default(cuid())
+  productId          String
+  product            Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku                String          @unique
+  name               String          // e.g., "Smaragdzöld bársony - Arany láb"
+  colorHex           String?         // e.g., "#1b4d3e"
+  fabricCode         String?         // Manufacturer swatch code
+  extraPrice         Int             @default(0) // Additional price in HUF
+  stockQuantity      Int             @default(0) // Currently in physical warehouse
+  inTransitQuantity  Int             @default(0) // Coming in containers
+  cbmPerUnit         Float           @default(0.2) // Volume in cubic meters (CBM)
+  orderItems         OrderItem[]
+  shipmentItems      ShipmentItem[]
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+}
+
+model Supplier {
+  id             String              @id @default(cuid())
+  name           String
+  country        String              @default("Kína")
+  city           String?             // e.g., "Foshan"
+  contactPerson  String?
+  email          String?
+  phone          String?
+  currency       String              @default("USD")
+  shipments      ContainerShipment[]
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+}
+
+model ContainerShipment {
+  id                 String          @id @default(cuid())
+  containerNumber    String          @unique // e.g., "MSCU-9834211"
+  supplierId         String
+  supplier           Supplier        @relation(fields: [supplierId], references: [id])
+  departurePort      String          @default("Nansha / Shenzhen")
+  arrivalPort        String          @default("Koper / Budapest")
+  departureDate      DateTime?
+  etaDate            DateTime?
+  status             ShipmentStatus  @default(PLANNED)
+  totalCbm           Float           @default(0)
+  shippingCostUsd    Float?
+  customsDutyHuf     Int?
+  notes              String?
+  items              ShipmentItem[]
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+}
+
+model ShipmentItem {
+  id                   String            @id @default(cuid())
+  shipmentId           String
+  shipment             ContainerShipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  productVariantId     String
+  variant              ProductVariant    @relation(fields: [productVariantId], references: [id])
+  quantity             Int
+  unitPriceForeign     Float             // Purchase price in USD or CNY
+  createdAt            DateTime          @default(now())
+}
+
+model Order {
+  id                  String         @id @default(cuid())
+  orderNumber         String         @unique // e.g., "BUTOR-2026-0001"
+  customerName        String
+  customerEmail       String
+  customerPhone       String
+  deliveryAddress     String
+  billingAddress      String?
+  taxNumber           String?        // For business purchases if needed
+  totalAmount         Int            // Total in HUF
+  depositAmount       Int            @default(0)
+  paymentMethod       String         @default("CARD") // CARD, TRANSFER, CASH
+  paymentStatus       PaymentStatus  @default(PENDING)
+  orderStatus         OrderStatus    @default(PENDING)
+  isPreOrder          Boolean        @default(false)
+  depositInvoiceId    String?        // Számlázz.hu / Billingo proforma or deposit invoice
+  finalInvoiceId      String?        // Final electronic invoice ID
+  notes               String?
+  items               OrderItem[]
+  deliverySlot        DeliverySlot?
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+}
+
+model OrderItem {
+  id                String         @id @default(cuid())
+  orderId           String
+  order             Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productVariantId  String
+  variant           ProductVariant @relation(fields: [productVariantId], references: [id])
+  quantity          Int            @default(1)
+  unitPrice         Int            // Price at time of purchase in HUF
+  createdAt         DateTime       @default(now())
+}
+
+model DeliverySlot {
+  id                 String       @id @default(cuid())
+  orderId            String       @unique
+  order              Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  scheduledDate      DateTime
+  timeWindow         String       // e.g., "14:00 - 17:00"
+  driverNotes        String?
+  isCompleted        Boolean      @default(false)
+  proofPhotoUrl      String?
+  customerSignature  String?
+  completedAt        DateTime?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}

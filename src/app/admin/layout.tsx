@@ -34,6 +34,7 @@ export default function AdminLayout({
     { href: "/admin/beszallito", label: "Konténer Beérkezés", icon: Boxes, badge: "2 úton" },
     { href: "/admin/vevok", label: "Regisztrált Vevők & CRM", icon: Users },
     { href: "/admin/teljesitmeny", label: "Pénzügy & Statisztika", icon: TrendingUp },
+    { href: "/admin/biztonsag", label: "Kiberbiztonság & Védelem", icon: ShieldCheck, badge: "A+" },
     { href: "/admin/naplo", label: "Rendszernapló", icon: ScrollText },
     { href: "/admin/fiokok", label: "Fiókok & Jogok", icon: UserCog },
   ];

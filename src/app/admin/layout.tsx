@@ -28,8 +28,9 @@ export default function AdminLayout({
 
   const navItems = [
     { href: "/admin", label: "Áttekintés", icon: LayoutDashboard },
+    { href: "/admin/katalogus", label: "Termékkatalógus", icon: Armchair, badge: "Új" },
+    { href: "/admin/studio", label: "AI Fotóstúdió", icon: Sparkles, badge: "AI" },
     { href: "/admin/rendelesek", label: "Rendelések", icon: ShoppingBag, badge: "3 új" },
-    { href: "/admin/termekek", label: "Termékek & Készlet", icon: Armchair },
     { href: "/admin/beszallito", label: "Konténer Beérkezés", icon: Boxes, badge: "2 úton" },
     { href: "/admin/vevok", label: "Regisztrált Vevők & CRM", icon: Users },
     { href: "/admin/teljesitmeny", label: "Pénzügy & Statisztika", icon: TrendingUp },

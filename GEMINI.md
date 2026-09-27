@@ -35,3 +35,9 @@
 ## 4. Kommunikációs Szabályok
 - A fejlesztőnek adott minden válasz és magyarázat **angol nyelven** történik.
 - A felhasználói felület (UI szövegek, számlák, értesítések) magyar nyelvű.
+
+---
+
+## 5. Szabályok & AI Fotóstúdió Alapelvek
+- **Termékhűség, Méretarány & Színvilág:** A fotó stúdiónak és képgenerálási / renderelési folyamatoknak **mindig kötelezően meg kell őrizniük** a beküldött bútortárgy eredeti méretarányát, geometriai arányait (láb vastagság, lap vastagság, arányok) és színhűségét/anyagvilágát (travertin pórusok, márvány erezet, fa tónus).
+

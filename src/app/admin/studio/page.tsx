@@ -295,8 +295,24 @@ export default function AIStudioPage() {
                 </div>
               </div>
             </div>
+
+            {/* Product Fidelity & Scale Lock Guarantee */}
+            <div className="mt-4 p-3 rounded-xl bg-[#faf7f2] border border-[#d7c4ac] space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-[#14171c] flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#9e7753]" /> Termékhűség & Arány Zárolás
+                </span>
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#9e7753] text-white uppercase tracking-wider">
+                  Aktív
+                </span>
+              </div>
+              <p className="text-[10px] text-[#684d39] leading-tight">
+                A rendszer 100%-ban megőrzi a beküldött bútor eredeti méretarányait (1:1 geometria) és a természetes kő / fa valódi színvilágát és textúráját.
+              </p>
+            </div>
           </div>
         </div>
+
 
         {/* Right Column: Live Studio Preview & Render Canvas (7 cols) */}
         <div className="lg:col-span-7 space-y-6">

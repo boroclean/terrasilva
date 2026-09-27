@@ -1,100 +1,162 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { 
   Sparkles, 
-  Truck, 
-  ShieldCheck, 
-  ArrowRight, 
   ShoppingBag, 
+  ArrowRight, 
   Palette, 
-  Star,
-  Gem,
-  Compass,
-  Hammer,
-  Check,
+  Star, 
+  Gem, 
+  Check, 
   ChevronRight,
-  Maximize2
+  Filter,
+  Layers,
+  Search
 } from "lucide-react";
+import { ROOM_CATEGORIES, MATERIALS } from "@/lib/categories";
+
+interface StoreProduct {
+  id: string;
+  name: string;
+  room: "nappali" | "etkezo" | "eloszoba" | "vilagitas";
+  subType: string;
+  materialType: "travertine" | "marble" | "wood" | "upholstery";
+  price: number;
+  materialDesc: string;
+  dimensions: string;
+  stockStatus: string;
+  tag: string;
+  rating: number;
+}
+
+const STORE_PRODUCTS: StoreProduct[] = [
+  {
+    id: "p-01",
+    name: "Aura Navona Travertin Dohányzóasztal",
+    room: "nappali",
+    subType: "dohanzoasztal",
+    materialType: "travertine",
+    price: 389000,
+    materialDesc: "100% Természetes Olasz Navona Travertin, Matt Csiszolt",
+    dimensions: "110 x 60 x 38 cm",
+    stockStatus: "Raktáron (2 db azonnal)",
+    tag: "Legnépszerűbb",
+    rating: 5.0,
+  },
+  {
+    id: "p-02",
+    name: "Monolit Travertin TV-Szekrény & Médiafal",
+    room: "nappali",
+    subType: "tv-szekreny",
+    materialType: "travertine",
+    price: 649000,
+    materialDesc: "Tömör Romano Travertin Keret + Diófa Lamellás Front",
+    dimensions: "200 x 45 x 50 cm",
+    stockStatus: "Érkező konténerben (Nov. 15)",
+    tag: "Új Modell",
+    rating: 4.9,
+  },
+  {
+    id: "p-03",
+    name: "Silva Carrara Étkezőasztal (8 személyes)",
+    room: "etkezo",
+    subType: "etkezoasztal",
+    materialType: "marble",
+    price: 749000,
+    materialDesc: "Fehér Carrara Márványlap + Tömör Amerikai Diófa Talapzat",
+    dimensions: "220 x 100 x 76 cm",
+    stockStatus: "Érkező konténerben (Nov. 12)",
+    tag: "Előrendelhető -10%",
+    rating: 4.9,
+  },
+  {
+    id: "p-04",
+    name: "Silva Tömör Diófa Étkezőasztal",
+    room: "etkezo",
+    subType: "etkezoasztal",
+    materialType: "wood",
+    price: 489000,
+    materialDesc: "Tömör Amerikai Diófa Palló, Matt Kézműves Olajozás",
+    dimensions: "200 x 95 x 76 cm",
+    stockStatus: "Raktáron (3 db)",
+    tag: "Nemes Tömörfa",
+    rating: 5.0,
+  },
+  {
+    id: "p-05",
+    name: "Monolit Fluted Travertin Oszlop Console",
+    room: "eloszoba",
+    subType: "konzol",
+    materialType: "travertine",
+    price: 289000,
+    materialDesc: "Faragott Kannelúrázott Travertin Kőtömb",
+    dimensions: "120 x 40 x 85 cm",
+    stockStatus: "Raktáron (3 db)",
+    tag: "Kézműves Faragvány",
+    rating: 5.0,
+  },
+  {
+    id: "p-06",
+    name: "Silva Lounge Fotel Diófa Vázzal",
+    room: "nappali",
+    subType: "fotel",
+    materialType: "upholstery",
+    price: 269000,
+    materialDesc: "Tömör Natúr Diófa Keret, Prémium Olasz Bouclé Kárpit",
+    dimensions: "85 x 82 x 75 cm",
+    stockStatus: "Raktáron (4 db)",
+    tag: "Skandináv & Japandi",
+    rating: 4.9,
+  },
+  {
+    id: "p-07",
+    name: "Aura Alabástrom & Travertin Asztali Lámpa",
+    room: "vilagitas",
+    subType: "asztali-lampa",
+    materialType: "travertine",
+    price: 149000,
+    materialDesc: "Faragott Travertin Talp, Átvilágítható Természetes Alabástrom Gömb",
+    dimensions: "28 x 28 x 45 cm",
+    stockStatus: "Raktáron (8 db)",
+    tag: "Hangulatvilágítás",
+    rating: 4.9,
+  },
+  {
+    id: "p-08",
+    name: "Verona Velvet Étkezőszék Szett (4 db)",
+    room: "etkezo",
+    subType: "etkezoszek",
+    materialType: "upholstery",
+    price: 189000,
+    materialDesc: "Antracit Bársony Kárpit + Karcsú Fekete Acéllábak",
+    dimensions: "52 x 56 x 84 cm",
+    stockStatus: "Raktáron (5 szett)",
+    tag: "Csomagkedvezmény",
+    rating: 4.8,
+  },
+];
 
 export default function Home() {
-  const materials = [
-    {
-      name: "Travertin Mészkő",
-      origin: "Tivoli & Denizli",
-      desc: "Naturális, porozus textúra meleg bézs és homok árnyalatokban. Minden darab egyedi geológiai ujjlenyomat.",
-      tag: "Legnépszerűbb",
-      bgGradient: "from-[#f4ede4] to-[#e5d8c8]",
-    },
-    {
-      name: "Természetes Márvány",
-      origin: "Carrara & Volakas",
-      desc: "Selymes matt-csiszolt felület, drámai szürke és arany erezetekkel. Időtálló elegancia étkező- és dohányzóasztalokhoz.",
-      tag: "Klasszikus Luxus",
-      bgGradient: "from-[#f7f7f7] to-[#e8e8e8]",
-    },
-    {
-      name: "Amerikai Diófa & Tölgy",
-      origin: "FSC Prémium Erdőgazdálkodás",
-      desc: "Mély barna, meleg tónusú tömörfa kézműves olajozással. Tökéletesen ellenpontozza a hideg kőfelületeket.",
-      tag: "Nemes Tömörfa",
-      bgGradient: "from-[#eadecc] to-[#cbb497]",
-    },
-    {
-      name: "Monolit Kőtömbök",
-      origin: "Közvetlen Kőfaragó Manufaktúra",
-      desc: "Egyetlen tömbből faragott szoborszerű konzolasztalok, oszlopok és padok a modern építészet szerelmeseinek.",
-      tag: "Szoborszerű Forma",
-      bgGradient: "from-[#f0e7db] to-[#d6c3ad]",
-    },
-  ];
+  const [selectedRoom, setSelectedRoom] = useState<string>("all");
+  const [selectedSubType, setSelectedSubType] = useState<string>("all");
+  const [selectedMaterial, setSelectedMaterial] = useState<string>("all");
 
-  const featuredProducts = [
-    {
-      id: "prod-01",
-      name: "Aura Navona Travertin Dohányzóasztal",
-      category: "Travertin Bútorok",
-      price: 389000,
-      material: "100% Természetes Olasz Travertin, Matt Csiszolt Felület (110 x 60 x 38 cm)",
-      stockStatus: "Raktáron (2 db azonnal)",
-      tag: "Ikonikus Darab",
-      rating: 5.0,
-    },
-    {
-      id: "prod-02",
-      name: "Silva Carrara Étkezőasztal (8-10 személyes)",
-      category: "Márvány & Diófa",
-      price: 749000,
-      material: "Fehér Carrara Márványlap + Tömör Amerikai Diófa Monolit Lábak (220 x 100 cm)",
-      stockStatus: "Érkező konténerben (Nov. 12)",
-      tag: "Előrendelhető -10%",
-      rating: 4.9,
-    },
-    {
-      id: "prod-03",
-      name: "Monolit Fluted Travertin Oszlop Console",
-      category: "Konzolasztalok",
-      price: 289000,
-      material: "Faragott Kannelúrázott Travertin Kőtömb (120 x 40 x 85 cm)",
-      stockStatus: "Raktáron (3 db)",
-      tag: "Kézműves Faragvány",
-      rating: 5.0,
-    },
-    {
-      id: "prod-04",
-      name: "Silva Lounge Fotel Diófa Vázzal",
-      category: "Tömörfa & Kárpit",
-      price: 269000,
-      material: "Tömör Natúr Diófa Keret, Prémium Olasz Bouclé Kárpitozás",
-      stockStatus: "Raktáron (4 db)",
-      tag: "Skandináv & Japandi",
-      rating: 4.9,
-    },
-  ];
+  const currentRoomObj = ROOM_CATEGORIES.find(r => r.id === selectedRoom);
+
+  const filteredProducts = STORE_PRODUCTS.filter((prod) => {
+    const matchesRoom = selectedRoom === "all" || prod.room === selectedRoom;
+    const matchesSubType = selectedSubType === "all" || prod.subType === selectedSubType;
+    const matchesMaterial = selectedMaterial === "all" || prod.materialType === selectedMaterial;
+    return matchesRoom && matchesSubType && matchesMaterial;
+  });
 
   return (
     <main className="min-h-screen flex flex-col bg-[#faf7f2] text-[#14171c]">
-      {/* Top Banner */}
+      {/* Top Notification Banner */}
       <div className="bg-[#14171c] text-[#d7c4ac] py-2 px-6 text-center text-xs font-medium border-b border-[#262c36]">
-        <span>✨ Természetes travertin, márvány és nemes tömörfa bútorok • 100% gyártói import & garancia</span>
+        <span>✨ Természetes travertin mészkő, olasz márvány és tömörfa bútorok közvetlen importból • 100% garancia</span>
       </div>
 
       {/* Navigation */}
@@ -111,10 +173,10 @@ export default function Home() {
           </div>
 
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-[#553f31]">
-            <Link href="#kollekcio" className="hover:text-[#14171c] transition">Kollekciók</Link>
+            <Link href="#katalogus" className="hover:text-[#14171c] transition">Bútorkollekciók</Link>
             <Link href="#anyagok" className="hover:text-[#14171c] transition">Travertin & Anyagok</Link>
             <Link href="#egyedi-gyartas" className="hover:text-[#14171c] transition">Egyedi Gyártás</Link>
-            <Link href="#mintacsomag" className="hover:text-[#14171c] transition">Anyagminták</Link>
+            <Link href="#mintacsomag" className="hover:text-[#14171c] transition">Anyagminta Csomag</Link>
           </nav>
 
           <div className="flex items-center gap-3">
@@ -125,10 +187,10 @@ export default function Home() {
               </span>
             </button>
             <Link
-              href="#kollekcio"
+              href="#katalogus"
               className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2.5 rounded-xl bg-[#14171c] text-white hover:bg-[#2e2118] transition shadow-xs"
             >
-              <span>Vásárlás</span>
+              <span>Katalógus</span>
               <ArrowRight className="w-3.5 h-3.5 text-[#d7c4ac]" />
             </Link>
           </div>
@@ -140,7 +202,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto text-center space-y-8">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#d7c4ac] bg-white text-xs font-semibold text-[#805e43] shadow-2xs">
             <Gem className="w-3.5 h-3.5 text-[#9e7753]" />
-            <span>Terra (Természetes Kő) • Silva (Nemes Tömörfa)</span>
+            <span>Terra (Kő & Travertin) • Silva (Nemes Tömörfa)</span>
           </div>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-[#14171c] font-serif leading-[1.1]">
@@ -152,15 +214,15 @@ export default function Home() {
 
           <p className="max-w-2xl mx-auto text-base md:text-lg text-[#684d39] leading-relaxed">
             Minden bútorunk természetes travertin mészkőtömbökből, olasz márványból és nemes dió- illetve tölgyfából készül. 
-            Közvetlen manufaktúra importtal garantáljuk az elérhető luxust és a generációkon átívelő tartósságot.
+            Közvetlen kőfaragó és manufaktúra importtal hozzuk el az igazi luxust.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <Link
-              href="#kollekcio"
+              href="#katalogus"
               className="w-full sm:w-auto px-8 py-4 rounded-xl bg-[#14171c] text-white font-medium text-sm hover:bg-[#2e2118] transition shadow-md flex items-center justify-center gap-2"
             >
-              <span>Kollekció Felfedezése</span>
+              <span>Bútorkatalógus Megtekintése</span>
               <ArrowRight className="w-4 h-4 text-[#d7c4ac]" />
             </Link>
             <Link
@@ -174,70 +236,118 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Materials & Philosophy Spotlight */}
-      <section id="anyagok" className="py-20 px-6 max-w-7xl mx-auto w-full space-y-12">
-        <div className="text-center max-w-2xl mx-auto space-y-3">
-          <span className="text-xs uppercase tracking-widest text-[#9e7753] font-bold block">
-            Anyaghasználati Filozófia
-          </span>
-          <h2 className="text-3xl md:text-4xl font-bold font-serif text-[#14171c]">
-            Nyers természet, finomra csiszolva.
-          </h2>
-          <p className="text-sm text-[#684d39]">
-            Nem használunk mesterséges műanyagokat vagy kőutánzatokat. Minden TerraSilva alkotás 100%-ban valódi föld mélyéből bányászott kő és tömörfa.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {materials.map((mat, idx) => (
-            <div
-              key={idx}
-              className="p-6 rounded-2xl bg-white border border-[#e8ddcf] shadow-xs space-y-4 hover:border-[#9e7753] transition flex flex-col justify-between"
-            >
-              <div className="space-y-3">
-                <div className={`h-28 rounded-xl bg-gradient-to-br ${mat.bgGradient} p-4 flex flex-col justify-between border border-[#e8ddcf]`}>
-                  <span className="self-start px-2 py-0.5 rounded text-[10px] font-bold bg-[#14171c] text-white">
-                    {mat.tag}
-                  </span>
-                  <span className="text-[11px] font-semibold text-[#684d39]">Származás: {mat.origin}</span>
-                </div>
-
-                <h3 className="font-serif font-bold text-lg text-[#14171c]">{mat.name}</h3>
-                <p className="text-xs text-[#684d39] leading-relaxed">
-                  {mat.desc}
-                </p>
-              </div>
-
-              <div className="pt-3 border-t border-[#f4ede4] flex items-center justify-between text-xs font-semibold text-[#9e7753]">
-                <span>Fedezd fel</span>
-                <ChevronRight className="w-4 h-4" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Featured Collection Grid */}
-      <section id="kollekcio" className="py-20 px-6 max-w-7xl mx-auto w-full space-y-12">
+      {/* Main Dynamic Product Catalog with Room & Material Filtering */}
+      <section id="katalogus" className="py-20 px-6 max-w-7xl mx-auto w-full space-y-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <span className="text-xs uppercase tracking-widest text-[#9e7753] font-bold block mb-1">
-              High-End Válogatás
+              Hivatalos Bútorkínálat
             </span>
             <h2 className="text-2xl md:text-4xl font-bold font-serif text-[#14171c]">
-              Természetes Kő & Nemesfa Bútoraink
+              Válogass Szobák & Anyagok Szerint
             </h2>
           </div>
-          <div className="flex items-center gap-2 text-xs font-semibold overflow-x-auto pb-1">
-            <button className="px-4 py-2 rounded-xl bg-[#14171c] text-white">Összes</button>
-            <button className="px-4 py-2 rounded-xl bg-white border border-[#e8ddcf] text-[#553f31] hover:bg-[#f4ede4]">Travertin Asztalok</button>
-            <button className="px-4 py-2 rounded-xl bg-white border border-[#e8ddcf] text-[#553f31] hover:bg-[#f4ede4]">Márvány Étkezők</button>
-            <button className="px-4 py-2 rounded-xl bg-white border border-[#e8ddcf] text-[#553f31] hover:bg-[#f4ede4]">Tömörfa & Kárpit</button>
+          <span className="text-xs text-[#805e43] font-semibold bg-white border border-[#e8ddcf] px-3.5 py-2 rounded-xl shadow-2xs self-start md:self-auto">
+            {filteredProducts.length} bútor megjelenítve
+          </span>
+        </div>
+
+        {/* 1. Primary Filter: Room Categories */}
+        <div className="bg-white p-5 rounded-3xl border border-[#e8ddcf] shadow-xs space-y-4">
+          <div>
+            <span className="text-[11px] uppercase tracking-wider text-[#805e43] font-bold block mb-2">
+              1. Válassz Szobatípust:
+            </span>
+            <div className="flex items-center gap-2 overflow-x-auto pb-1">
+              <button
+                onClick={() => {
+                  setSelectedRoom("all");
+                  setSelectedSubType("all");
+                }}
+                className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition ${
+                  selectedRoom === "all"
+                    ? "bg-[#14171c] text-white shadow-xs"
+                    : "bg-[#faf7f2] text-[#553f31] border border-[#e8ddcf] hover:bg-[#f4ede4]"
+                }`}
+              >
+                🛋️ Összes Szoba & Bútor
+              </button>
+
+              {ROOM_CATEGORIES.map((room) => (
+                <button
+                  key={room.id}
+                  onClick={() => {
+                    setSelectedRoom(room.id);
+                    setSelectedSubType("all");
+                  }}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition ${
+                    selectedRoom === room.id
+                      ? "bg-[#14171c] text-white shadow-xs"
+                      : "bg-[#faf7f2] text-[#553f31] border border-[#e8ddcf] hover:bg-[#f4ede4]"
+                  }`}
+                >
+                  {room.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Sub-Type Pills (if a room is selected) */}
+          {currentRoomObj && (
+            <div className="pt-3 border-t border-[#f4ede4]">
+              <span className="text-[11px] uppercase tracking-wider text-[#805e43] font-bold block mb-2">
+                Bútortípus ({currentRoomObj.name}):
+              </span>
+              <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                {currentRoomObj.subTypes.map((sub) => (
+                  <button
+                    key={sub.id}
+                    onClick={() => setSelectedSubType(sub.id)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
+                      selectedSubType === sub.id
+                        ? "bg-[#9e7753] text-white shadow-xs"
+                        : "bg-white text-[#684d39] border border-[#d7c4ac] hover:bg-[#faf7f2]"
+                    }`}
+                  >
+                    {sub.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 2. Secondary Filter: Material Filters */}
+          <div className="pt-3 border-t border-[#f4ede4]">
+            <span className="text-[11px] uppercase tracking-wider text-[#805e43] font-bold block mb-2">
+              2. Szűrés Anyaghasználat Szerint:
+            </span>
+            <div className="flex items-center gap-2 overflow-x-auto pb-1">
+              {MATERIALS.map((mat) => (
+                <button
+                  key={mat.id}
+                  onClick={() => setSelectedMaterial(mat.id)}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition flex items-center gap-1.5 ${
+                    selectedMaterial === mat.id
+                      ? "bg-[#553f31] text-white shadow-xs"
+                      : "bg-[#faf7f2] text-[#553f31] border border-[#e8ddcf] hover:bg-[#f4ede4]"
+                  }`}
+                >
+                  {mat.colorHex && (
+                    <span
+                      className="w-2.5 h-2.5 rounded-full border border-black/20"
+                      style={{ backgroundColor: mat.colorHex }}
+                    />
+                  )}
+                  <span>{mat.name}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
+        {/* Product Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featuredProducts.map((product) => (
+          {filteredProducts.map((product) => (
             <div
               key={product.id}
               className="group rounded-2xl bg-white border border-[#e8ddcf] overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col"
@@ -270,14 +380,17 @@ export default function Home() {
               {/* Details */}
               <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                 <div className="space-y-1">
-                  <span className="text-[11px] uppercase tracking-wider text-[#9e7753] font-bold">
-                    {product.category}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] uppercase tracking-wider text-[#9e7753] font-bold">
+                      {product.room.toUpperCase()}
+                    </span>
+                    <span className="text-[10px] text-[#805e43]">• {product.dimensions}</span>
+                  </div>
                   <h3 className="font-serif font-bold text-base text-[#14171c] group-hover:text-[#9e7753] transition">
                     {product.name}
                   </h3>
                   <p className="text-xs text-[#684d39] line-clamp-2">
-                    {product.material}
+                    {product.materialDesc}
                   </p>
                 </div>
 
@@ -296,9 +409,19 @@ export default function Home() {
             </div>
           ))}
         </div>
+
+        {filteredProducts.length === 0 && (
+          <div className="p-12 text-center bg-white rounded-3xl border border-[#e8ddcf] space-y-3">
+            <span className="text-3xl">🔍</span>
+            <h3 className="font-bold text-base text-[#14171c]">Nem található bútor a kiválasztott szűrésben</h3>
+            <p className="text-xs text-[#805e43]">
+              Próbálj más anyagkategóriát vagy szobatípust választani a fenti füleken!
+            </p>
+          </div>
+        )}
       </section>
 
-      {/* Custom Stone & Wood Ordering Section */}
+      {/* Bespoke Stone Ordering */}
       <section id="egyedi-gyartas" className="py-16 px-6 max-w-7xl mx-auto w-full">
         <div className="p-8 md:p-12 rounded-3xl bg-white border border-[#e8ddcf] shadow-xs grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div className="space-y-4">
@@ -309,8 +432,8 @@ export default function Home() {
               Egyedi Méretre Vágott Travertin & Márvány Asztalok
             </h2>
             <p className="text-sm text-[#684d39] leading-relaxed">
-              Speciális méretű étkezőasztalra, egyedi kőtömbre vagy saját tervezésű konzolra van szükséged? 
-              Közvetlen kőfaragó műhelyünkben bármilyen egyedi méretet megvalósítunk 4-6 hetes gyártási határidővel.
+              Speciális méretű étkezőasztalra, egyedi kőtömbre vagy saját tervezésű TV-médiabútorra van szükséged? 
+              Közvetlen kőfaragó manufaktúránkban bármilyen egyedi méretet és formát legyártunk.
             </p>
             <div className="space-y-2 text-xs text-[#553f31]">
               <div className="flex items-center gap-2">
@@ -342,7 +465,7 @@ export default function Home() {
                 className="w-full px-4 py-2.5 rounded-xl border border-[#e8ddcf] bg-white text-xs focus:outline-none focus:ring-2 focus:ring-[#9e7753]/30"
               />
               <textarea
-                placeholder="Milyen méretű és anyagú bútort keresel? (pl. 240x100 cm Navona travertin étkezőasztal)"
+                placeholder="Milyen méretű és anyagú bútort keresel? (pl. 240x100 cm Navona travertin étkezőasztal vagy TV-szekrény)"
                 rows={3}
                 className="w-full px-4 py-2.5 rounded-xl border border-[#e8ddcf] bg-white text-xs focus:outline-none focus:ring-2 focus:ring-[#9e7753]/30"
               />

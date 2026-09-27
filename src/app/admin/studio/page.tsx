@@ -257,16 +257,35 @@ export default function AIStudioPage() {
           const angle = CAMERA_ANGLES.find(a => a.id === angleId)!;
           const lighting = LIGHTING_OPTIONS.find(l => l.id === selectedLighting)!;
 
-          // Pick appropriate image based on angle & preset or uploaded image
-          let chosenImage = preset.sampleImage;
-          if (angle.id === "macro-detail") {
-            chosenImage = "/kepek/travertin-konzol/4k_macro_reszlet.jpg";
-          } else if (angle.id === "hero-front") {
-            chosenImage = preset.sampleImage;
-          } else if (angle.id === "perspective-45") {
-            chosenImage = "/kepek/travertin-konzol/4k_enterior_stilus.jpg";
-          } else if (angle.id === "top-flat") {
-            chosenImage = "/kepek/travertin-konzol/4k_penthouse_staging.jpg";
+          // Intelligently select the 4K staged scene matching the uploaded piece and preset
+          const isDiningTable = furnitureTitle.toLowerCase().includes("étkező") || 
+                                furnitureTitle.toLowerCase().includes("asztal") || 
+                                furnitureTitle.toLowerCase().includes("dining");
+
+          let chosenStagedImage = preset.sampleImage;
+
+          if (isDiningTable) {
+            if (preset.id === "preset-japandi") {
+              chosenStagedImage = "/kepek/travertin-etkezo/4k_japandi_etkezo.jpg";
+            } else if (preset.id === "preset-villa") {
+              chosenStagedImage = "/kepek/travertin-etkezo/4k_villa_etkezo.jpg";
+            } else if (preset.id === "preset-penthouse") {
+              chosenStagedImage = "/kepek/travertin-etkezo/4k_penthouse_etkezo.jpg";
+            } else if (angle.id === "macro-detail" || preset.id === "preset-studio") {
+              chosenStagedImage = "/kepek/travertin-etkezo/4k_macro_etkezo.jpg";
+            } else {
+              chosenStagedImage = "/kepek/travertin-etkezo/4k_villa_etkezo.jpg";
+            }
+          } else {
+            if (angle.id === "macro-detail") {
+              chosenStagedImage = "/kepek/travertin-konzol/4k_macro_reszlet.jpg";
+            } else if (preset.id === "preset-japandi" || angle.id === "perspective-45") {
+              chosenStagedImage = "/kepek/travertin-konzol/4k_enterior_stilus.jpg";
+            } else if (preset.id === "preset-penthouse" || angle.id === "top-flat") {
+              chosenStagedImage = "/kepek/travertin-konzol/4k_penthouse_staging.jpg";
+            } else {
+              chosenStagedImage = "/kepek/travertin-konzol/4k_front_galeria.jpg";
+            }
           }
 
           results.push({
@@ -275,7 +294,7 @@ export default function AIStudioPage() {
             presetCategory: preset.category,
             angleName: angle.name,
             lightingName: lighting.name,
-            imageSrc: uploadedImagePreview || chosenImage,
+            imageSrc: chosenStagedImage,
             bgDesc: preset.bgDescription,
           });
         });

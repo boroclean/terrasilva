@@ -44,12 +44,12 @@ export default function AdminLayout({
         {/* Brand Header */}
         <div className="p-6 border-b border-[#262c36] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-[#9e7753] text-white flex items-center justify-center font-bold text-base shadow-sm">
-              B
+            <div className="w-9 h-9 rounded-lg bg-[#9e7753] text-white flex items-center justify-center font-bold text-xs tracking-wider shadow-sm">
+              TS
             </div>
             <div>
-              <span className="font-bold tracking-tight text-white text-base block">BÚTOR ERP</span>
-              <span className="text-[10px] uppercase tracking-widest text-[#d7c4ac] block">Admin & WMS</span>
+              <span className="font-bold tracking-tight text-white text-base block">TERRASILVA</span>
+              <span className="text-[10px] uppercase tracking-widest text-[#d7c4ac] block">Stone & Wood ERP</span>
             </div>
           </div>
         </div>

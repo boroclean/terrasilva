@@ -3,11 +3,11 @@
 ---
 
 ## 1. Alapadatok & Céginformációk
-- **Projekt & Márkanév:** `Bútor` (Átmeneti márkanév, könnyen módosítható)
-- **Irányultság:** Prémium lakossági e-commerce (D2C) közvetlen kínai gyártói importtal, raktárkészlet-kezeléssel és számlázással.
+- **Projekt & Márkanév:** `TerraSilva` (Prémium Travertin, Márvány, Kő & Tömörfa Bútorok)
+- **Irányultság:** High-end D2C lakberendezés (természetes kő, travertin, márvány, tölgy/dió tömörfa bútorok) közvetlen gyártói importtal, raktárkezeléssel és automatizált számlázással.
 - **Cégméret & Működési Modell:** 
   - **1 fős induló vállalkozás:** Maximális automatizáció, minimális adminisztrációs teher.
-  - **Prémium, magas kosárértékű bútorok:** Alacsonyabb tranzakciószám, de magas árrés és kiemelt vevői elégedettség.
+  - **High-End, magas kosárértékű termékek:** Exkluzív természetes anyagok, magas árrés.
 - **Vezető Fejlesztő & Tulajdonos:** Boronkay Bence (Bence Boronkay)
 - **Kapcsolattartási telefonszám:** +36 20 407 6858
 

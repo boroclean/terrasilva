@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Bútor | Prémium & Egyedi Bútorok",
-  description: "Exkluzív, egyedi tervezésű bútorok közvetlen gyártói importból. Időtálló elegancia, prémium anyaghasználat.",
+  title: "TerraSilva | Prémium Travertin, Márvány & Tömörfa Bútorok",
+  description: "Exkluzív travertin mészkő, természetes márvány és tömörfa bútorok közvetlen gyártói importból. Időtálló luxus a természet erejével.",
 };
 
 export default function RootLayout({

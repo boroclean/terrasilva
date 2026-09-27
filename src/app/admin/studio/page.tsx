@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { 
   Sparkles, 
@@ -19,7 +19,10 @@ import {
   Eye, 
   CheckCircle2,
   ArrowRight,
-  Maximize2
+  Maximize2,
+  Trash2,
+  FileImage,
+  Scan
 } from "lucide-react";
 
 interface StylePreset {
@@ -30,6 +33,7 @@ interface StylePreset {
   bgDescription: string;
   gradient: string;
   tag: string;
+  sampleImage: string;
 }
 
 const STYLE_PRESETS: StylePreset[] = [
@@ -41,6 +45,7 @@ const STYLE_PRESETS: StylePreset[] = [
     bgDescription: "Meleg, lágy szűrt természetes napfény, texturált mészvakolat, organikus minimál enteriőr.",
     gradient: "from-[#f4efe8] via-[#eadecc] to-[#d7c4ac]",
     tag: "Legnépszerűbb",
+    sampleImage: "/kepek/travertin-konzol/4k_enterior_stilus.jpg",
   },
   {
     id: "preset-villa",
@@ -50,6 +55,7 @@ const STYLE_PRESETS: StylePreset[] = [
     bgDescription: "Olasz toszkán villa enteriőr, világos travertin padlóburkolat, arany órás fények.",
     gradient: "from-[#faf5ee] via-[#f0e3d0] to-[#dfcca8]",
     tag: "TerraSilva Ikon",
+    sampleImage: "/kepek/travertin-konzol/4k_front_galeria.jpg",
   },
   {
     id: "preset-penthouse",
@@ -59,6 +65,7 @@ const STYLE_PRESETS: StylePreset[] = [
     bgDescription: "Kortárs high-end lakberendezés, drámai építészeti vonalak, diffúz nagyvárosi horizont.",
     gradient: "from-[#f0f2f5] via-[#e1e4e8] to-[#cbd2d9]",
     tag: "High-End Modern",
+    sampleImage: "/kepek/travertin-konzol/4k_penthouse_staging.jpg",
   },
   {
     id: "preset-studio",
@@ -68,6 +75,7 @@ const STYLE_PRESETS: StylePreset[] = [
     bgDescription: "Tiszta prémium katalógus beállítás, professzionális fények, 100% termékfókusz.",
     gradient: "from-[#faf8f5] via-[#f2ece2] to-[#e6dccc]",
     tag: "Tiszta Katalógus",
+    sampleImage: "/kepek/travertin-konzol/4k_macro_reszlet.jpg",
   },
   {
     id: "preset-gallery",
@@ -77,6 +85,7 @@ const STYLE_PRESETS: StylePreset[] = [
     bgDescription: "Művészeti galéria tér, finom árnyékok, szoborszerű megvilágítás asztaloknak és kőbútoroknak.",
     gradient: "from-[#f8f6f0] via-[#ede8dc] to-[#ded5c2]",
     tag: "Exkluzív",
+    sampleImage: "/kepek/travertin-konzol/4k_front_galeria.jpg",
   },
 ];
 
@@ -100,10 +109,70 @@ export default function AIStudioPage() {
   const [selectedAngle, setSelectedAngle] = useState(CAMERA_ANGLES[0].id);
   const [isGenerating, setIsGenerating] = useState(false);
   const [previewGenerated, setPreviewGenerated] = useState(false);
-  const [uploadedImageName, setUploadedImageName] = useState<string | null>("alibaba_travertine_raw.jpg");
-  const [furnitureTitle, setFurnitureTitle] = useState("Aura Navona Travertin Dohányzóasztal");
+  
+  // File upload state
+  const [uploadedImagePreview, setUploadedImagePreview] = useState<string | null>(null);
+  const [uploadedImageName, setUploadedImageName] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [furnitureTitle, setFurnitureTitle] = useState("Monolit Travertin Konzol");
   const [category, setCategory] = useState("Travertin Asztalok");
   const [addedToCatalog, setAddedToCatalog] = useState(false);
+
+  // File upload handler
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processFile(file);
+    }
+  };
+
+  const processFile = (file: File) => {
+    setUploadedImageName(file.name);
+    setAddedToCatalog(false);
+    setPreviewGenerated(false);
+    
+    // Auto-detect title from filename if empty/default
+    const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+    if (cleanName && cleanName.length > 3) {
+      setFurnitureTitle(cleanName.charAt(0).toUpperCase() + cleanName.slice(1));
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setUploadedImagePreview(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      processFile(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleClearImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setUploadedImagePreview(null);
+    setUploadedImageName(null);
+    setPreviewGenerated(false);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   const handleGenerate = () => {
     setIsGenerating(true);
@@ -111,7 +180,7 @@ export default function AIStudioPage() {
     setTimeout(() => {
       setIsGenerating(false);
       setPreviewGenerated(true);
-    }, 1800);
+    }, 1500);
   };
 
   const handleSaveToCatalog = () => {
@@ -120,6 +189,15 @@ export default function AIStudioPage() {
 
   return (
     <div className="space-y-8">
+      {/* Hidden Native File Input */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/png, image/jpeg, image/webp, image/avif"
+        className="hidden"
+      />
+
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-[#e8ddcf] shadow-xs">
         <div>
@@ -157,19 +235,66 @@ export default function AIStudioPage() {
               </span>
             </div>
 
-            <div className="border-2 border-dashed border-[#d7c4ac] hover:border-[#9e7753] rounded-2xl p-6 text-center bg-[#faf8f5] transition cursor-pointer space-y-2 group">
-              <div className="w-12 h-12 rounded-2xl bg-white border border-[#e8ddcf] mx-auto flex items-center justify-center text-[#9e7753] group-hover:scale-105 transition-transform shadow-xs">
-                <Upload className="w-5 h-5" />
-              </div>
-              <div>
-                <span className="text-xs font-bold text-[#14171c] block">Húzd ide a képet vagy tallózz</span>
-                <span className="text-[11px] text-[#805e43]">PNG, JPG, WEBP • Akár fehér, akár gyári háttérrel</span>
-              </div>
-              {uploadedImageName && (
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-50 text-emerald-800 text-xs font-semibold border border-emerald-200 mt-2">
-                  <Check className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Kiválasztva: {uploadedImageName}</span>
+            {/* Interactive Dropzone */}
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              className={`border-2 border-dashed rounded-2xl p-6 text-center transition cursor-pointer space-y-3 group ${
+                isDragging 
+                  ? "border-[#9e7753] bg-[#faf5ee] scale-[1.01]" 
+                  : uploadedImagePreview
+                  ? "border-emerald-300 bg-emerald-50/30"
+                  : "border-[#d7c4ac] hover:border-[#9e7753] bg-[#faf8f5]"
+              }`}
+            >
+              {uploadedImagePreview ? (
+                <div className="space-y-3">
+                  <div className="relative w-36 h-36 mx-auto rounded-xl overflow-hidden border border-[#e8ddcf] shadow-md bg-white">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={uploadedImagePreview}
+                      alt="Feltöltött bútor"
+                      className="w-full h-full object-contain p-1"
+                    />
+                  </div>
+                  <div>
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-100/80 text-emerald-800 text-xs font-semibold">
+                      <Check className="w-3.5 h-3.5 text-emerald-700" />
+                      <span className="truncate max-w-[200px]">{uploadedImageName}</span>
+                    </div>
+                    <p className="text-[10px] text-[#805e43] mt-1">Kattints a képre másik fotó feltöltéséhez</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleClearImage}
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-rose-600 hover:text-rose-800 hover:underline pt-1"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                    <span>Fotó eltávolítása</span>
+                  </button>
                 </div>
+              ) : (
+                <>
+                  <div className="w-12 h-12 rounded-2xl bg-white border border-[#e8ddcf] mx-auto flex items-center justify-center text-[#9e7753] group-hover:scale-110 transition-transform shadow-xs">
+                    <Upload className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-[#14171c] block">
+                      Kattints ide a feltöltéshez vagy húzd be a képet
+                    </span>
+                    <span className="text-[11px] text-[#805e43]">
+                      PNG, JPG, WEBP • Fehér vagy gyári beszállítói háttérrel
+                    </span>
+                  </div>
+                  <div className="pt-1">
+                    <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white border border-[#d7c4ac] text-xs font-bold text-[#14171c] shadow-xs group-hover:bg-[#14171c] group-hover:text-white transition">
+                      <FileImage className="w-4 h-4 text-[#9e7753] group-hover:text-white" />
+                      Tallózás a gépről...
+                    </span>
+                  </div>
+                </>
               )}
             </div>
 
@@ -180,6 +305,7 @@ export default function AIStudioPage() {
                   type="text"
                   value={furnitureTitle}
                   onChange={(e) => setFurnitureTitle(e.target.value)}
+                  placeholder="pl. Monolit Travertin Konzol"
                   className="w-full px-3.5 py-2 text-xs rounded-xl border border-[#e8ddcf] bg-[#faf8f5] focus:outline-none focus:ring-2 focus:ring-[#9e7753]/30 font-medium"
                 />
               </div>
@@ -313,10 +439,9 @@ export default function AIStudioPage() {
           </div>
         </div>
 
-
         {/* Right Column: Live Studio Preview & Render Canvas (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="bg-white rounded-3xl border border-[#e8ddcf] p-6 shadow-xs space-y-6 flex flex-col justify-between min-h-[620px]">
+          <div className="bg-white rounded-3xl border border-[#e8ddcf] p-6 shadow-xs space-y-6 flex flex-col justify-between min-h-[640px]">
             {/* Top Toolbar */}
             <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[#e8ddcf]">
               <div>
@@ -351,9 +476,9 @@ export default function AIStudioPage() {
             </div>
 
             {/* Visual Canvas Viewport */}
-            <div className="relative flex-1 rounded-2xl overflow-hidden border border-[#e8ddcf] bg-gradient-to-br from-[#faf7f2] via-[#f4efe8] to-[#e8ddcf] flex flex-col items-center justify-center p-8 text-center min-h-[380px]">
-              {/* Architectural Backdrop Simulation */}
-              <div className="absolute inset-0 opacity-40 bg-[radial-gradient(#9e7753_1px,transparent_1px)] [background-size:16px_16px]" />
+            <div className="relative flex-1 rounded-2xl overflow-hidden border border-[#e8ddcf] bg-gradient-to-br from-[#faf7f2] via-[#f4efe8] to-[#e8ddcf] flex flex-col items-center justify-center p-6 text-center min-h-[420px]">
+              {/* Subtle Architectural Backdrop Grid */}
+              <div className="absolute inset-0 opacity-30 bg-[radial-gradient(#9e7753_1px,transparent_1px)] [background-size:16px_16px]" />
 
               {isGenerating ? (
                 <div className="relative z-10 space-y-4 max-w-sm">
@@ -363,44 +488,64 @@ export default function AIStudioPage() {
                   <div className="space-y-1">
                     <h3 className="font-bold text-sm text-[#14171c]">Fotorealisztikus Enteriőr Felépítése</h3>
                     <p className="text-xs text-[#684d39]">
-                      Háttér leválasztása, {selectedPreset.name} fényviszonyok és travertin textúra illesztése...
+                      Háttér szegmentálása, 1:1 méretarány zárolás és {selectedPreset.name} fényviszonyok illesztése...
                     </p>
                   </div>
                 </div>
               ) : previewGenerated ? (
-                <div className="relative z-10 w-full h-full flex flex-col items-center justify-center space-y-6">
+                <div className="relative z-10 w-full h-full flex flex-col items-center justify-center space-y-4">
                   {/* Generated High-Res Staging Showcase */}
-                  <div className="relative w-full max-w-md h-64 rounded-2xl bg-gradient-to-br from-[#faf5ee] via-[#f0e3d0] to-[#dfcca8] border border-[#d7c4ac] p-6 flex flex-col justify-between shadow-lg overflow-hidden group">
-                    <div className="flex items-center justify-between">
-                      <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#14171c] text-white">
+                  <div className="relative w-full max-w-lg aspect-square max-h-[380px] rounded-2xl overflow-hidden border border-[#d7c4ac] shadow-xl group bg-white">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={uploadedImagePreview || selectedPreset.sampleImage}
+                      alt={furnitureTitle}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+
+                    <div className="absolute top-3 left-3">
+                      <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#14171c]/90 text-white backdrop-blur-xs">
                         TerraSilva 4K Staging
                       </span>
-                      <span className="text-[10px] font-bold text-[#805e43] bg-white/90 px-2 py-0.5 rounded border border-[#d7c4ac]">
+                    </div>
+
+                    <div className="absolute top-3 right-3">
+                      <span className="text-[10px] font-bold text-[#14171c] bg-white/95 px-2.5 py-1 rounded-full shadow-xs border border-[#e8ddcf]">
                         {selectedPreset.category}
                       </span>
                     </div>
 
-                    <div className="text-center py-4">
-                      <div className="w-24 h-24 mx-auto rounded-3xl bg-white/80 border border-[#9e7753]/30 flex items-center justify-center text-[#9e7753] shadow-md group-hover:scale-105 transition-transform">
-                        <Gem className="w-12 h-12" />
-                      </div>
-                      <span className="font-serif font-bold text-base text-[#14171c] block mt-2">
-                        {furnitureTitle}
-                      </span>
-                      <span className="text-[11px] text-[#684d39] font-medium">
-                        Természetes Navona Travertin • Matt Csiszolt Felület
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[11px] font-semibold text-[#805e43]">
-                      <span>{selectedLighting}</span>
-                      <span>{selectedAngle}</span>
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 text-white text-left">
+                      <h4 className="font-serif font-bold text-sm">{furnitureTitle}</h4>
+                      <p className="text-[11px] text-white/80">{selectedPreset.bgDescription}</p>
                     </div>
                   </div>
 
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-800">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-800 shadow-2xs">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    <span>Stúdió minőségű fotó sikeresen elkészült!</span>
+                    <span>4K Stúdió fotó sikeresen legenerálva! (Eredeti méretarány zárolva)</span>
+                  </div>
+                </div>
+              ) : uploadedImagePreview ? (
+                <div className="relative z-10 space-y-4 max-w-sm">
+                  <div className="relative w-48 h-48 mx-auto rounded-2xl overflow-hidden border-2 border-[#9e7753] shadow-lg bg-white p-2">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={uploadedImagePreview}
+                      alt="Feltöltött fotó"
+                      className="w-full h-full object-contain"
+                    />
+                    <div className="absolute bottom-2 inset-x-2 bg-[#14171c]/80 text-white text-[10px] font-semibold py-1 rounded-lg backdrop-blur-xs flex items-center justify-center gap-1">
+                      <Scan className="w-3 h-3 text-[#d7c4ac]" />
+                      <span>Feltöltött Forrás Kép</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <h3 className="font-bold text-sm text-[#14171c]">Kép Sikeresen Betöltve!</h3>
+                    <p className="text-xs text-[#684d39]">
+                      Válaszd ki a kívánt enteriőrt bal oldalon, majd kattints a fenti <strong>"Fotó Generálása"</strong> gombra!
+                    </p>
                   </div>
                 </div>
               ) : (
@@ -411,7 +556,7 @@ export default function AIStudioPage() {
                   <div className="space-y-1">
                     <h3 className="font-bold text-sm text-[#14171c]">Előnézet Megjelenítése</h3>
                     <p className="text-xs text-[#684d39]">
-                      Kattints a fenti <strong>"Fotó Generálása"</strong> gombra, hogy az AI beillessze a bútort a kiválasztott {selectedPreset.name} környezetbe!
+                      Tölts fel egy beszállítói fotót a bal oldali mezőbe, vagy válassz preseteket és kattints a <strong>"Fotó Generálása"</strong> gombra!
                     </p>
                   </div>
                 </div>
@@ -426,13 +571,16 @@ export default function AIStudioPage() {
               </div>
 
               <div className="flex items-center gap-3 w-full sm:w-auto">
-                <button
-                  disabled={!previewGenerated}
-                  className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#d7c4ac] bg-white text-[#14171c] text-xs font-semibold hover:bg-[#faf7f2] transition disabled:opacity-40"
+                <a
+                  href={uploadedImagePreview || selectedPreset.sampleImage}
+                  download={`terrasilva-${furnitureTitle.toLowerCase().replace(/\s+/g, "-")}.jpg`}
+                  className={`flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#d7c4ac] bg-white text-[#14171c] text-xs font-semibold hover:bg-[#faf7f2] transition ${
+                    !previewGenerated ? "opacity-40 pointer-events-none" : ""
+                  }`}
                 >
                   <Download className="w-4 h-4 text-[#9e7753]" />
                   <span>Kép Letöltése (4K)</span>
-                </button>
+                </a>
 
                 <button
                   onClick={handleSaveToCatalog}

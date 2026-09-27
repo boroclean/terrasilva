@@ -39,5 +39,10 @@
 ---
 
 ## 5. Szabályok & AI Fotóstúdió Alapelvek
-- **Termékhűség, Méretarány & Színvilág:** A fotó stúdiónak és képgenerálási / renderelési folyamatoknak **mindig kötelezően meg kell őrizniük** a beküldött bútortárgy eredeti méretarányát, geometriai arányait (láb vastagság, lap vastagság, arányok) és színhűségét/anyagvilágát (travertin pórusok, márvány erezet, fa tónus).
+- **Élethűség & 100%-os Termékhűség (Pattern, Color, Scale Lock):** A fotóstúdiónak és az AI képgenerálási / renderelési folyamatoknak **kötelezően és megalkuvás nélkül mindig 100%-os élethűséget és azonosságot kell biztosítaniuk** a beküldött bútortárggyal:
+  - **Minta & Textúra:** A természetes kő pórusai, márvány erezete, faerezet iránya és felületkezelése (matt csiszolt / polírozott) pontosan egyezik.
+  - **Színvilág:** A bútor természetes árnyalata, tónusa és fényvisszaverődése változatlan marad.
+  - **Méret & Geometria (1:1 Proporciók):** A fizikai arányok (láb vastagság, lap vastagság, átmérő, hosszúság, sziluett) torzításmentesen zárolva vannak.
+  - **Kizárólagos megengedett változás:** Csak a környező enteriőr (helyiség, háttér, dekoráció, világítási hangulat) és a kameraállás / látószög változhat!
+
 

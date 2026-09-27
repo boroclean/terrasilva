@@ -9,5 +9,6 @@ trigger: always_on
 - **Component Modularity**: Keep frontend modules well-scoped and reusable.
 - **Accessibility & SEO**: Ensure valid semantic HTML, meta descriptions, descriptive page titles, and readable contrasts.
 - **Safety**: Do not hardcode credentials, URLs, or client-sensitive data directly into source files.
-- **Product Fidelity & Scale Lock**: The AI Staging Studio and 3D render pipelines must strictly preserve the original aspect ratio, physical proportions, material textures, and color palette of submitted supplier items.
+- **Product Fidelity & Lifelike Realism Mandate (Pattern, Color, Scale Lock)**: The AI Staging Studio, generation algorithms, and 3D render pipelines must strictly maintain 100% photorealistic fidelity to the original submitted piece. The exact surface pattern (travertine pores, marble veining, wood grain), natural color temperature/palette, and physical proportions (slab thickness, leg diameter, edge radii) are permanently locked. ONLY the surrounding room environment, decorative props, lighting mood, and camera perspective may vary.
+
 

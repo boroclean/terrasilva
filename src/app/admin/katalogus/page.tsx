@@ -192,6 +192,7 @@ export default function CatalogManagerPage() {
   const [materials, setMaterials] = useState<MaterialOption[]>(MATERIALS);
   
   const [selectedRoom, setSelectedRoom] = useState<string>("all");
+  const [selectedSubType, setSelectedSubType] = useState<string>("all");
   const [selectedMaterial, setSelectedMaterial] = useState<string>("all");
   const [visibilityFilter, setVisibilityFilter] = useState<"all" | "live" | "draft">("all");
   const [search, setSearch] = useState("");
@@ -210,6 +211,8 @@ export default function CatalogManagerPage() {
   const [newRoomName, setNewRoomName] = useState("");
   const [newMaterialName, setNewMaterialName] = useState("");
   const [newMaterialColor, setNewMaterialColor] = useState("#c5a880");
+  const [targetRoomForSubType, setTargetRoomForSubType] = useState<string>("nappali");
+  const [newSubTypeName, setNewSubTypeName] = useState("");
 
   // Load from LocalStorage on mount
   useEffect(() => {
@@ -237,6 +240,11 @@ export default function CatalogManagerPage() {
   const saveCatalogState = (newItems: CatalogItem[]) => {
     setItems(newItems);
     localStorage.setItem("terrasilva_catalog", JSON.stringify(newItems));
+  };
+
+  const saveRoomsState = (newRooms: RoomCategory[]) => {
+    setRooms(newRooms);
+    localStorage.setItem("terrasilva_rooms", JSON.stringify(newRooms));
   };
 
   const showNotification = (msg: string) => {
@@ -307,7 +315,7 @@ export default function CatalogManagerPage() {
 
     const newItem: CatalogItem = {
       ...activeItem,
-      id: `ts-${Date.now()}`,
+      id: `p-${Date.now()}`,
       sku: activeItem.sku || `TS-${activeItem.materialType.substring(0, 4).toUpperCase()}-${Math.floor(10 + Math.random() * 90)}`,
       landedCostHuf: landedHuf,
       marginPercent: margin,
@@ -332,10 +340,48 @@ export default function CatalogManagerPage() {
       subTypes: [{ id: "all", name: `Összes ${newRoomName}`, slug: "all" }],
     };
     const updated = [...rooms, newRoom];
-    setRooms(updated);
-    localStorage.setItem("terrasilva_rooms", JSON.stringify(updated));
+    saveRoomsState(updated);
     setNewRoomName("");
     showNotification(`Új kategória létrehozva: "${newRoomName}"`);
+  };
+
+  // Add Custom SubType to a Room
+  const handleAddSubType = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newSubTypeName.trim() || !targetRoomForSubType) return;
+    const slug = newSubTypeName.toLowerCase().replace(/[^a-z0-9]/g, "-");
+    
+    const updated = rooms.map((r) => {
+      if (r.id === targetRoomForSubType) {
+        const exists = r.subTypes.some((st) => st.id === slug || st.name.toLowerCase() === newSubTypeName.toLowerCase());
+        if (exists) return r;
+        return {
+          ...r,
+          subTypes: [...r.subTypes, { id: slug, name: newSubTypeName, slug }],
+        };
+      }
+      return r;
+    });
+
+    saveRoomsState(updated);
+    setNewSubTypeName("");
+    showNotification(`Új bútortípus ("${newSubTypeName}") hozzáadva a(z) "${rooms.find(r => r.id === targetRoomForSubType)?.name}" kategóriához!`);
+  };
+
+  // Delete SubType from Room
+  const handleDeleteSubType = (roomId: string, subTypeId: string) => {
+    if (subTypeId === "all") return;
+    const updated = rooms.map((r) => {
+      if (r.id === roomId) {
+        return {
+          ...r,
+          subTypes: r.subTypes.filter((st) => st.id !== subTypeId),
+        };
+      }
+      return r;
+    });
+    saveRoomsState(updated);
+    showNotification("Bútortípus eltávolítva!");
   };
 
   // Add Custom Material
@@ -355,9 +401,36 @@ export default function CatalogManagerPage() {
     showNotification(`Új anyag felvéve: "${newMaterialName}"`);
   };
 
+  // Active room object for subtypes
+  const currentRoomObj = rooms.find((r) => r.id === selectedRoom);
+
+  // Available subtypes to display in the filter bar
+  const displaySubTypes = selectedRoom === "all"
+    ? Array.from(
+        new Map(
+          rooms.flatMap((r) => r.subTypes.filter((st) => st.id !== "all")).map((st) => [st.id, st])
+        ).values()
+      )
+    : (currentRoomObj?.subTypes.filter((st) => st.id !== "all") || []);
+
   // Filter items
   const filteredItems = items.filter((it) => {
     const matchesRoom = selectedRoom === "all" || it.room === selectedRoom;
+    
+    // Subtype matching: checks against slug or Hungarian display name
+    let matchesSubType = selectedSubType === "all";
+    if (!matchesSubType) {
+      const itemSub = (it.subType || "").toLowerCase();
+      const targetSub = selectedSubType.toLowerCase();
+      const foundSubObj = displaySubTypes.find((st) => st.id === selectedSubType);
+      const foundName = foundSubObj ? foundSubObj.name.toLowerCase() : "";
+
+      matchesSubType = 
+        itemSub === targetSub || 
+        (foundName !== "" && (itemSub.includes(foundName) || foundName.includes(itemSub))) ||
+        itemSub.includes(targetSub);
+    }
+
     const matchesMaterial = selectedMaterial === "all" || it.materialType === selectedMaterial;
     const matchesVisibility = 
       visibilityFilter === "all" || 
@@ -368,9 +441,9 @@ export default function CatalogManagerPage() {
       it.name.toLowerCase().includes(search.toLowerCase()) ||
       it.sku.toLowerCase().includes(search.toLowerCase()) ||
       it.materialDesc.toLowerCase().includes(search.toLowerCase()) ||
-      it.subType.toLowerCase().includes(search.toLowerCase());
+      (it.subType || "").toLowerCase().includes(search.toLowerCase());
 
-    return matchesRoom && matchesMaterial && matchesVisibility && matchesSearch;
+    return matchesRoom && matchesSubType && matchesMaterial && matchesVisibility && matchesSearch;
   });
 
   return (
@@ -447,36 +520,42 @@ export default function CatalogManagerPage() {
 
       {/* Filter & Search Bar */}
       <div className="bg-white p-5 rounded-3xl border border-[#e8ddcf] shadow-xs space-y-4">
-        {/* Room Types */}
+        {/* 1. Room Types */}
         <div>
           <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] uppercase tracking-wider text-[#805e43] font-bold block">
-              Szobatípus Szerinti Szűrés:
+              1. Szobatípus Szerinti Szűrés:
             </span>
             <button
               onClick={() => setShowCategoryModal(true)}
               className="text-[11px] text-[#9e7753] font-bold hover:underline flex items-center gap-1"
             >
-              <Plus className="w-3 h-3" /> Új Kategória Hozzáadása
+              <Plus className="w-3 h-3" /> Kategóriák & Bútortípusok Kezelése
             </button>
           </div>
           <div className="flex items-center gap-2 overflow-x-auto pb-1">
             <button
-              onClick={() => setSelectedRoom("all")}
+              onClick={() => {
+                setSelectedRoom("all");
+                setSelectedSubType("all");
+              }}
               className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${
                 selectedRoom === "all"
                   ? "bg-[#14171c] text-white shadow-xs"
                   : "bg-[#faf7f2] text-[#553f31] border border-[#e8ddcf] hover:bg-[#f4efe8]"
               }`}
             >
-              Összes Szoba ({items.length})
+              🛋️ Összes Szoba ({items.length})
             </button>
             {rooms.map((room) => {
               const count = items.filter((i) => i.room === room.id).length;
               return (
                 <button
                   key={room.id}
-                  onClick={() => setSelectedRoom(room.id)}
+                  onClick={() => {
+                    setSelectedRoom(room.id);
+                    setSelectedSubType("all");
+                  }}
                   className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${
                     selectedRoom === room.id
                       ? "bg-[#14171c] text-white shadow-xs"
@@ -490,10 +569,63 @@ export default function CatalogManagerPage() {
           </div>
         </div>
 
-        {/* Materials Filter */}
+        {/* 2. Room SubTypes (Bútortípusok) Filter */}
+        <div className="pt-3 border-t border-[#f4ede4]">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] uppercase tracking-wider text-[#805e43] font-bold block">
+              2. Bútortípus Szerinti Szűrés ({currentRoomObj ? currentRoomObj.name : "Összes Kategória"}):
+            </span>
+            <button
+              onClick={() => {
+                if (currentRoomObj) setTargetRoomForSubType(currentRoomObj.id);
+                setShowCategoryModal(true);
+              }}
+              className="text-[11px] text-[#9e7753] font-bold hover:underline flex items-center gap-1"
+            >
+              <Plus className="w-3 h-3" /> Új Típus Hozzáadása
+            </button>
+          </div>
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            <button
+              onClick={() => setSelectedSubType("all")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
+                selectedSubType === "all"
+                  ? "bg-[#9e7753] text-white shadow-xs"
+                  : "bg-[#faf7f2] text-[#553f31] border border-[#e8ddcf] hover:bg-[#f4efe8]"
+              }`}
+            >
+              Összes Bútortípus
+            </button>
+            {displaySubTypes.map((sub) => {
+              const count = items.filter((i) => {
+                const matchesRoom = selectedRoom === "all" || i.room === selectedRoom;
+                const itemSub = (i.subType || "").toLowerCase();
+                const subName = sub.name.toLowerCase();
+                const subSlug = sub.slug.toLowerCase();
+                return matchesRoom && (itemSub === subSlug || itemSub.includes(subName) || subName.includes(itemSub));
+              }).length;
+
+              return (
+                <button
+                  key={sub.id}
+                  onClick={() => setSelectedSubType(sub.id)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
+                    selectedSubType === sub.id
+                      ? "bg-[#9e7753] text-white shadow-xs"
+                      : "bg-[#faf7f2] text-[#553f31] border border-[#e8ddcf] hover:bg-[#f4efe8]"
+                  }`}
+                >
+                  {sub.name} ({count})
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 3. Materials Filter */}
         <div className="pt-3 border-t border-[#f4ede4]">
           <span className="text-[11px] uppercase tracking-wider text-[#805e43] font-bold block mb-2">
-            Anyaghasználat Szerinti Szűrés:
+            3. Anyaghasználat Szerinti Szűrés:
           </span>
           <div className="flex items-center gap-2 overflow-x-auto pb-1">
             {materials.map((mat) => (
@@ -607,10 +739,12 @@ export default function CatalogManagerPage() {
                   </td>
                   <td className="p-3">
                     <span className="font-bold text-[#14171c] block uppercase text-[10px] text-[#9e7753]">
-                      {item.room}
+                      {rooms.find(r => r.id === item.room)?.name || item.room}
                     </span>
-                    <span className="font-semibold text-[#14171c] block text-xs">{item.subType}</span>
-                    <span className="text-[11px] text-[#684d39] block">{item.dimensions}</span>
+                    <span className="font-semibold text-[#14171c] block text-xs bg-[#faf8f5] px-2 py-0.5 rounded border border-[#e8ddcf] inline-block mt-0.5">
+                      {item.subType}
+                    </span>
+                    <span className="text-[11px] text-[#684d39] block mt-0.5">{item.dimensions}</span>
                   </td>
                   <td className="p-3 text-center">
                     <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-bold ${
@@ -630,7 +764,7 @@ export default function CatalogManagerPage() {
                   <td className="p-3 text-right font-medium text-[#684d39]">
                     {new Intl.NumberFormat("hu-HU").format(item.landedCostHuf)} Ft
                   </td>
-                  <td className="p-3 text-right font-bold text-[#14171c] text-sm">
+                  <td className="p-3 text-right font-bold text-[#14171c] text-sm font-serif">
                     {new Intl.NumberFormat("hu-HU").format(item.sellingPriceHuf)} Ft
                   </td>
                   <td className="p-3 text-center font-bold text-emerald-700">
@@ -664,9 +798,18 @@ export default function CatalogManagerPage() {
                     </button>
                   </td>
 
-                  {/* Actions (Edit & Delete) */}
+                  {/* Actions (View on Webshop, Edit & Delete) */}
                   <td className="p-3 text-center">
                     <div className="inline-flex items-center gap-1">
+                      <Link
+                        href={`/termek/${item.id}`}
+                        target="_blank"
+                        className="p-1.5 rounded-lg text-[#805e43] hover:text-[#14171c] hover:bg-[#f4efe8] transition"
+                        title="Megtekintés / Konfigurátor tesztelése új lapon"
+                      >
+                        <ArrowRight className="w-4 h-4" />
+                      </Link>
+
                       <button
                         onClick={() => handleOpenEdit(item)}
                         className="p-1.5 rounded-lg text-[#553f31] hover:text-[#14171c] hover:bg-[#f4efe8] transition"
@@ -730,14 +873,33 @@ export default function CatalogManagerPage() {
                     className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5] font-mono"
                   />
                 </div>
+
                 <div>
-                  <label className="font-bold text-[#553f31] block mb-1">Bútortípus</label>
-                  <input
-                    type="text"
-                    value={activeItem.subType}
-                    onChange={(e) => setActiveItem({ ...activeItem, subType: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5]"
-                  />
+                  <label className="font-bold text-[#553f31] block mb-1">Bútortípus (Szobán belül) *</label>
+                  <div className="space-y-1">
+                    <select
+                      value={activeItem.subType}
+                      onChange={(e) => setActiveItem({ ...activeItem, subType: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5] font-semibold"
+                    >
+                      <option value="">-- Válassz típust --</option>
+                      {rooms
+                        .find((r) => r.id === activeItem.room)
+                        ?.subTypes.filter((st) => st.id !== "all")
+                        .map((st) => (
+                          <option key={st.id} value={st.name}>
+                            {st.name}
+                          </option>
+                        ))}
+                    </select>
+                    <input
+                      type="text"
+                      placeholder="Vagy írj be egyedi típust..."
+                      value={activeItem.subType}
+                      onChange={(e) => setActiveItem({ ...activeItem, subType: e.target.value })}
+                      className="w-full px-3 py-1.5 rounded-xl border border-[#e8ddcf] bg-white text-[11px]"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -835,7 +997,7 @@ export default function CatalogManagerPage() {
                 <div>
                   <span className="font-bold text-[#14171c] block">Megjelenítés a Weboldalon</span>
                   <span className="text-[11px] text-[#805e43]">
-                    {activeItem.isLive ? "A termék azonnal látható és rendelhető a látogatóknak" : "A termék elrejtve, csak adminisztrátorok látják"}
+                    {activeItem.isLive ? "A termék azonnal látható és konfigurálható a vásárlóknak" : "A termék elrejtve, csak adminisztrátorok látják"}
                   </span>
                 </div>
                 <button
@@ -852,21 +1014,32 @@ export default function CatalogManagerPage() {
                 </button>
               </div>
 
-              <div className="pt-3 border-t border-[#e8ddcf] flex items-center justify-end gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => setShowEditModal(false)}
-                  className="px-4 py-2 rounded-xl border border-[#e8ddcf] text-xs font-semibold text-[#553f31] hover:bg-[#faf8f5]"
+              <div className="pt-3 border-t border-[#e8ddcf] flex items-center justify-between">
+                <Link
+                  href={`/termek/${activeItem.id}`}
+                  target="_blank"
+                  className="text-xs text-[#9e7753] font-bold hover:underline flex items-center gap-1"
                 >
-                  Mégse
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2 rounded-xl bg-[#14171c] text-white text-xs font-bold hover:bg-[#2e2118] shadow-xs flex items-center gap-1.5"
-                >
-                  <Check className="w-4 h-4 text-emerald-400" />
-                  <span>Változtatások Mentése</span>
-                </button>
+                  <span>Termékoldal & Konfigurátor tesztelése</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+
+                <div className="flex items-center gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setShowEditModal(false)}
+                    className="px-4 py-2 rounded-xl border border-[#e8ddcf] text-xs font-semibold text-[#553f31] hover:bg-[#faf8f5]"
+                  >
+                    Mégse
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-2 rounded-xl bg-[#14171c] text-white text-xs font-bold hover:bg-[#2e2118] shadow-xs flex items-center gap-1.5"
+                  >
+                    <Check className="w-4 h-4 text-emerald-400" />
+                    <span>Változtatások Mentése</span>
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -933,15 +1106,33 @@ export default function CatalogManagerPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-bold text-[#553f31] block mb-1">Bútortípus</label>
-                  <input
-                    type="text"
-                    placeholder="pl. TV-szekrény / Étkezőasztal"
-                    value={activeItem.subType}
-                    onChange={(e) => setActiveItem({ ...activeItem, subType: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5]"
-                  />
+                  <label className="font-bold text-[#553f31] block mb-1">Bútortípus (Szobán belül) *</label>
+                  <div className="space-y-1">
+                    <select
+                      value={activeItem.subType}
+                      onChange={(e) => setActiveItem({ ...activeItem, subType: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5] font-semibold"
+                    >
+                      <option value="">-- Válassz típust --</option>
+                      {rooms
+                        .find((r) => r.id === activeItem.room)
+                        ?.subTypes.filter((st) => st.id !== "all")
+                        .map((st) => (
+                          <option key={st.id} value={st.name}>
+                            {st.name}
+                          </option>
+                        ))}
+                    </select>
+                    <input
+                      type="text"
+                      placeholder="Vagy írj be egyedi típust..."
+                      value={activeItem.subType}
+                      onChange={(e) => setActiveItem({ ...activeItem, subType: e.target.value })}
+                      className="w-full px-3 py-1.5 rounded-xl border border-[#e8ddcf] bg-white text-[11px]"
+                    />
+                  </div>
                 </div>
+
                 <div>
                   <label className="font-bold text-[#553f31] block mb-1">Méretek</label>
                   <input
@@ -1029,14 +1220,14 @@ export default function CatalogManagerPage() {
         </div>
       )}
 
-      {/* CATEGORY & MATERIAL MANAGER MODAL */}
+      {/* CATEGORY & SUBTYPES & MATERIAL MANAGER MODAL */}
       {showCategoryModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 border border-[#e8ddcf] shadow-2xl space-y-5 animate-in fade-in zoom-in-95">
+          <div className="bg-white rounded-3xl max-w-3xl w-full p-6 border border-[#e8ddcf] shadow-2xl space-y-5 animate-in fade-in zoom-in-95 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-[#e8ddcf]">
               <div className="flex items-center gap-2">
                 <Settings className="w-5 h-5 text-[#9e7753]" />
-                <h3 className="font-bold text-base text-[#14171c]">Kategóriák & Alapanyagok Menedzsmentje</h3>
+                <h3 className="font-bold text-base text-[#14171c]">Kategóriák, Szobán Belüli Bútortípusok & Anyagok Kezelése</h3>
               </div>
               <button
                 onClick={() => setShowCategoryModal(false)}
@@ -1047,14 +1238,92 @@ export default function CatalogManagerPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
-              {/* Room Categories */}
+              {/* SECTION 1: Room SubTypes (Bútortípusok) Manager */}
+              <div className="space-y-3 md:col-span-2 bg-[#faf7f2] p-4 rounded-2xl border border-[#e8ddcf]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 font-bold text-[#14171c]">
+                    <Layers className="w-4 h-4 text-[#9e7753]" />
+                    <span>Szobán Belüli Bútortípusok Menedzsmentje (TV-állvány, Asztal, Fotel, stb.)</span>
+                  </div>
+
+                  {/* Choose Room for SubTypes */}
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-[#805e43]">Szoba:</span>
+                    <select
+                      value={targetRoomForSubType}
+                      onChange={(e) => setTargetRoomForSubType(e.target.value)}
+                      className="px-3 py-1.5 rounded-xl border border-[#e8ddcf] bg-white font-bold text-[#14171c]"
+                    >
+                      {rooms.map((r) => (
+                        <option key={r.id} value={r.id}>
+                          {r.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Subtypes List for Selected Room */}
+                <div className="space-y-1.5 max-h-44 overflow-y-auto pr-1">
+                  {rooms
+                    .find((r) => r.id === targetRoomForSubType)
+                    ?.subTypes.filter((st) => st.id !== "all")
+                    .map((st) => {
+                      const count = items.filter((i) => {
+                        const itemSub = (i.subType || "").toLowerCase();
+                        return i.room === targetRoomForSubType && (itemSub === st.slug || itemSub.includes(st.name.toLowerCase()));
+                      }).length;
+
+                      return (
+                        <div
+                          key={st.id}
+                          className="flex items-center justify-between p-2 rounded-xl bg-white border border-[#e8ddcf]"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-[#14171c]">{st.name}</span>
+                            <span className="text-[10px] text-gray-500 font-mono">({count} bútor a katalógusban)</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteSubType(targetRoomForSubType, st.id)}
+                            className="p-1 text-gray-400 hover:text-rose-600 rounded"
+                            title="Bútortípus törlése"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      );
+                    })}
+                </div>
+
+                {/* Add new Subtype form */}
+                <form onSubmit={handleAddSubType} className="flex gap-2 pt-2 border-t border-[#e8ddcf]">
+                  <input
+                    type="text"
+                    required
+                    placeholder={`Új bútortípus hozzáadása ide: ${rooms.find(r => r.id === targetRoomForSubType)?.name} (pl. TV-állvány, Dohányzóasztal, Pad)`}
+                    value={newSubTypeName}
+                    onChange={(e) => setNewSubTypeName(e.target.value)}
+                    className="flex-1 px-3 py-2 rounded-xl border border-[#e8ddcf] bg-white focus:outline-none text-xs font-semibold"
+                  />
+                  <button
+                    type="submit"
+                    className="px-4 py-2 rounded-xl bg-[#14171c] text-white font-bold hover:bg-[#2e2118] transition flex items-center gap-1.5"
+                  >
+                    <Plus className="w-3.5 h-3.5 text-[#d7c4ac]" />
+                    <span>+ Típus Hozzáadása</span>
+                  </button>
+                </form>
+              </div>
+
+              {/* SECTION 2: Room Categories */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2 font-bold text-[#14171c]">
                   <FolderPlus className="w-4 h-4 text-[#9e7753]" />
-                  <span>Szobatípus Kategóriák ({rooms.length})</span>
+                  <span>Fő Szobatípus Kategóriák ({rooms.length})</span>
                 </div>
 
-                <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
                   {rooms.map((r) => (
                     <div key={r.id} className="flex items-center justify-between p-2 rounded-xl bg-[#faf8f5] border border-[#e8ddcf]">
                       <span className="font-bold text-[#553f31]">{r.name}</span>
@@ -1064,7 +1333,7 @@ export default function CatalogManagerPage() {
                 </div>
 
                 {/* Add new Room form */}
-                <form onSubmit={handleAddRoom} className="flex gap-2 pt-2">
+                <form onSubmit={handleAddRoom} className="flex gap-2 pt-1">
                   <input
                     type="text"
                     placeholder="Új szoba (pl. Hálószoba)"
@@ -1081,14 +1350,14 @@ export default function CatalogManagerPage() {
                 </form>
               </div>
 
-              {/* Material Types */}
+              {/* SECTION 3: Material Types */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2 font-bold text-[#14171c]">
                   <Palette className="w-4 h-4 text-[#9e7753]" />
                   <span>Alapanyagok & Textúrák ({materials.length - 1})</span>
                 </div>
 
-                <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
                   {materials.filter((m) => m.id !== "all").map((m) => (
                     <div key={m.id} className="flex items-center justify-between p-2 rounded-xl bg-[#faf8f5] border border-[#e8ddcf]">
                       <div className="flex items-center gap-2">
@@ -1106,7 +1375,7 @@ export default function CatalogManagerPage() {
                 </div>
 
                 {/* Add new Material form */}
-                <form onSubmit={handleAddMaterial} className="flex gap-2 pt-2">
+                <form onSubmit={handleAddMaterial} className="flex gap-2 pt-1">
                   <input
                     type="color"
                     value={newMaterialColor}
@@ -1133,7 +1402,7 @@ export default function CatalogManagerPage() {
             <div className="pt-3 border-t border-[#e8ddcf] flex justify-end">
               <button
                 onClick={() => setShowCategoryModal(false)}
-                className="px-5 py-2 rounded-xl bg-[#14171c] text-white text-xs font-bold hover:bg-[#2e2118]"
+                className="px-6 py-2.5 rounded-xl bg-[#14171c] text-white text-xs font-bold hover:bg-[#2e2118]"
               >
                 Kész
               </button>

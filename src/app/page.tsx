@@ -206,88 +206,111 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero Section with Direct Visual Presence & Atmospheric Overlap */}
-      <section className="relative overflow-hidden pt-16 pb-16 md:pt-20 md:pb-24 px-6 border-b border-[#e8ddcf] bg-gradient-to-b from-[#faf7f2] via-[#f5ede3] to-[#faf7f2]">
-        {/* Subtle Ambient Stone Glow in Background */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-[#9e7753]/10 rounded-full blur-3xl pointer-events-none" />
-        
-        <div className="max-w-5xl mx-auto text-center space-y-6 relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#d7c4ac] bg-white/80 backdrop-blur-xs text-xs font-semibold text-[#805e43] shadow-2xs">
-            <Gem className="w-3.5 h-3.5 text-[#9e7753]" />
-            <span>Terra (Kő & Travertin) • Silva (Nemes Tömörfa)</span>
-          </div>
-
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-[#14171c] font-serif leading-[1.1]">
-            A természet ereje, <br className="hidden sm:inline" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9e7753] via-[#755235] to-[#14171c]">
-              időtálló travertin és tömörfa formájában.
-            </span>
-          </h1>
-
-          <p className="max-w-2xl mx-auto text-base md:text-lg text-[#684d39] leading-relaxed">
-            Minden bútorunk természetes travertin mészkőtömbökből, olasz márványból és nemes dió- illetve tölgyfából készül. 
-            Közvetlen kőfaragó és manufaktúra importtal hozzuk el az igazi luxust.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-1">
-            <Link
-              href="#katalogus"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#14171c] text-white font-semibold text-sm hover:bg-[#2e2118] transition shadow-md flex items-center justify-center gap-2"
-            >
-              <span>Bútorkatalógus Megtekintése</span>
-              <ArrowRight className="w-4 h-4 text-[#d7c4ac]" />
-            </Link>
-            <Link
-              href="#mintacsomag"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-xl border border-[#d7c4ac] bg-white/90 backdrop-blur-xs text-[#14171c] font-semibold text-sm hover:bg-[#f4ede4] transition shadow-xs flex items-center justify-center gap-2"
-            >
-              <Palette className="w-4 h-4 text-[#9e7753]" />
-              <span>Valódi Kő- és Faminta Kérése</span>
-            </Link>
-          </div>
+      {/* Hero Section with Seamless Floating Cutout Blended Beside and Behind Text */}
+      <section className="relative overflow-hidden pt-12 pb-20 md:pt-16 md:pb-28 px-6 border-b border-[#e8ddcf] bg-gradient-to-br from-[#faf7f2] via-[#f7f2ea] to-[#f4ede4]">
+        {/* Ambient Stone Backdrop Texture Faded Softly Behind Text */}
+        <div className="absolute -top-12 -right-24 w-[750px] h-[750px] opacity-15 pointer-events-none blur-2xl">
+          <img
+            src="/kepek/showcase/travertin_isolated.png"
+            alt="Ambient Stone Texture"
+            className="w-full h-full object-contain rotate-12"
+          />
         </div>
 
-        {/* HERO CENTERPIECE VISUAL: Direct Prominent Overlap on the Landing Page */}
-        <div className="max-w-5xl mx-auto mt-12 relative z-10">
-          <div className="relative rounded-3xl overflow-hidden border border-[#d7c4ac] bg-white shadow-2xl group">
-            {/* Main High-Res Table Perspective */}
-            <div className="aspect-[16/9] md:aspect-[21/10] relative w-full overflow-hidden bg-[#faf8f5]">
-              <img
-                src="/kepek/showcase/travertin_top_detail.jpg"
-                alt="TerraSilva Navona Travertin Étkezőasztal"
-                className="w-full h-full object-cover object-center group-hover:scale-103 transition-transform duration-1000 ease-out"
-              />
-              
-              {/* Subtle Luxury Gradient Overlay at Bottom */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
-
-              {/* Floating Badge Top Left */}
-              <div className="absolute top-4 left-4 sm:top-6 sm:left-6 bg-white/90 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-white/50 shadow-md flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#9e7753] animate-pulse" />
-                <span className="text-xs font-bold text-[#14171c]">100% Természetes Olasz Navona Travertin</span>
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+            
+            {/* Left Column: Premium Typography & CTAs */}
+            <div className="lg:col-span-7 space-y-6 text-left">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#d7c4ac] bg-white/70 backdrop-blur-xs text-xs font-semibold text-[#805e43] shadow-2xs">
+                <Gem className="w-3.5 h-3.5 text-[#9e7753]" />
+                <span>Terra (Kő & Travertin) • Silva (Nemes Tömörfa)</span>
               </div>
 
-              {/* Floating Macro Thumbnail Bottom Left */}
-              <div className="hidden sm:flex absolute bottom-4 left-4 sm:bottom-6 sm:left-6 bg-white/95 backdrop-blur-md p-2 rounded-2xl border border-white/50 shadow-lg items-center gap-3 max-w-sm">
-                <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 border border-[#e8ddcf]">
-                  <img
-                    src="/kepek/showcase/travertin_edge_macro.jpg"
-                    alt="Makró Pórus Részlet"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="text-left pr-2">
-                  <span className="text-[10px] uppercase font-bold text-[#9e7753] block">8K Makró Részlet</span>
-                  <span className="text-xs font-bold text-[#14171c] block">Organikus pórusok & matt csiszolás</span>
-                </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-[#14171c] font-serif leading-[1.08]">
+                A természet ereje, <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9e7753] via-[#755235] to-[#14171c]">
+                  időtálló travertin
+                </span>{" "}
+                és tömörfa formájában.
+              </h1>
+
+              <p className="max-w-xl text-base md:text-lg text-[#684d39] leading-relaxed">
+                Minden bútorunk természetes travertin mészkőtömbökből, olasz márványból és nemes dió- illetve tölgyfából készül. 
+                Közvetlen kőfaragó és manufaktúra importtal hozzuk el az igazi luxust.
+              </p>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
+                <Link
+                  href="#katalogus"
+                  className="px-8 py-4 rounded-xl bg-[#14171c] text-white font-semibold text-sm hover:bg-[#2e2118] transition shadow-md flex items-center justify-center gap-2 group"
+                >
+                  <span>Bútorkatalógus Megtekintése</span>
+                  <ArrowRight className="w-4 h-4 text-[#d7c4ac] group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  href="#mintacsomag"
+                  className="px-8 py-4 rounded-xl border border-[#d7c4ac] bg-white/80 backdrop-blur-xs text-[#14171c] font-semibold text-sm hover:bg-[#f4ede4] transition shadow-xs flex items-center justify-center gap-2"
+                >
+                  <Palette className="w-4 h-4 text-[#9e7753]" />
+                  <span>Valódi Kő- és Faminta Kérése</span>
+                </Link>
               </div>
 
-              {/* Floating Pill Bottom Right */}
-              <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 bg-black/75 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20 text-white shadow-lg text-right">
-                <span className="text-[11px] text-[#d7c4ac] block font-medium">Aura Navona Kollekció</span>
-                <span className="text-xs font-bold block text-white">200 x 100 x 76 cm • 3 cm Tömör Kőlap</span>
+              {/* Trust Indicators */}
+              <div className="pt-6 border-t border-[#e8ddcf]/80 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-semibold text-[#553f31]">
+                <div className="flex items-center gap-1.5">
+                  <Check className="w-4 h-4 text-emerald-700" />
+                  <span>100% Olasz Navona & Romano Kő</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Check className="w-4 h-4 text-emerald-700" />
+                  <span>Kézműves Élkiképzés & Csiszolás</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Check className="w-4 h-4 text-emerald-700" />
+                  <span>Közvetlen Gyártói Árak</span>
+                </div>
               </div>
             </div>
+
+            {/* Right Column: Seamless Isolated Travertine Furniture Piece Floating Freely */}
+            <div className="lg:col-span-5 relative flex items-center justify-center">
+              {/* Natural Radial Warm Aura behind the stone */}
+              <div className="absolute inset-0 bg-[#9e7753]/15 rounded-full blur-3xl scale-95 pointer-events-none" />
+
+              <div className="relative w-full max-w-lg lg:max-w-none group">
+                {/* Isolated Stone Table - Zero White Background */}
+                <img
+                  src="/kepek/showcase/travertin_hero_transparent.png"
+                  alt="TerraSilva Navona Travertin Asztal"
+                  className="w-full h-auto object-contain drop-shadow-[0_25px_35px_rgba(85,63,49,0.22)] group-hover:scale-102 transition-transform duration-700 ease-out"
+                />
+
+                {/* Floating Micro Badge on the Stone */}
+                <div className="absolute top-4 right-2 sm:top-6 sm:right-6 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-[#d7c4ac] shadow-sm flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-[11px] font-bold text-[#14171c]">Valódi Kőtömb</span>
+                </div>
+
+                {/* Floating Macro Thumbnail */}
+                <div className="absolute -bottom-4 left-2 sm:bottom-0 sm:left-4 bg-white/95 backdrop-blur-md p-2 rounded-2xl border border-[#d7c4ac] shadow-lg flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-[#e8ddcf]">
+                    <img
+                      src="/kepek/showcase/travertin_edge_macro.jpg"
+                      alt="8K Makró Részlet"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="text-left pr-2">
+                    <span className="text-[10px] uppercase font-bold text-[#9e7753] block">8K Makró</span>
+                    <span className="text-[11px] font-bold text-[#14171c] block">Pórusos textúra</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 

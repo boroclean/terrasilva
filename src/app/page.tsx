@@ -270,21 +270,21 @@ export default function Home() {
             </div>
 
             {/* Right Column: Seamless Isolated Travertine Furniture Piece (Takes 6 cols) */}
-            <div className="md:col-span-6 lg:col-span-6 relative flex items-center justify-center pt-4 md:pt-0">
-              <div className="relative w-full max-w-[460px] group">
-                {/* Isolated Stone Table - Zero White Background */}
-                <div className="relative p-1">
+            <div className="md:col-span-6 lg:col-span-6 relative flex items-center justify-center pt-2 md:pt-0">
+              <div className="relative w-full max-w-[560px] group">
+                {/* Isolated Stone Table - Zero White Background & Intact Tabletop */}
+                <div className="relative py-2">
                   <img
-                    src="/kepek/showcase/travertin_hero_transparent.png"
-                    alt="TerraSilva Navona Travertin Asztal"
-                    className="w-full h-auto max-h-[340px] object-contain drop-shadow-[0_20px_30px_rgba(85,63,49,0.22)] group-hover:scale-102 transition-transform duration-700 ease-out mx-auto"
+                    src="/kepek/showcase/travertin_front_master.png"
+                    alt="TerraSilva Navona Travertin Étkezőasztal"
+                    className="w-full h-auto max-h-[380px] object-contain group-hover:scale-103 transition-transform duration-700 ease-out mx-auto"
                   />
                 </div>
 
                 {/* Floating Micro Badge on the Stone */}
-                <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full border border-[#d7c4ac] shadow-xs flex items-center gap-1.5">
+                <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-[#d7c4ac] shadow-sm flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-[10px] font-bold text-[#14171c]">100% Tömör Navona Travertin</span>
+                  <span className="text-[11px] font-bold text-[#14171c]">100% Monolit Travertin Kőtalpak</span>
                 </div>
 
                 {/* Floating Macro Thumbnail */}

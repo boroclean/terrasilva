@@ -67,10 +67,16 @@ export default function Home() {
             </div>
           </div>
 
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-[#553f31]">
+          <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-[#553f31]">
             <Link href="#katalogus" className="hover:text-[#14171c] transition">Bútorkollekciók & Anyagok</Link>
             <Link href="#egyedi-gyartas" className="hover:text-[#14171c] transition">Egyedi Gyártás</Link>
             <Link href="#mintacsomag" className="hover:text-[#14171c] transition">Anyagminta Csomag</Link>
+            <div className="flex items-center gap-1.5 cursor-default select-none text-[#7a6454]">
+              <span>Bemutatóterem</span>
+              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#e8ddcf]/70 text-[#805e43] border border-[#d7c4ac]/70 shadow-2xs">
+                Hamarosan
+              </span>
+            </div>
           </nav>
 
           <div className="flex items-center gap-3">

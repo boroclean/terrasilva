@@ -161,3 +161,60 @@ model DeliverySlot {
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @updatedAt
 }
+
+enum UserRole {
+  TULAJDONOS_ADMIN
+  RAKTAROS_WMS
+  SOFOR_LOGISZTIKA
+  ERTEKESITO_CRM
+  PENZUGY_KONYVELO
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  phone         String?
+  passwordHash  String
+  role          UserRole  @default(TULAJDONOS_ADMIN)
+  isActive      Boolean   @default(true)
+  isApproved    Boolean   @default(true)
+  lastLoginAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+enum TransactionCategory {
+  BUTOR_ELADAS
+  EGYEDI_MEGRENDELES
+  ELOLEG_BEVETEL
+  KONTENER_BESZERZES
+  FUVAR_LOGISZTIKA
+  VAM_ES_ILLETEK
+  MARKETING_HIRDETES
+  RAKTAR_BERLETI_DIJ
+  ESZKOZ_ES_FELSZELELES
+  EGYEB_KIADAS
+}
+
+model Transaction {
+  id             String              @id @default(cuid())
+  type           TransactionType
+  category       TransactionCategory
+  amount         Int                 // Amount in HUF
+  currency       String              @default("HUF")
+  description    String
+  paymentMethod  String              @default("BANKI_ATUTALAS") // BANKI_ATUTALAS, KARTYA, KESZPENZ, STRIPE
+  receiptUrl     String?
+  orderId        String?
+  recordedBy     String              @default("Boronkay Bence")
+  date           DateTime            @default(now())
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+}
+

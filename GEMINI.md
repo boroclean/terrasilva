@@ -44,5 +44,7 @@
   - **Színvilág:** A bútor természetes árnyalata, tónusa és fényvisszaverődése változatlan marad.
   - **Méret & Geometria (1:1 Proporciók):** A fizikai arányok (láb vastagság, lap vastagság, átmérő, hosszúság, sziluett) torzításmentesen zárolva vannak.
   - **Kizárólagos megengedett változás:** Csak a környező enteriőr (helyiség, háttér, dekoráció, világítási hangulat) és a kameraállás / látószög változhat!
+- **Gold Standard Vizuális Minimum:** Minden generált képnek kötelezően el kell érnie vagy meg kell haladnia a `/public/kepek/standards/` mappában rögzített 8K makró és építészeti staging minőségi szintet.
+
 
 

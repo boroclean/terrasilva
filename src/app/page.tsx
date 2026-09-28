@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { 
   Sparkles, 
   ShoppingBag, 
@@ -10,10 +11,13 @@ import {
   Star, 
   Gem, 
   Check, 
-  ChevronRight,
-  Filter,
-  Layers,
-  Search
+  ChevronRight, 
+  Filter, 
+  Layers, 
+  Search,
+  Maximize2,
+  ShieldCheck,
+  Eye
 } from "lucide-react";
 import { ROOM_CATEGORIES, MATERIALS } from "@/lib/categories";
 
@@ -29,11 +33,26 @@ interface StoreProduct {
   stockStatus: string;
   tag: string;
   rating: number;
+  imageUrl?: string;
 }
 
 const STORE_PRODUCTS: StoreProduct[] = [
   {
     id: "p-01",
+    name: "Aura Navona Travertin Étkezőasztal (6-8 személyes)",
+    room: "etkezo",
+    subType: "etkezoasztal",
+    materialType: "travertine",
+    price: 689000,
+    materialDesc: "100% Természetes Olasz Navona Travertin, Matt Csiszolt, Kézi Kőfaragó Élkiképzés",
+    dimensions: "200 x 100 x 76 cm",
+    stockStatus: "Raktáron (2 db azonnal)",
+    tag: "Legnépszerűbb",
+    rating: 5.0,
+    imageUrl: "/kepek/showcase/travertin_top_detail.jpg",
+  },
+  {
+    id: "p-02",
     name: "Aura Navona Travertin Dohányzóasztal",
     room: "nappali",
     subType: "dohanzoasztal",
@@ -41,12 +60,13 @@ const STORE_PRODUCTS: StoreProduct[] = [
     price: 389000,
     materialDesc: "100% Természetes Olasz Navona Travertin, Matt Csiszolt",
     dimensions: "110 x 60 x 38 cm",
-    stockStatus: "Raktáron (2 db azonnal)",
-    tag: "Legnépszerűbb",
+    stockStatus: "Raktáron (3 db azonnal)",
+    tag: "Bestseller",
     rating: 5.0,
+    imageUrl: "/kepek/showcase/travertin_edge_macro.jpg",
   },
   {
-    id: "p-02",
+    id: "p-03",
     name: "Monolit Travertin TV-Szekrény & Médiafal",
     room: "nappali",
     subType: "tv-szekreny",
@@ -57,9 +77,10 @@ const STORE_PRODUCTS: StoreProduct[] = [
     stockStatus: "Érkező konténerben (Nov. 15)",
     tag: "Új Modell",
     rating: 4.9,
+    imageUrl: "/kepek/standards/2_architectural_staging_benchmark.jpg",
   },
   {
-    id: "p-03",
+    id: "p-04",
     name: "Silva Carrara Étkezőasztal (8 személyes)",
     room: "etkezo",
     subType: "etkezoasztal",
@@ -72,7 +93,7 @@ const STORE_PRODUCTS: StoreProduct[] = [
     rating: 4.9,
   },
   {
-    id: "p-04",
+    id: "p-05",
     name: "Silva Tömör Diófa Étkezőasztal",
     room: "etkezo",
     subType: "etkezoasztal",
@@ -85,7 +106,7 @@ const STORE_PRODUCTS: StoreProduct[] = [
     rating: 5.0,
   },
   {
-    id: "p-05",
+    id: "p-06",
     name: "Monolit Fluted Travertin Oszlop Console",
     room: "eloszoba",
     subType: "konzol",
@@ -98,7 +119,7 @@ const STORE_PRODUCTS: StoreProduct[] = [
     rating: 5.0,
   },
   {
-    id: "p-06",
+    id: "p-07",
     name: "Silva Lounge Fotel Diófa Vázzal",
     room: "nappali",
     subType: "fotel",
@@ -111,7 +132,7 @@ const STORE_PRODUCTS: StoreProduct[] = [
     rating: 4.9,
   },
   {
-    id: "p-07",
+    id: "p-08",
     name: "Aura Alabástrom & Travertin Asztali Lámpa",
     room: "vilagitas",
     subType: "asztali-lampa",
@@ -123,27 +144,15 @@ const STORE_PRODUCTS: StoreProduct[] = [
     tag: "Hangulatvilágítás",
     rating: 4.9,
   },
-  {
-    id: "p-08",
-    name: "Verona Velvet Étkezőszék Szett (4 db)",
-    room: "etkezo",
-    subType: "etkezoszek",
-    materialType: "upholstery",
-    price: 189000,
-    materialDesc: "Antracit Bársony Kárpit + Karcsú Fekete Acéllábak",
-    dimensions: "52 x 56 x 84 cm",
-    stockStatus: "Raktáron (5 szett)",
-    tag: "Csomagkedvezmény",
-    rating: 4.8,
-  },
 ];
 
 export default function Home() {
   const [selectedRoom, setSelectedRoom] = useState<string>("all");
   const [selectedSubType, setSelectedSubType] = useState<string>("all");
   const [selectedMaterial, setSelectedMaterial] = useState<string>("all");
+  const [activeImageZoom, setActiveImageZoom] = useState<string | null>(null);
 
-  const currentRoomObj = ROOM_CATEGORIES.find(r => r.id === selectedRoom);
+  const currentRoomObj = ROOM_CATEGORIES.find((r) => r.id === selectedRoom);
 
   const filteredProducts = STORE_PRODUCTS.filter((prod) => {
     const matchesRoom = selectedRoom === "all" || prod.room === selectedRoom;
@@ -174,18 +183,18 @@ export default function Home() {
 
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-[#553f31]">
             <Link href="#katalogus" className="hover:text-[#14171c] transition">Bútorkollekciók</Link>
-            <Link href="#anyagok" className="hover:text-[#14171c] transition">Travertin & Anyagok</Link>
+            <Link href="#anyagok" className="hover:text-[#14171c] transition">Travertin Részletek</Link>
             <Link href="#egyedi-gyartas" className="hover:text-[#14171c] transition">Egyedi Gyártás</Link>
             <Link href="#mintacsomag" className="hover:text-[#14171c] transition">Anyagminta Csomag</Link>
           </nav>
 
           <div className="flex items-center gap-3">
-            <button className="relative p-2.5 rounded-xl border border-[#d7c4ac] bg-white text-[#14171c] hover:bg-[#f4ede4] transition shadow-2xs">
-              <ShoppingBag className="w-4 h-4 text-[#14171c]" />
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#9e7753] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                0
-              </span>
-            </button>
+            <Link
+              href="/admin"
+              className="text-xs font-semibold text-[#805e43] hover:text-[#14171c] transition px-3 py-2"
+            >
+              Admin Belépés
+            </Link>
             <Link
               href="#katalogus"
               className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2.5 rounded-xl bg-[#14171c] text-white hover:bg-[#2e2118] transition shadow-xs"
@@ -198,8 +207,8 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-24 md:py-32 px-6 border-b border-[#e8ddcf] bg-gradient-to-b from-[#faf7f2] via-[#f4ede4]/80 to-[#faf7f2]">
-        <div className="max-w-5xl mx-auto text-center space-y-8">
+      <section className="relative overflow-hidden pt-20 pb-16 md:pt-28 md:pb-20 px-6 border-b border-[#e8ddcf] bg-gradient-to-b from-[#faf7f2] via-[#f4ede4]/80 to-[#faf7f2]">
+        <div className="max-w-5xl mx-auto text-center space-y-7">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#d7c4ac] bg-white text-xs font-semibold text-[#805e43] shadow-2xs">
             <Gem className="w-3.5 h-3.5 text-[#9e7753]" />
             <span>Terra (Kő & Travertin) • Silva (Nemes Tömörfa)</span>
@@ -217,7 +226,7 @@ export default function Home() {
             Közvetlen kőfaragó és manufaktúra importtal hozzuk el az igazi luxust.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
             <Link
               href="#katalogus"
               className="w-full sm:w-auto px-8 py-4 rounded-xl bg-[#14171c] text-white font-medium text-sm hover:bg-[#2e2118] transition shadow-md flex items-center justify-center gap-2"
@@ -232,6 +241,75 @@ export default function Home() {
               <Palette className="w-4 h-4 text-[#9e7753]" />
               <span>Valódi Kő- és Faminta Kérése</span>
             </Link>
+          </div>
+        </div>
+
+        {/* ULTRA-CLEAN SHOWCASE SECTION (Integrating the real photos gracefully) */}
+        <div id="anyagok" className="max-w-6xl mx-auto mt-16 md:mt-20">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
+            {/* Left Large Showcase Card: Full Tabletop Slab Architecture */}
+            <div className="md:col-span-7 bg-white rounded-3xl border border-[#e8ddcf] p-6 shadow-sm flex flex-col justify-between overflow-hidden relative group">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#faf7f2] border border-[#d7c4ac] text-xs font-semibold text-[#805e43]">
+                    <Gem className="w-3.5 h-3.5 text-[#9e7753]" />
+                    <span>Természetes Olasz Navona Travertin</span>
+                  </div>
+                  <span className="text-[11px] font-mono text-[#805e43] font-bold">100% Tömör Kőtömb</span>
+                </div>
+                <h3 className="font-serif font-bold text-xl text-[#14171c]">
+                  Organikus Kőerezet & Kannelúrázott Kőtalp
+                </h3>
+                <p className="text-xs text-[#684d39] mt-1 max-w-md">
+                  A természet által formált egyedi párhuzamos rétegződések minden egyes asztallapot megismételhetetlen műalkotássá varázsolnak.
+                </p>
+              </div>
+
+              {/* Image Container */}
+              <div className="mt-6 rounded-2xl overflow-hidden bg-[#faf8f5] border border-[#e8ddcf] relative aspect-[4/3] group-hover:shadow-md transition-shadow">
+                <img
+                  src="/kepek/showcase/travertin_top_detail.jpg"
+                  alt="TerraSilva Travertin Étkezőasztal Részlet"
+                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                />
+                <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-md px-3.5 py-2 rounded-xl border border-white/40 flex items-center justify-between text-xs">
+                  <span className="font-bold text-[#14171c]">Aura Travertin Étkezőasztal</span>
+                  <span className="text-[#805e43] font-medium">200 x 100 x 76 cm</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Showcase Card: 8K Macro Edge & Pore Close-Up */}
+            <div className="md:col-span-5 bg-gradient-to-br from-[#14171c] to-[#262c36] rounded-3xl p-6 shadow-sm text-white flex flex-col justify-between overflow-hidden relative group border border-[#3e4756]">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold text-[#d7c4ac] border border-white/10">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                    <span>8K Makró Részlet</span>
+                  </span>
+                  <span className="text-[10px] uppercase tracking-wider text-emerald-400 font-bold">Matt Csiszolt</span>
+                </div>
+                <h3 className="font-serif font-bold text-xl text-white">
+                  Kézműves Lekerekítés & Természetes Pórusok
+                </h3>
+                <p className="text-xs text-[#d7c4ac] mt-1">
+                  Selymes tapintású, matt felületkezelés, amely megőrzi a valódi kő lélegző textúráját.
+                </p>
+              </div>
+
+              {/* Image Container */}
+              <div className="mt-6 rounded-2xl overflow-hidden bg-black/40 border border-white/10 relative aspect-square group-hover:shadow-lg transition-shadow">
+                <img
+                  src="/kepek/showcase/travertin_edge_macro.jpg"
+                  alt="TerraSilva 8K Travertin Makró Pórusok"
+                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                />
+                <div className="absolute bottom-3 left-3 right-3 bg-black/75 backdrop-blur-md px-3.5 py-2 rounded-xl border border-white/20 flex items-center justify-between text-xs text-white">
+                  <span className="font-semibold text-[11px]">3 cm vastag tömör kőlap</span>
+                  <span className="text-amber-300 font-bold text-[11px]">Víz- és Folttaszító</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -353,25 +431,38 @@ export default function Home() {
               className="group rounded-2xl bg-white border border-[#e8ddcf] overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col"
             >
               {/* Product Visual Box */}
-              <div className="h-64 bg-gradient-to-br from-[#f4ede4] to-[#e8ddcf]/60 p-6 flex flex-col justify-between relative overflow-hidden">
-                <div className="flex items-center justify-between">
+              <div className="h-64 bg-gradient-to-br from-[#f4ede4] to-[#e8ddcf]/60 relative overflow-hidden flex flex-col justify-between p-4">
+                {product.imageUrl ? (
+                  <div className="absolute inset-0">
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20" />
+                  </div>
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-2xl bg-white/80 border border-[#d7c4ac] flex items-center justify-center text-[#9e7753] group-hover:scale-105 transition-transform shadow-xs">
+                      <Gem className="w-8 h-8" />
+                    </div>
+                  </div>
+                )}
+
+                {/* Top Badges */}
+                <div className="relative z-10 flex items-center justify-between">
                   <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#14171c] text-white shadow-xs">
                     {product.tag}
                   </span>
-                  <div className="flex items-center gap-1 bg-white/80 backdrop-blur-xs px-2 py-0.5 rounded-full text-xs font-semibold text-[#553f31]">
+                  <div className="flex items-center gap-1 bg-white/90 backdrop-blur-xs px-2 py-0.5 rounded-full text-xs font-semibold text-[#553f31]">
                     <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
                     <span>{product.rating}</span>
                   </div>
                 </div>
 
-                <div className="text-center py-4">
-                  <div className="w-20 h-20 mx-auto rounded-2xl bg-white/80 border border-[#d7c4ac] flex items-center justify-center text-[#9e7753] group-hover:scale-105 transition-transform shadow-xs">
-                    <Gem className="w-8 h-8" />
-                  </div>
-                </div>
-
-                <div className="text-center">
-                  <span className="text-[11px] font-semibold text-[#805e43] bg-white/90 px-3 py-1 rounded-full border border-[#e8ddcf]">
+                {/* Bottom Stock Status */}
+                <div className="relative z-10 text-center">
+                  <span className="text-[11px] font-semibold text-[#14171c] bg-white/95 px-3 py-1 rounded-full border border-[#e8ddcf] shadow-2xs">
                     {product.stockStatus}
                   </span>
                 </div>
@@ -409,16 +500,6 @@ export default function Home() {
             </div>
           ))}
         </div>
-
-        {filteredProducts.length === 0 && (
-          <div className="p-12 text-center bg-white rounded-3xl border border-[#e8ddcf] space-y-3">
-            <span className="text-3xl">🔍</span>
-            <h3 className="font-bold text-base text-[#14171c]">Nem található bútor a kiválasztott szűrésben</h3>
-            <p className="text-xs text-[#805e43]">
-              Próbálj más anyagkategóriát vagy szobatípust választani a fenti füleken!
-            </p>
-          </div>
-        )}
       </section>
 
       {/* Bespoke Stone Ordering */}

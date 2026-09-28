@@ -17,7 +17,10 @@ import {
   Search,
   Maximize2,
   ShieldCheck,
-  Eye
+  Eye,
+  Menu,
+  X,
+  Phone
 } from "lucide-react";
 import { ROOM_CATEGORIES, MATERIALS } from "@/lib/categories";
 import { PRODUCTS, ProductItem } from "@/lib/products";
@@ -27,6 +30,7 @@ export default function Home() {
   const [selectedRoom, setSelectedRoom] = useState<string>("all");
   const [selectedSubType, setSelectedSubType] = useState<string>("all");
   const [selectedMaterial, setSelectedMaterial] = useState<string>("all");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const currentRoomObj = ROOM_CATEGORIES.find((r) => r.id === selectedRoom);
 
@@ -50,23 +54,24 @@ export default function Home() {
   return (
     <main className="min-h-screen flex flex-col bg-[#faf7f2] text-[#14171c]">
       {/* Top Notification Banner */}
-      <div className="bg-[#14171c] text-[#d7c4ac] py-2 px-6 text-center text-xs font-medium border-b border-[#262c36]">
+      <div className="bg-[#14171c] text-[#d7c4ac] py-2 px-3 sm:px-6 text-center text-[11px] sm:text-xs font-medium border-b border-[#262c36]">
         <span>✨ Természetes travertin mészkő, olasz márvány és tömörfa bútorok közvetlen importból • 100% garancia</span>
       </div>
 
       {/* Navigation */}
-      <header className="sticky top-0 z-50 bg-[#faf7f2]/90 backdrop-blur-md border-b border-[#e8ddcf]">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-[#14171c] text-[#faf7f2] flex items-center justify-center font-serif font-bold text-sm tracking-widest border border-[#9e7753]/40 shadow-xs">
+      <header className="sticky top-0 z-50 bg-[#faf7f2]/95 backdrop-blur-md border-b border-[#e8ddcf]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5 sm:gap-3.5">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#14171c] text-[#faf7f2] flex items-center justify-center font-serif font-bold text-xs sm:text-sm tracking-widest border border-[#9e7753]/40 shadow-xs">
               TS
             </div>
             <div>
-              <span className="text-xl font-bold tracking-tight text-[#14171c] font-serif">TERRASILVA</span>
-              <span className="text-[10px] uppercase tracking-widest text-[#9e7753] block -mt-1 font-semibold">Stone & Timber Living</span>
+              <span className="text-lg sm:text-xl font-bold tracking-tight text-[#14171c] font-serif block leading-none">TERRASILVA</span>
+              <span className="text-[9px] sm:text-[10px] uppercase tracking-widest text-[#9e7753] block mt-0.5 font-semibold">Stone & Timber Living</span>
             </div>
-          </div>
+          </Link>
 
+          {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-[#553f31]">
             <Link href="#katalogus" className="hover:text-[#14171c] transition">Bútorkollekciók & Anyagok</Link>
             <Link href="#egyedi-gyartas" className="hover:text-[#14171c] transition">Egyedi Gyártás</Link>
@@ -79,22 +84,87 @@ export default function Home() {
             </div>
           </nav>
 
-          <div className="flex items-center gap-3">
+          {/* Right Header Actions */}
+          <div className="flex items-center gap-2 sm:gap-3">
             <Link
               href="/admin"
-              className="text-xs font-semibold text-[#805e43] hover:text-[#14171c] transition px-3 py-2"
+              className="hidden sm:inline-block text-xs font-semibold text-[#805e43] hover:text-[#14171c] transition px-2.5 py-1.5"
             >
-              Admin Belépés
+              Admin
             </Link>
             <Link
               href="#katalogus"
-              className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2.5 rounded-xl bg-[#14171c] text-white hover:bg-[#2e2118] transition shadow-xs"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-[#14171c] text-white hover:bg-[#2e2118] transition shadow-xs"
             >
               <span>Katalógus</span>
               <ArrowRight className="w-3.5 h-3.5 text-[#d7c4ac]" />
             </Link>
+
+            {/* Mobile Hamburger Toggle */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 rounded-xl bg-white border border-[#e8ddcf] text-[#14171c] hover:bg-[#f4efe8] transition"
+              aria-label="Menü megnyitása"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Slide-Down Navigation Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white/98 backdrop-blur-xl border-b border-[#e8ddcf] px-5 py-5 space-y-4 animate-in slide-in-from-top duration-300 shadow-xl">
+            <nav className="flex flex-col space-y-3 text-sm font-medium text-[#553f31]">
+              <Link 
+                href="#katalogus" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2.5 rounded-xl hover:bg-[#faf7f2] text-[#14171c] font-semibold flex items-center justify-between"
+              >
+                <span>Bútorkollekciók & Anyagok</span>
+                <ChevronRight className="w-4 h-4 text-[#9e7753]" />
+              </Link>
+              <Link 
+                href="#egyedi-gyartas" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2.5 rounded-xl hover:bg-[#faf7f2] flex items-center justify-between"
+              >
+                <span>Egyedi Gyártás</span>
+                <ChevronRight className="w-4 h-4 text-[#9e7753]" />
+              </Link>
+              <Link 
+                href="#mintacsomag" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2.5 rounded-xl hover:bg-[#faf7f2] flex items-center justify-between"
+              >
+                <span>Anyagminta Csomag (1.990 Ft)</span>
+                <ChevronRight className="w-4 h-4 text-[#9e7753]" />
+              </Link>
+              <div className="p-2.5 rounded-xl bg-[#faf7f2] flex items-center justify-between text-xs text-[#7a6454]">
+                <span>Bemutatóterem</span>
+                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#e8ddcf] text-[#805e43]">
+                  Hamarosan
+                </span>
+              </div>
+            </nav>
+
+            <div className="pt-3 border-t border-[#e8ddcf] flex flex-col gap-2.5 text-xs">
+              <a 
+                href="tel:+36204076858"
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f7f3ee] text-[#14171c] font-bold"
+              >
+                <Phone className="w-4 h-4 text-[#9e7753]" />
+                <span>Közvetlen Hívás: +36 20 407 6858</span>
+              </a>
+              <Link
+                href="/admin"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-center py-2.5 rounded-xl border border-[#d7c4ac] text-[#805e43] font-semibold hover:bg-[#14171c] hover:text-white transition"
+              >
+                Admin Belépés & ERP
+              </Link>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Hero Section with Clean Side-by-Side Split Layout (Responsive on all laptops & screens) */}

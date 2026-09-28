@@ -712,6 +712,25 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           </div>
         </div>
       )}
+
+      {/* Mobile Sticky Bottom Floating Price & CTA Bar */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 p-3.5 bg-white/95 backdrop-blur-md border-t border-[#e8ddcf] z-40 flex items-center justify-between shadow-xl">
+        <div>
+          <span className="text-[10px] text-[#805e43] uppercase tracking-wider block font-semibold">
+            {selectedSize?.label.split(" ")[0]} • {selectedMaterial?.name.split(" ")[0]}
+          </span>
+          <span className="text-base font-bold font-serif text-[#14171c]">
+            {new Intl.NumberFormat("hu-HU").format(totalPrice)} Ft
+          </span>
+        </div>
+        <button
+          onClick={() => setIsOrderModalOpen(true)}
+          className="px-5 py-2.5 rounded-xl bg-[#14171c] text-white text-xs font-bold hover:bg-[#9e7753] transition shadow-md flex items-center gap-1.5"
+        >
+          <ShoppingBag className="w-3.5 h-3.5 text-amber-300" />
+          <span>Ajánlatkérés</span>
+        </button>
+      </div>
     </main>
   );
 }

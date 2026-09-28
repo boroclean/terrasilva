@@ -22,7 +22,8 @@ import {
   Smartphone,
   CheckCircle2,
   X,
-  Plus
+  Plus,
+  Menu
 } from "lucide-react";
 
 export default function AdminLayout({
@@ -77,13 +78,15 @@ export default function AdminLayout({
     { href: "/admin/fiokok", label: "Fiókok & Jogok", icon: UserCog, badge: "2 kérelem" },
   ];
 
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+
   return (
-    <div className="min-h-screen bg-[#f7f5f2] flex flex-col md:flex-row text-[#14171c] pb-16 md:pb-0">
-      {/* Admin Sidebar */}
-      <aside className="w-full md:w-64 bg-[#14171c] text-white flex flex-col shrink-0 border-r border-[#262c36]">
+    <div className="min-h-screen bg-[#f7f5f2] flex flex-col md:flex-row text-[#14171c] pb-20 md:pb-0">
+      {/* Desktop Admin Sidebar (Hidden on Mobile) */}
+      <aside className="hidden md:flex md:w-64 bg-[#14171c] text-white flex-col shrink-0 border-r border-[#262c36] min-h-screen sticky top-0 h-screen">
         {/* Brand Header */}
         <div className="p-6 border-b border-[#262c36] flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <Link href="/admin" className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-[#9e7753] text-white flex items-center justify-center font-bold text-xs tracking-wider shadow-sm">
               TS
             </div>
@@ -91,7 +94,7 @@ export default function AdminLayout({
               <span className="font-bold tracking-tight text-white text-base block">TERRASILVA</span>
               <span className="text-[10px] uppercase tracking-widest text-[#d7c4ac] block">ERP & AI Platform</span>
             </div>
-          </div>
+          </Link>
         </div>
 
         {/* PWA Download Banner inside Sidebar */}
@@ -122,7 +125,7 @@ export default function AdminLayout({
                 href={item.href}
                 className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
                   isActive
-                    ? "bg-[#9e7753] text-white shadow-xs"
+                    ? "bg-[#9e7753] text-white shadow-xs font-bold"
                     : "text-[#d7c4ac] hover:bg-[#262c36] hover:text-white"
                 }`}
               >
@@ -143,7 +146,7 @@ export default function AdminLayout({
         </nav>
 
         {/* Bottom User Box */}
-        <div className="p-4 border-t border-[#262c36] bg-[#0e1014]">
+        <div className="p-4 border-t border-[#262c36] bg-[#0e1014] mt-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full bg-[#262c36] border border-[#9e7753]/40 flex items-center justify-center font-bold text-xs text-[#d7c4ac]">
@@ -168,43 +171,149 @@ export default function AdminLayout({
 
       {/* Main Admin Viewport */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Navbar */}
-        <header className="h-16 bg-white border-b border-[#e8ddcf] px-6 flex items-center justify-between sticky top-0 z-30">
-          <div className="flex items-center gap-3">
+        {/* Top Navbar (Responsive for Desktop & Mobile) */}
+        <header className="h-16 bg-white border-b border-[#e8ddcf] px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-2xs">
+          {/* Mobile Brand and Hamburger */}
+          <div className="flex items-center gap-3 md:hidden">
+            <button
+              onClick={() => setMobileDrawerOpen(true)}
+              className="p-2 rounded-xl bg-[#faf8f5] border border-[#e8ddcf] text-[#14171c] hover:bg-[#f4efe8]"
+              aria-label="Admin Menü"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-[#14171c] text-[#faf7f2] flex items-center justify-center font-bold text-xs font-serif">
+                TS
+              </div>
+              <span className="font-bold text-sm font-serif">ERP</span>
+            </div>
+          </div>
+
+          {/* Desktop Status Badge */}
+          <div className="hidden md:flex items-center gap-3">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               NAV & Billingo API Kapcsolat Aktív
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* Install App Quick Button */}
+          {/* Right Action Icons */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link
+              href="/"
+              target="_blank"
+              className="text-xs font-semibold text-[#805e43] hover:text-[#14171c] bg-[#faf8f5] border border-[#e8ddcf] px-2.5 py-1.5 rounded-xl transition"
+            >
+              Webshop Megnyitása ↗
+            </Link>
+
             <button
               onClick={handleInstallClick}
               className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#faf8f5] border border-[#e8ddcf] text-xs font-bold text-[#553f31] hover:bg-[#f4efe8] transition"
             >
               <Smartphone className="w-3.5 h-3.5 text-[#9e7753]" />
-              <span>App Telepítése</span>
+              <span>App</span>
             </button>
 
-            <div className="text-right hidden md:block">
-              <span className="text-xs font-semibold text-[#14171c] block">Központi Bútor ERP</span>
-              <span className="text-[10px] text-[#805e43] block">+36 20 407 6858</span>
-            </div>
-            <button className="p-2 rounded-lg bg-[#faf8f5] border border-[#e8ddcf] text-[#553f31] hover:text-[#14171c] transition">
+            <button className="p-2 rounded-xl bg-[#faf8f5] border border-[#e8ddcf] text-[#553f31] hover:text-[#14171c] transition">
               <Bell className="w-4 h-4" />
             </button>
           </div>
         </header>
 
         {/* Admin Content Area */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+        <main className="flex-1 p-3.5 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-5 sm:space-y-6">
           {children}
         </main>
       </div>
 
-      {/* Mobile Bottom Navigation Bar (Fixed for phone ergonomics) */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#14171c] border-t border-[#262c36] flex items-center justify-around px-2 z-40">
+      {/* Mobile Slide-Over Drawer (Full 11 Module Navigation) */}
+      {mobileDrawerOpen && (
+        <div className="fixed inset-0 z-50 md:hidden flex">
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs animate-in fade-in"
+            onClick={() => setMobileDrawerOpen(false)}
+          />
+          <div className="relative w-[82%] max-w-xs bg-[#14171c] text-white flex flex-col h-full shadow-2xl z-10 animate-in slide-in-from-left duration-300">
+            {/* Drawer Header */}
+            <div className="p-5 border-b border-[#262c36] flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-[#9e7753] text-white flex items-center justify-center font-bold text-xs">
+                  TS
+                </div>
+                <div>
+                  <span className="font-bold text-white text-sm block">TERRASILVA ERP</span>
+                  <span className="text-[10px] text-[#d7c4ac] block">Admin Modulok</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => setMobileDrawerOpen(false)}
+                className="p-1.5 rounded-lg bg-[#262c36] text-gray-300 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Navigation in Drawer */}
+            <nav className="flex-1 p-3.5 space-y-1 overflow-y-auto">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileDrawerOpen(false)}
+                    className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
+                      isActive
+                        ? "bg-[#9e7753] text-white font-bold"
+                        : "text-[#d7c4ac] hover:bg-[#262c36]"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-[#9e7753]"}`} />
+                      <span>{item.label}</span>
+                    </div>
+                    {item.badge && (
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                        isActive ? "bg-white/20 text-white" : "bg-[#262c36] text-[#d7c4ac]"
+                      }`}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* User Details at bottom of drawer */}
+            <div className="p-4 border-t border-[#262c36] bg-[#0e1014]">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-full bg-[#262c36] text-xs font-bold flex items-center justify-center text-[#d7c4ac]">
+                    BB
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-white block">Boronkay Bence</span>
+                    <span className="text-[10px] text-emerald-400 block">+36 20 407 6858</span>
+                  </div>
+                </div>
+                <Link
+                  href="/admin/login"
+                  onClick={() => setMobileDrawerOpen(false)}
+                  className="p-1.5 rounded-lg text-rose-400 hover:bg-[#262c36]"
+                >
+                  <LogOut className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Bottom Dock (Fixed for Phone Reachability) */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#14171c]/98 backdrop-blur-lg border-t border-[#262c36] flex items-center justify-around px-2 z-40">
         <Link 
           href="/admin" 
           className={`flex flex-col items-center gap-1 text-[10px] ${
@@ -224,13 +333,13 @@ export default function AdminLayout({
           <span>Pénzügy</span>
         </Link>
         <Link 
-          href="/admin/studio" 
+          href="/admin/katalogus" 
           className={`flex flex-col items-center gap-1 text-[10px] ${
-            pathname === "/admin/studio" ? "text-amber-400 font-bold" : "text-[#d7c4ac]"
+            pathname === "/admin/katalogus" ? "text-amber-400 font-bold" : "text-[#d7c4ac]"
           }`}
         >
-          <Sparkles className="w-5 h-5" />
-          <span>AI Stúdió</span>
+          <Armchair className="w-5 h-5" />
+          <span>Katalógus</span>
         </Link>
         <Link 
           href="/admin/rendelesek" 
@@ -241,15 +350,13 @@ export default function AdminLayout({
           <ShoppingBag className="w-5 h-5" />
           <span>Rendelések</span>
         </Link>
-        <Link 
-          href="/admin/fiokok" 
-          className={`flex flex-col items-center gap-1 text-[10px] ${
-            pathname === "/admin/fiokok" ? "text-amber-400 font-bold" : "text-[#d7c4ac]"
-          }`}
+        <button 
+          onClick={() => setMobileDrawerOpen(true)}
+          className="flex flex-col items-center gap-1 text-[10px] text-[#d7c4ac] hover:text-white"
         >
-          <UserCog className="w-5 h-5" />
-          <span>Fiókok</span>
-        </Link>
+          <Menu className="w-5 h-5" />
+          <span>Menü</span>
+        </button>
       </div>
 
       {/* PWA INSTALL INSTRUCTIONS MODAL */}

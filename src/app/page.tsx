@@ -206,10 +206,13 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden pt-20 pb-16 md:pt-28 md:pb-20 px-6 border-b border-[#e8ddcf] bg-gradient-to-b from-[#faf7f2] via-[#f4ede4]/80 to-[#faf7f2]">
-        <div className="max-w-5xl mx-auto text-center space-y-7">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#d7c4ac] bg-white text-xs font-semibold text-[#805e43] shadow-2xs">
+      {/* Hero Section with Direct Visual Presence & Atmospheric Overlap */}
+      <section className="relative overflow-hidden pt-16 pb-16 md:pt-20 md:pb-24 px-6 border-b border-[#e8ddcf] bg-gradient-to-b from-[#faf7f2] via-[#f5ede3] to-[#faf7f2]">
+        {/* Subtle Ambient Stone Glow in Background */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-[#9e7753]/10 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="max-w-5xl mx-auto text-center space-y-6 relative z-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#d7c4ac] bg-white/80 backdrop-blur-xs text-xs font-semibold text-[#805e43] shadow-2xs">
             <Gem className="w-3.5 h-3.5 text-[#9e7753]" />
             <span>Terra (Kő & Travertin) • Silva (Nemes Tömörfa)</span>
           </div>
@@ -226,17 +229,17 @@ export default function Home() {
             Közvetlen kőfaragó és manufaktúra importtal hozzuk el az igazi luxust.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-1">
             <Link
               href="#katalogus"
-              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-[#14171c] text-white font-medium text-sm hover:bg-[#2e2118] transition shadow-md flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#14171c] text-white font-semibold text-sm hover:bg-[#2e2118] transition shadow-md flex items-center justify-center gap-2"
             >
               <span>Bútorkatalógus Megtekintése</span>
               <ArrowRight className="w-4 h-4 text-[#d7c4ac]" />
             </Link>
             <Link
               href="#mintacsomag"
-              className="w-full sm:w-auto px-8 py-4 rounded-xl border border-[#d7c4ac] bg-white text-[#14171c] font-medium text-sm hover:bg-[#f4ede4] transition shadow-xs flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-xl border border-[#d7c4ac] bg-white/90 backdrop-blur-xs text-[#14171c] font-semibold text-sm hover:bg-[#f4ede4] transition shadow-xs flex items-center justify-center gap-2"
             >
               <Palette className="w-4 h-4 text-[#9e7753]" />
               <span>Valódi Kő- és Faminta Kérése</span>
@@ -244,7 +247,51 @@ export default function Home() {
           </div>
         </div>
 
-        {/* ULTRA-CLEAN SHOWCASE SECTION (Integrating the real photos gracefully) */}
+        {/* HERO CENTERPIECE VISUAL: Direct Prominent Overlap on the Landing Page */}
+        <div className="max-w-5xl mx-auto mt-12 relative z-10">
+          <div className="relative rounded-3xl overflow-hidden border border-[#d7c4ac] bg-white shadow-2xl group">
+            {/* Main High-Res Table Perspective */}
+            <div className="aspect-[16/9] md:aspect-[21/10] relative w-full overflow-hidden bg-[#faf8f5]">
+              <img
+                src="/kepek/showcase/travertin_top_detail.jpg"
+                alt="TerraSilva Navona Travertin Étkezőasztal"
+                className="w-full h-full object-cover object-center group-hover:scale-103 transition-transform duration-1000 ease-out"
+              />
+              
+              {/* Subtle Luxury Gradient Overlay at Bottom */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
+
+              {/* Floating Badge Top Left */}
+              <div className="absolute top-4 left-4 sm:top-6 sm:left-6 bg-white/90 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-white/50 shadow-md flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#9e7753] animate-pulse" />
+                <span className="text-xs font-bold text-[#14171c]">100% Természetes Olasz Navona Travertin</span>
+              </div>
+
+              {/* Floating Macro Thumbnail Bottom Left */}
+              <div className="hidden sm:flex absolute bottom-4 left-4 sm:bottom-6 sm:left-6 bg-white/95 backdrop-blur-md p-2 rounded-2xl border border-white/50 shadow-lg items-center gap-3 max-w-sm">
+                <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 border border-[#e8ddcf]">
+                  <img
+                    src="/kepek/showcase/travertin_edge_macro.jpg"
+                    alt="Makró Pórus Részlet"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="text-left pr-2">
+                  <span className="text-[10px] uppercase font-bold text-[#9e7753] block">8K Makró Részlet</span>
+                  <span className="text-xs font-bold text-[#14171c] block">Organikus pórusok & matt csiszolás</span>
+                </div>
+              </div>
+
+              {/* Floating Pill Bottom Right */}
+              <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 bg-black/75 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20 text-white shadow-lg text-right">
+                <span className="text-[11px] text-[#d7c4ac] block font-medium">Aura Navona Kollekció</span>
+                <span className="text-xs font-bold block text-white">200 x 100 x 76 cm • 3 cm Tömör Kőlap</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ULTRA-CLEAN SHOWCASE SECTION */}
         <div id="anyagok" className="max-w-6xl mx-auto mt-16 md:mt-20">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
             {/* Left Large Showcase Card: Full Tabletop Slab Architecture */}

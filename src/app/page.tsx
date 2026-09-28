@@ -38,6 +38,20 @@ interface StoreProduct {
 
 const STORE_PRODUCTS: StoreProduct[] = [
   {
+    id: "p-00",
+    name: "Aura Monolit Kerek Travertin Étkezőasztal",
+    room: "etkezo",
+    subType: "etkezoasztal",
+    materialType: "travertine",
+    price: 549000,
+    materialDesc: "100% Természetes Olasz Navona Travertin, Monolit Kőoszlop Talapzat, 120 cm Kerek Kőlap",
+    dimensions: "Ø 120 x 76 cm",
+    stockStatus: "Raktáron (2 db azonnal)",
+    tag: "Új Kollekció",
+    rating: 5.0,
+    imageUrl: "/kepek/showcase/travertin_round_villa_staging.jpg",
+  },
+  {
     id: "p-01",
     name: "Aura Navona Travertin Étkezőasztal (6-8 személyes)",
     room: "etkezo",

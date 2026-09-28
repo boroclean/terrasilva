@@ -206,22 +206,22 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero Section with Clean Side-by-Side Split Layout */}
-      <section className="relative overflow-hidden pt-12 pb-16 md:pt-16 md:pb-24 px-6 border-b border-[#e8ddcf] bg-gradient-to-br from-[#faf7f2] via-[#f7f2ea] to-[#f4ede4]">
+      {/* Hero Section with Clean Side-by-Side Split Layout (Responsive on all laptops & screens) */}
+      <section className="relative overflow-hidden pt-8 pb-12 md:pt-12 md:pb-16 px-4 sm:px-6 border-b border-[#e8ddcf] bg-gradient-to-br from-[#faf7f2] via-[#f7f2ea] to-[#f4ede4]">
         {/* Soft Ambient Radial Warmth in the background */}
-        <div className="absolute top-1/3 right-1/4 w-[700px] h-[500px] bg-[#9e7753]/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/3 right-1/4 w-[600px] h-[400px] bg-[#9e7753]/12 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center">
             
-            {/* Left Column: Premium Typography & CTAs */}
-            <div className="lg:col-span-7 space-y-6 text-left">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#d7c4ac] bg-white/70 backdrop-blur-xs text-xs font-semibold text-[#805e43] shadow-2xs">
+            {/* Left Column: Premium Typography & CTAs (Takes 6 cols on tablets/laptops/desktops) */}
+            <div className="md:col-span-6 lg:col-span-6 space-y-4 md:space-y-5 text-left">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-[#d7c4ac] bg-white/80 backdrop-blur-xs text-[11px] font-semibold text-[#805e43] shadow-2xs">
                 <Gem className="w-3.5 h-3.5 text-[#9e7753]" />
                 <span>Terra (Kő & Travertin) • Silva (Nemes Tömörfa)</span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#14171c] font-serif leading-[1.08]">
+              <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-[#14171c] font-serif leading-[1.1]">
                 A természet ereje, <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9e7753] via-[#755235] to-[#14171c]">
                   időtálló travertin
@@ -229,76 +229,76 @@ export default function Home() {
                 és tömörfa formájában.
               </h1>
 
-              <p className="max-w-xl text-base md:text-lg text-[#684d39] leading-relaxed">
+              <p className="max-w-lg text-xs sm:text-sm md:text-sm lg:text-base text-[#684d39] leading-relaxed">
                 Minden bútorunk természetes travertin mészkőtömbökből, olasz márványból és nemes dió- illetve tölgyfából készül. 
                 Közvetlen kőfaragó és manufaktúra importtal hozzuk el az igazi luxust.
               </p>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
                 <Link
                   href="#katalogus"
-                  className="px-8 py-4 rounded-xl bg-[#14171c] text-white font-semibold text-sm hover:bg-[#2e2118] transition shadow-md flex items-center justify-center gap-2 group"
+                  className="px-6 py-3 rounded-xl bg-[#14171c] text-white font-semibold text-xs sm:text-sm hover:bg-[#2e2118] transition shadow-md flex items-center justify-center gap-2 group"
                 >
                   <span>Bútorkatalógus Megtekintése</span>
                   <ArrowRight className="w-4 h-4 text-[#d7c4ac] group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link
                   href="#mintacsomag"
-                  className="px-8 py-4 rounded-xl border border-[#d7c4ac] bg-white/80 backdrop-blur-xs text-[#14171c] font-semibold text-sm hover:bg-[#f4ede4] transition shadow-xs flex items-center justify-center gap-2"
+                  className="px-6 py-3 rounded-xl border border-[#d7c4ac] bg-white/90 backdrop-blur-xs text-[#14171c] font-semibold text-xs sm:text-sm hover:bg-[#f4ede4] transition shadow-xs flex items-center justify-center gap-2"
                 >
                   <Palette className="w-4 h-4 text-[#9e7753]" />
-                  <span>Valódi Kő- és Faminta Kérése</span>
+                  <span>Valódi Kőminta Kérése</span>
                 </Link>
               </div>
 
               {/* Trust Indicators */}
-              <div className="pt-6 border-t border-[#e8ddcf]/80 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-semibold text-[#553f31]">
-                <div className="flex items-center gap-1.5">
-                  <Check className="w-4 h-4 text-emerald-700" />
-                  <span>100% Olasz Navona & Romano Kő</span>
+              <div className="pt-4 border-t border-[#e8ddcf]/80 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[11px] font-semibold text-[#553f31]">
+                <div className="flex items-center gap-1">
+                  <Check className="w-3.5 h-3.5 text-emerald-700" />
+                  <span>100% Olasz Navona Travertin</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <Check className="w-4 h-4 text-emerald-700" />
-                  <span>Kézműves Élkiképzés & Csiszolás</span>
+                <div className="flex items-center gap-1">
+                  <Check className="w-3.5 h-3.5 text-emerald-700" />
+                  <span>Kézműves Csiszolás</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <Check className="w-4 h-4 text-emerald-700" />
+                <div className="flex items-center gap-1">
+                  <Check className="w-3.5 h-3.5 text-emerald-700" />
                   <span>Közvetlen Gyártói Árak</span>
                 </div>
               </div>
             </div>
 
-            {/* Right Column: Seamless Isolated Travertine Furniture Piece on the Right Side */}
-            <div className="lg:col-span-5 relative flex items-center justify-center">
-              <div className="relative w-full max-w-lg lg:max-w-none group">
+            {/* Right Column: Seamless Isolated Travertine Furniture Piece (Takes 6 cols) */}
+            <div className="md:col-span-6 lg:col-span-6 relative flex items-center justify-center pt-4 md:pt-0">
+              <div className="relative w-full max-w-[460px] group">
                 {/* Isolated Stone Table - Zero White Background */}
-                <div className="relative p-2">
+                <div className="relative p-1">
                   <img
                     src="/kepek/showcase/travertin_hero_transparent.png"
                     alt="TerraSilva Navona Travertin Asztal"
-                    className="w-full h-auto object-contain drop-shadow-[0_25px_35px_rgba(85,63,49,0.22)] group-hover:scale-102 transition-transform duration-700 ease-out"
+                    className="w-full h-auto max-h-[340px] object-contain drop-shadow-[0_20px_30px_rgba(85,63,49,0.22)] group-hover:scale-102 transition-transform duration-700 ease-out mx-auto"
                   />
                 </div>
 
                 {/* Floating Micro Badge on the Stone */}
-                <div className="absolute top-4 right-2 sm:top-6 sm:right-6 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-[#d7c4ac] shadow-sm flex items-center gap-2">
+                <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full border border-[#d7c4ac] shadow-xs flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-[11px] font-bold text-[#14171c]">100% Tömör Navona Kőtömb</span>
+                  <span className="text-[10px] font-bold text-[#14171c]">100% Tömör Navona Travertin</span>
                 </div>
 
                 {/* Floating Macro Thumbnail */}
-                <div className="absolute -bottom-4 left-2 sm:bottom-0 sm:left-4 bg-white/95 backdrop-blur-md p-2 rounded-2xl border border-[#d7c4ac] shadow-lg flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-[#e8ddcf]">
+                <div className="absolute -bottom-2 left-2 bg-white/95 backdrop-blur-md p-1.5 rounded-2xl border border-[#d7c4ac] shadow-md flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 border border-[#e8ddcf]">
                     <img
                       src="/kepek/showcase/travertin_edge_macro.jpg"
                       alt="8K Makró Részlet"
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="text-left pr-2">
-                    <span className="text-[10px] uppercase font-bold text-[#9e7753] block">8K Makró</span>
-                    <span className="text-[11px] font-bold text-[#14171c] block">Pórusos textúra</span>
+                  <div className="text-left pr-1.5">
+                    <span className="text-[9px] uppercase font-bold text-[#9e7753] block">8K Makró</span>
+                    <span className="text-[10px] font-bold text-[#14171c] block">Pórusos textúra</span>
                   </div>
                 </div>
               </div>

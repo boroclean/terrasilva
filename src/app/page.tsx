@@ -269,96 +269,201 @@ export default function Home() {
           </span>
         </div>
 
-        {/* 1. Primary Filter: Room Categories */}
-        <div className="bg-white p-5 rounded-3xl border border-[#e8ddcf] shadow-xs space-y-4">
-          <div>
-            <span className="text-[11px] uppercase tracking-wider text-[#805e43] font-bold block mb-2">
-              1. Válassz Szobatípust:
+        {/* 1. Primary Filter: Visual Room Category Cards with Real Staging Photos */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs uppercase tracking-widest text-[#9e7753] font-bold">
+              1. Válassz Szobatípust
             </span>
-            <div className="flex items-center gap-2 overflow-x-auto pb-1">
-              <button
-                onClick={() => {
-                  setSelectedRoom("all");
-                  setSelectedSubType("all");
-                }}
-                className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition ${
-                  selectedRoom === "all"
-                    ? "bg-[#14171c] text-white shadow-xs"
-                    : "bg-[#faf7f2] text-[#553f31] border border-[#e8ddcf] hover:bg-[#f4ede4]"
-                }`}
-              >
-                🛋️ Összes Szoba & Bútor
-              </button>
+            <span className="text-xs text-[#805e43]">
+              Kattints a kategóriára a szűréshez
+            </span>
+          </div>
 
-              {ROOM_CATEGORIES.map((room) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
+            {/* All Rooms Card */}
+            <button
+              onClick={() => {
+                setSelectedRoom("all");
+                setSelectedSubType("all");
+              }}
+              className={`group relative rounded-2xl overflow-hidden p-3.5 text-left border transition-all duration-300 flex flex-col justify-between min-h-[110px] ${
+                selectedRoom === "all"
+                  ? "bg-[#14171c] text-white border-[#9e7753] shadow-md ring-2 ring-[#9e7753]/40"
+                  : "bg-white text-[#14171c] border-[#e8ddcf] hover:border-[#9e7753] hover:shadow-sm"
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-lg">🛋️</span>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                  selectedRoom === "all" ? "bg-white/20 text-white" : "bg-[#faf7f2] text-[#805e43] border border-[#e8ddcf]"
+                }`}>
+                  {PRODUCTS.length} bútor
+                </span>
+              </div>
+              <div className="mt-2">
+                <h4 className="font-serif font-bold text-xs sm:text-sm">Összes Kollekció</h4>
+                <p className={`text-[10px] line-clamp-1 mt-0.5 ${selectedRoom === "all" ? "text-gray-300" : "text-[#805e43]"}`}>
+                  Minden szoba & bútor
+                </p>
+              </div>
+            </button>
+
+            {/* Room Category Cards with Staging Backgrounds */}
+            {ROOM_CATEGORIES.map((room) => {
+              const count = PRODUCTS.filter((p) => p.room === room.id).length;
+              const isSelected = selectedRoom === room.id;
+
+              return (
                 <button
                   key={room.id}
                   onClick={() => {
                     setSelectedRoom(room.id);
                     setSelectedSubType("all");
                   }}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition ${
-                    selectedRoom === room.id
+                  className={`group relative rounded-2xl overflow-hidden p-3.5 text-left border transition-all duration-300 flex flex-col justify-between min-h-[110px] ${
+                    isSelected
+                      ? "border-[#9e7753] shadow-lg ring-2 ring-[#9e7753]/50 text-white"
+                      : "border-[#e8ddcf] text-white hover:border-[#9e7753] hover:shadow-md"
+                  }`}
+                >
+                  {/* Photo Background */}
+                  <div className="absolute inset-0 z-0">
+                    {room.imageUrl ? (
+                      <img
+                        src={room.imageUrl}
+                        alt={room.name}
+                        className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-[#262c36]" />
+                    )}
+                    <div className={`absolute inset-0 transition-opacity duration-300 ${
+                      isSelected
+                        ? "bg-gradient-to-t from-black/85 via-black/40 to-black/30"
+                        : "bg-gradient-to-t from-black/80 via-black/45 to-black/20 group-hover:from-black/75"
+                    }`} />
+                  </div>
+
+                  {/* Top Badge */}
+                  <div className="relative z-10 flex items-center justify-between">
+                    <span className={`w-2 h-2 rounded-full ${isSelected ? "bg-amber-400 animate-pulse" : "bg-white/40"}`} />
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20">
+                      {count} bútor
+                    </span>
+                  </div>
+
+                  {/* Bottom Title */}
+                  <div className="relative z-10 mt-2">
+                    <h4 className="font-serif font-bold text-xs sm:text-sm text-white drop-shadow-xs">
+                      {room.name}
+                    </h4>
+                    <p className="text-[10px] text-[#e8ddcf] line-clamp-1 mt-0.5 drop-shadow-xs">
+                      {room.description || "Prémium kollekció"}
+                    </p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 2. Sub-Type Pills (if a room is selected) */}
+        {currentRoomObj && (
+          <div className="bg-white p-4 rounded-2xl border border-[#e8ddcf] shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-xs font-bold text-[#805e43] shrink-0">
+              <Layers className="w-4 h-4 text-[#9e7753]" />
+              <span>Bútortípusok ({currentRoomObj.name}):</span>
+            </div>
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+              {currentRoomObj.subTypes.map((sub) => (
+                <button
+                  key={sub.id}
+                  onClick={() => setSelectedSubType(sub.id)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
+                    selectedSubType === sub.id
                       ? "bg-[#14171c] text-white shadow-xs"
                       : "bg-[#faf7f2] text-[#553f31] border border-[#e8ddcf] hover:bg-[#f4ede4]"
                   }`}
                 >
-                  {room.name}
+                  {sub.name}
                 </button>
               ))}
             </div>
           </div>
+        )}
 
-          {/* Sub-Type Pills (if a room is selected) */}
-          {currentRoomObj && (
-            <div className="pt-3 border-t border-[#f4ede4]">
-              <span className="text-[11px] uppercase tracking-wider text-[#805e43] font-bold block mb-2">
-                Bútortípus ({currentRoomObj.name}):
+        {/* 3. Visual Material Selector with Macro Swatch Photos */}
+        <div className="bg-white p-5 rounded-3xl border border-[#e8ddcf] shadow-xs space-y-3.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Palette className="w-4 h-4 text-[#9e7753]" />
+              <span className="text-xs uppercase tracking-widest text-[#805e43] font-bold">
+                2. Válassz Alapanyagot & Textúrát:
               </span>
-              <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                {currentRoomObj.subTypes.map((sub) => (
-                  <button
-                    key={sub.id}
-                    onClick={() => setSelectedSubType(sub.id)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
-                      selectedSubType === sub.id
-                        ? "bg-[#9e7753] text-white shadow-xs"
-                        : "bg-white text-[#684d39] border border-[#d7c4ac] hover:bg-[#faf7f2]"
-                    }`}
-                  >
-                    {sub.name}
-                  </button>
-                ))}
-              </div>
             </div>
-          )}
-
-          {/* 2. Secondary Filter: Material Filters */}
-          <div className="pt-3 border-t border-[#f4ede4]">
-            <span className="text-[11px] uppercase tracking-wider text-[#805e43] font-bold block mb-2">
-              2. Szűrés Anyaghasználat Szerint:
+            <span className="text-xs text-[#805e43] font-medium hidden sm:inline-block">
+              100% Valódi Olasz Kőzetek & Nemes Tömörfa
             </span>
-            <div className="flex items-center gap-2 overflow-x-auto pb-1">
-              {MATERIALS.map((mat) => (
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {MATERIALS.map((mat) => {
+              const isSelected = selectedMaterial === mat.id;
+              const count = PRODUCTS.filter((p) => {
+                const matchesRoom = selectedRoom === "all" || p.room === selectedRoom;
+                const matchesSubType = selectedSubType === "all" || p.subType === selectedSubType;
+                const matchesMaterial = mat.id === "all" || p.materialType === mat.id;
+                return matchesRoom && matchesSubType && matchesMaterial;
+              }).length;
+
+              return (
                 <button
                   key={mat.id}
                   onClick={() => setSelectedMaterial(mat.id)}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition flex items-center gap-1.5 ${
-                    selectedMaterial === mat.id
-                      ? "bg-[#553f31] text-white shadow-xs"
-                      : "bg-[#faf7f2] text-[#553f31] border border-[#e8ddcf] hover:bg-[#f4ede4]"
+                  className={`group rounded-2xl p-2.5 text-left border transition-all duration-300 flex items-center gap-3 relative overflow-hidden ${
+                    isSelected
+                      ? "bg-[#14171c] text-white border-[#9e7753] shadow-md ring-2 ring-[#9e7753]/50"
+                      : "bg-[#faf8f5] text-[#14171c] border-[#e8ddcf] hover:border-[#9e7753] hover:bg-white"
                   }`}
                 >
-                  {mat.colorHex && (
-                    <span
-                      className="w-2.5 h-2.5 rounded-full border border-black/20"
-                      style={{ backgroundColor: mat.colorHex }}
-                    />
-                  )}
-                  <span>{mat.name}</span>
+                  {/* Swatch Thumbnail */}
+                  <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-black/10 relative shadow-2xs">
+                    {mat.imageUrl ? (
+                      <img
+                        src={mat.imageUrl}
+                        alt={mat.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div
+                        className="w-full h-full flex items-center justify-center font-bold text-xs"
+                        style={{ backgroundColor: mat.colorHex || "#e8ddcf" }}
+                      >
+                        ✨
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Info */}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-1">
+                      <h5 className="font-serif font-bold text-xs truncate">
+                        {mat.name}
+                      </h5>
+                      <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded ${
+                        isSelected ? "bg-white/20 text-amber-300" : "bg-white text-[#805e43] border border-[#e8ddcf]"
+                      }`}>
+                        {count}
+                      </span>
+                    </div>
+                    <p className={`text-[10px] truncate mt-0.5 ${isSelected ? "text-gray-300" : "text-[#805e43]"}`}>
+                      {mat.description || mat.tag || "Prémium anyag"}
+                    </p>
+                  </div>
                 </button>
-              ))}
-            </div>
+              );
+            })}
           </div>
         </div>
 

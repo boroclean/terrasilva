@@ -4,6 +4,8 @@
 
 ## 1. Alapadatok & Céginformációk
 - **Projekt & Márkanév:** `TerraSilva` (Prémium Travertin, Márvány, Kő & Tömörfa Bútorok)
+- **Hivatalos Domain & Weboldal:** `https://terrasilva.hu`
+- **Hivatalos Email:** `info@terrasilva.hu`
 - **Irányultság:** High-end D2C lakberendezés (természetes kő, travertin, márvány, tölgy/dió tömörfa bútorok) közvetlen gyártói importtal, raktárkezeléssel és automatizált számlázással.
 - **Cégméret & Működési Modell:** 
   - **1 fős induló vállalkozás:** Maximális automatizáció, minimális adminisztrációs teher.

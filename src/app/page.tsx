@@ -20,155 +20,17 @@ import {
   Eye
 } from "lucide-react";
 import { ROOM_CATEGORIES, MATERIALS } from "@/lib/categories";
-
-interface StoreProduct {
-  id: string;
-  name: string;
-  room: "nappali" | "etkezo" | "eloszoba" | "vilagitas";
-  subType: string;
-  materialType: "travertine" | "marble" | "wood" | "upholstery";
-  price: number;
-  materialDesc: string;
-  dimensions: string;
-  stockStatus: string;
-  tag: string;
-  rating: number;
-  imageUrl?: string;
-}
-
-const STORE_PRODUCTS: StoreProduct[] = [
-  {
-    id: "p-00",
-    name: "Aura Monolit Kerek Travertin Étkezőasztal",
-    room: "etkezo",
-    subType: "etkezoasztal",
-    materialType: "travertine",
-    price: 549000,
-    materialDesc: "100% Természetes Olasz Navona Travertin, Monolit Kőoszlop Talapzat, 120 cm Kerek Kőlap",
-    dimensions: "Ø 120 x 76 cm",
-    stockStatus: "Raktáron (2 db azonnal)",
-    tag: "Új Kollekció",
-    rating: 5.0,
-    imageUrl: "/kepek/showcase/travertin_round_villa_staging.jpg",
-  },
-  {
-    id: "p-01",
-    name: "Aura Navona Travertin Étkezőasztal (6-8 személyes)",
-    room: "etkezo",
-    subType: "etkezoasztal",
-    materialType: "travertine",
-    price: 689000,
-    materialDesc: "100% Természetes Olasz Navona Travertin, Matt Csiszolt, Kézi Kőfaragó Élkiképzés",
-    dimensions: "200 x 100 x 76 cm",
-    stockStatus: "Raktáron (2 db azonnal)",
-    tag: "Legnépszerűbb",
-    rating: 5.0,
-    imageUrl: "/kepek/showcase/travertin_top_detail.jpg",
-  },
-  {
-    id: "p-02",
-    name: "Aura Navona Travertin Dohányzóasztal",
-    room: "nappali",
-    subType: "dohanzoasztal",
-    materialType: "travertine",
-    price: 389000,
-    materialDesc: "100% Természetes Olasz Navona Travertin, Matt Csiszolt",
-    dimensions: "110 x 60 x 38 cm",
-    stockStatus: "Raktáron (3 db azonnal)",
-    tag: "Bestseller",
-    rating: 5.0,
-    imageUrl: "/kepek/showcase/travertin_edge_macro.jpg",
-  },
-  {
-    id: "p-03",
-    name: "Monolit Travertin TV-Szekrény & Médiafal",
-    room: "nappali",
-    subType: "tv-szekreny",
-    materialType: "travertine",
-    price: 649000,
-    materialDesc: "Tömör Romano Travertin Keret + Diófa Lamellás Front",
-    dimensions: "200 x 45 x 50 cm",
-    stockStatus: "Érkező konténerben (Nov. 15)",
-    tag: "Új Modell",
-    rating: 4.9,
-    imageUrl: "/kepek/standards/2_architectural_staging_benchmark.jpg",
-  },
-  {
-    id: "p-04",
-    name: "Silva Carrara Étkezőasztal (8 személyes)",
-    room: "etkezo",
-    subType: "etkezoasztal",
-    materialType: "marble",
-    price: 749000,
-    materialDesc: "Fehér Carrara Márványlap + Tömör Amerikai Diófa Talapzat",
-    dimensions: "220 x 100 x 76 cm",
-    stockStatus: "Érkező konténerben (Nov. 12)",
-    tag: "Előrendelhető -10%",
-    rating: 4.9,
-  },
-  {
-    id: "p-05",
-    name: "Silva Tömör Diófa Étkezőasztal",
-    room: "etkezo",
-    subType: "etkezoasztal",
-    materialType: "wood",
-    price: 489000,
-    materialDesc: "Tömör Amerikai Diófa Palló, Matt Kézműves Olajozás",
-    dimensions: "200 x 95 x 76 cm",
-    stockStatus: "Raktáron (3 db)",
-    tag: "Nemes Tömörfa",
-    rating: 5.0,
-  },
-  {
-    id: "p-06",
-    name: "Monolit Fluted Travertin Oszlop Console",
-    room: "eloszoba",
-    subType: "konzol",
-    materialType: "travertine",
-    price: 289000,
-    materialDesc: "Faragott Kannelúrázott Travertin Kőtömb",
-    dimensions: "120 x 40 x 85 cm",
-    stockStatus: "Raktáron (3 db)",
-    tag: "Kézműves Faragvány",
-    rating: 5.0,
-  },
-  {
-    id: "p-07",
-    name: "Silva Lounge Fotel Diófa Vázzal",
-    room: "nappali",
-    subType: "fotel",
-    materialType: "upholstery",
-    price: 269000,
-    materialDesc: "Tömör Natúr Diófa Keret, Prémium Olasz Bouclé Kárpit",
-    dimensions: "85 x 82 x 75 cm",
-    stockStatus: "Raktáron (4 db)",
-    tag: "Skandináv & Japandi",
-    rating: 4.9,
-  },
-  {
-    id: "p-08",
-    name: "Aura Alabástrom & Travertin Asztali Lámpa",
-    room: "vilagitas",
-    subType: "asztali-lampa",
-    materialType: "travertine",
-    price: 149000,
-    materialDesc: "Faragott Travertin Talp, Átvilágítható Természetes Alabástrom Gömb",
-    dimensions: "28 x 28 x 45 cm",
-    stockStatus: "Raktáron (8 db)",
-    tag: "Hangulatvilágítás",
-    rating: 4.9,
-  },
-];
+import { PRODUCTS, ProductItem } from "@/lib/products";
+import ProductCard from "@/components/ProductCard";
 
 export default function Home() {
   const [selectedRoom, setSelectedRoom] = useState<string>("all");
   const [selectedSubType, setSelectedSubType] = useState<string>("all");
   const [selectedMaterial, setSelectedMaterial] = useState<string>("all");
-  const [activeImageZoom, setActiveImageZoom] = useState<string | null>(null);
 
   const currentRoomObj = ROOM_CATEGORIES.find((r) => r.id === selectedRoom);
 
-  const filteredProducts = STORE_PRODUCTS.filter((prod) => {
+  const filteredProducts = PRODUCTS.filter((prod) => {
     const matchesRoom = selectedRoom === "all" || prod.room === selectedRoom;
     const matchesSubType = selectedSubType === "all" || prod.subType === selectedSubType;
     const matchesMaterial = selectedMaterial === "all" || prod.materialType === selectedMaterial;
@@ -501,80 +363,9 @@ export default function Home() {
         </div>
 
         {/* Product Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredProducts.map((product) => (
-            <div
-              key={product.id}
-              className="group rounded-2xl bg-white border border-[#e8ddcf] overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col"
-            >
-              {/* Product Visual Box */}
-              <div className="h-64 bg-gradient-to-br from-[#f4ede4] to-[#e8ddcf]/60 relative overflow-hidden flex flex-col justify-between p-4">
-                {product.imageUrl ? (
-                  <div className="absolute inset-0">
-                    <img
-                      src={product.imageUrl}
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20" />
-                  </div>
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-16 h-16 rounded-2xl bg-white/80 border border-[#d7c4ac] flex items-center justify-center text-[#9e7753] group-hover:scale-105 transition-transform shadow-xs">
-                      <Gem className="w-8 h-8" />
-                    </div>
-                  </div>
-                )}
-
-                {/* Top Badges */}
-                <div className="relative z-10 flex items-center justify-between">
-                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#14171c] text-white shadow-xs">
-                    {product.tag}
-                  </span>
-                  <div className="flex items-center gap-1 bg-white/90 backdrop-blur-xs px-2 py-0.5 rounded-full text-xs font-semibold text-[#553f31]">
-                    <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                    <span>{product.rating}</span>
-                  </div>
-                </div>
-
-                {/* Bottom Stock Status */}
-                <div className="relative z-10 text-center">
-                  <span className="text-[11px] font-semibold text-[#14171c] bg-white/95 px-3 py-1 rounded-full border border-[#e8ddcf] shadow-2xs">
-                    {product.stockStatus}
-                  </span>
-                </div>
-              </div>
-
-              {/* Details */}
-              <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] uppercase tracking-wider text-[#9e7753] font-bold">
-                      {product.room.toUpperCase()}
-                    </span>
-                    <span className="text-[10px] text-[#805e43]">• {product.dimensions}</span>
-                  </div>
-                  <h3 className="font-serif font-bold text-base text-[#14171c] group-hover:text-[#9e7753] transition">
-                    {product.name}
-                  </h3>
-                  <p className="text-xs text-[#684d39] line-clamp-2">
-                    {product.materialDesc}
-                  </p>
-                </div>
-
-                <div className="pt-3 border-t border-[#f4ede4] flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] text-[#805e43] block">Fogyasztói Ár</span>
-                    <span className="text-lg font-bold text-[#14171c]">
-                      {new Intl.NumberFormat("hu-HU").format(product.price)} Ft
-                    </span>
-                  </div>
-                  <button className="p-2.5 rounded-xl bg-[#14171c] text-white hover:bg-[#9e7753] transition shadow-xs">
-                    <ShoppingBag className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </section>

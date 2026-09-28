@@ -152,8 +152,8 @@ export const PRODUCTS: ProductItem[] = [
     rating: 5.0,
     reviewCount: 28,
     images: [
-      "/kepek/showcase/travertin_front_master.png",
-      "/kepek/showcase/travertin_top_detail.jpg",
+      "/kepek/showcase/travertin_dome_front.png",
+      "/kepek/showcase/travertin_dome_top.jpg",
       "/kepek/showcase/travertin_edge_macro.jpg",
       "/kepek/standards/2_architectural_staging_benchmark.jpg",
     ],

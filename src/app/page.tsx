@@ -160,59 +160,35 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right Column: Dynamic Dual Perspective Hero Showcase (Front Elevation + Matching Tabletop Macro) */}
+            {/* Right Column: Dynamic Dual Perspective Hero Showcase (Front Elevation + Enlarged Tabletop Macro Detail) */}
             <div className="md:col-span-6 lg:col-span-6 relative flex flex-col items-center justify-center pt-2 md:pt-0">
-              <div className="relative w-full max-w-[600px] group">
+              <div className="relative w-full max-w-[600px] group flex flex-col items-center">
                 
                 {/* Ambient Soft Glow Behind Table */}
                 <div className="absolute inset-0 bg-radial from-[#e8ddcf]/50 via-[#faf7f2]/20 to-transparent -z-10 blur-2xl scale-90 pointer-events-none" />
 
                 {/* Main Isolated Stone Table (Front Elevation with Monolithic Dome Pillars and Staged Styling) */}
-                <div className="relative py-2 px-2 flex flex-col items-center">
+                <div className="relative py-2 px-2 flex flex-col items-center w-full">
                   <img
                     src="/kepek/showcase/travertin_dome_staged_hd.png"
                     alt="TerraSilva Navona Travertin Monolit Dóm Étkezőasztal"
-                    className="w-full h-auto max-h-[410px] object-contain group-hover:scale-102 transition-transform duration-700 ease-out mx-auto"
+                    className="w-full h-auto max-h-[390px] object-contain group-hover:scale-102 transition-transform duration-700 ease-out mx-auto"
                   />
                   {/* Natural Ground Contact Shadow */}
                   <div className="w-[86%] h-4 bg-[#14171c]/12 rounded-full blur-md -mt-3 pointer-events-none" />
                 </div>
 
-                {/* Bottom Enlarged Matching Tabletop Macro Detail Card */}
-                <div className="mt-3 bg-white/95 backdrop-blur-md p-3.5 sm:p-4 rounded-3xl border border-[#d7c4ac] shadow-xl flex items-center justify-between gap-4 max-w-lg mx-auto hover:shadow-2xl transition-all">
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden shrink-0 border border-[#e8ddcf] shadow-inner relative group/thumb">
-                      <img
-                        src="/kepek/showcase/travertin_dome_top.jpg"
-                        alt="TerraSilva Asztallap Kőerezet Részlet"
-                        className="w-full h-full object-cover group-hover/thumb:scale-115 transition-transform duration-500"
-                      />
-                      <span className="absolute bottom-1 right-1 bg-black/70 backdrop-blur-xs text-[9px] font-bold text-white px-1.5 py-0.5 rounded-md">
-                        8K Makró
-                      </span>
-                    </div>
-                    <div className="text-left space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] uppercase font-bold text-[#9e7753] tracking-wider">Azonos Kőtömb</span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#9e7753]" />
-                        <span className="text-[10px] text-gray-500 font-medium">Navona Travertin</span>
-                      </div>
-                      <span className="text-sm font-bold text-[#14171c] block leading-snug">
-                        Folytonos Táblaerezet & Kannelúrázott Kőtalp
-                      </span>
-                      <p className="text-[11px] text-gray-600 hidden sm:block">
-                        100% tömör természetes kő, kézi finomcsiszolással.
-                      </p>
-                    </div>
+                {/* Enlarged Tabletop Stone Macro Texture Under the Table */}
+                <div className="mt-1 w-full max-w-[480px] rounded-2xl overflow-hidden border border-[#d7c4ac] shadow-lg relative group/macro">
+                  <img
+                    src="/kepek/showcase/travertin_dome_top_wide.jpg"
+                    alt="TerraSilva Navona Travertin Asztallap 8K Makró Részlet"
+                    className="w-full h-28 sm:h-32 object-cover group-hover/macro:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute bottom-2.5 left-3 bg-black/65 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 text-white flex items-center gap-1.5 text-[10px] font-semibold tracking-wide">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#d7c4ac]" />
+                    <span>8K Kőfelület & Finomcsiszolt Élrészlet</span>
                   </div>
-
-                  <Link
-                    href="#katalogus"
-                    className="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-2.5 rounded-xl bg-[#14171c] text-white hover:bg-[#9e7753] transition shrink-0 shadow-sm"
-                  >
-                    <span>Felfedezés</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-[#d7c4ac]" />
-                  </Link>
                 </div>
 
               </div>

@@ -24,8 +24,8 @@ export default function ProductCard({ product }: ProductCardProps) {
           className="w-full h-full object-cover object-center group-hover:scale-106 transition-transform duration-700 ease-out"
         />
 
-        {/* Subtle Gradient Vignette */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />
+        {/* Subtle Gradient Vignette for Badge Contrast */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/10 pointer-events-none" />
 
         {/* Top Badges */}
         <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between z-10">

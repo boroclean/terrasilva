@@ -211,9 +211,9 @@ export default function Home() {
         {/* Ambient Stone Backdrop Texture Faded Softly Behind Text */}
         <div className="absolute -top-12 -right-24 w-[750px] h-[750px] opacity-15 pointer-events-none blur-2xl">
           <img
-            src="/kepek/showcase/travertin_isolated.png"
+            src="/kepek/showcase/travertin_front_transparent.png"
             alt="Ambient Stone Texture"
-            className="w-full h-full object-contain rotate-12"
+            className="w-full h-full object-contain"
           />
         </div>
 
@@ -221,13 +221,13 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
             
             {/* Left Column: Premium Typography & CTAs */}
-            <div className="lg:col-span-7 space-y-6 text-left">
+            <div className="lg:col-span-6 space-y-6 text-left">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#d7c4ac] bg-white/70 backdrop-blur-xs text-xs font-semibold text-[#805e43] shadow-2xs">
                 <Gem className="w-3.5 h-3.5 text-[#9e7753]" />
                 <span>Terra (Kő & Travertin) • Silva (Nemes Tömörfa)</span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-[#14171c] font-serif leading-[1.08]">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#14171c] font-serif leading-[1.08]">
                 A természet ereje, <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9e7753] via-[#755235] to-[#14171c]">
                   időtálló travertin
@@ -276,26 +276,31 @@ export default function Home() {
             </div>
 
             {/* Right Column: Seamless Isolated Travertine Furniture Piece Floating Freely */}
-            <div className="lg:col-span-5 relative flex items-center justify-center">
+            <div className="lg:col-span-6 relative flex flex-col items-center justify-center">
               {/* Natural Radial Warm Aura behind the stone */}
               <div className="absolute inset-0 bg-[#9e7753]/15 rounded-full blur-3xl scale-95 pointer-events-none" />
 
-              <div className="relative w-full max-w-lg lg:max-w-none group">
-                {/* Isolated Stone Table - Zero White Background */}
-                <img
-                  src="/kepek/showcase/travertin_hero_transparent.png"
-                  alt="TerraSilva Navona Travertin Asztal"
-                  className="w-full h-auto object-contain drop-shadow-[0_25px_35px_rgba(85,63,49,0.22)] group-hover:scale-102 transition-transform duration-700 ease-out"
-                />
+              <div className="relative w-full max-w-xl group">
+                {/* Isolated Stone Table Front View - Zero White Background */}
+                <div className="relative py-6">
+                  <img
+                    src="/kepek/showcase/travertin_front_transparent.png"
+                    alt="TerraSilva Navona Travertin Asztal Szemből"
+                    className="w-full h-auto object-contain drop-shadow-[0_20px_30px_rgba(85,63,49,0.22)] group-hover:scale-102 transition-transform duration-700 ease-out"
+                  />
+
+                  {/* Soft Realistic Contact Shadow on floor */}
+                  <div className="w-4/5 h-4 bg-black/15 blur-md rounded-full mx-auto -mt-2 pointer-events-none" />
+                </div>
 
                 {/* Floating Micro Badge on the Stone */}
-                <div className="absolute top-4 right-2 sm:top-6 sm:right-6 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-[#d7c4ac] shadow-sm flex items-center gap-2">
+                <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-[#d7c4ac] shadow-sm flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-[11px] font-bold text-[#14171c]">Valódi Kőtömb</span>
+                  <span className="text-[11px] font-bold text-[#14171c]">100% Monolit Travertin Talpak</span>
                 </div>
 
                 {/* Floating Macro Thumbnail */}
-                <div className="absolute -bottom-4 left-2 sm:bottom-0 sm:left-4 bg-white/95 backdrop-blur-md p-2 rounded-2xl border border-[#d7c4ac] shadow-lg flex items-center gap-3">
+                <div className="absolute bottom-2 left-2 sm:bottom-0 sm:left-2 bg-white/95 backdrop-blur-md p-2 rounded-2xl border border-[#d7c4ac] shadow-lg flex items-center gap-3">
                   <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-[#e8ddcf]">
                     <img
                       src="/kepek/showcase/travertin_edge_macro.jpg"

@@ -167,15 +167,15 @@ export default function Home() {
                 {/* Ambient Soft Glow Behind Table */}
                 <div className="absolute inset-0 bg-radial from-[#e8ddcf]/50 via-[#faf7f2]/20 to-transparent -z-10 blur-2xl scale-90 pointer-events-none" />
 
-                {/* Main Isolated Stone Table (Front Elevation with Monolithic Dome Pillars) */}
-                <div className="relative py-3 px-2 flex flex-col items-center">
+                {/* Main Isolated Stone Table (Front Elevation with Monolithic Dome Pillars and Staged Styling) */}
+                <div className="relative py-2 px-2 flex flex-col items-center">
                   <img
-                    src="/kepek/showcase/travertin_dome_front_hd.png"
+                    src="/kepek/showcase/travertin_dome_staged_hd.png"
                     alt="TerraSilva Navona Travertin Monolit Dóm Étkezőasztal"
-                    className="w-full h-auto max-h-[380px] object-contain group-hover:scale-102 transition-transform duration-700 ease-out mx-auto"
+                    className="w-full h-auto max-h-[410px] object-contain group-hover:scale-102 transition-transform duration-700 ease-out mx-auto"
                   />
                   {/* Natural Ground Contact Shadow */}
-                  <div className="w-[84%] h-3.5 bg-[#14171c]/12 rounded-full blur-md -mt-2.5 pointer-events-none" />
+                  <div className="w-[86%] h-4 bg-[#14171c]/12 rounded-full blur-md -mt-3 pointer-events-none" />
                 </div>
 
                 {/* Bottom Enlarged Matching Tabletop Macro Detail Card */}

@@ -30,6 +30,16 @@ export default function Home() {
 
   const currentRoomObj = ROOM_CATEGORIES.find((r) => r.id === selectedRoom);
 
+  // Dynamically compute available materials that exist for the currently selected room & subtype
+  const availableMaterialsForCategory = MATERIALS.filter((mat) => {
+    if (mat.id === "all") return true;
+    return PRODUCTS.some((p) => {
+      const matchesRoom = selectedRoom === "all" || p.room === selectedRoom;
+      const matchesSubType = selectedSubType === "all" || p.subType === selectedSubType;
+      return matchesRoom && matchesSubType && p.materialType === mat.id;
+    });
+  });
+
   const filteredProducts = PRODUCTS.filter((prod) => {
     const matchesRoom = selectedRoom === "all" || prod.room === selectedRoom;
     const matchesSubType = selectedSubType === "all" || prod.subType === selectedSubType;
@@ -286,6 +296,7 @@ export default function Home() {
               onClick={() => {
                 setSelectedRoom("all");
                 setSelectedSubType("all");
+                setSelectedMaterial("all");
               }}
               className={`group relative rounded-2xl overflow-hidden p-3.5 text-left border transition-all duration-300 flex flex-col justify-between min-h-[110px] ${
                 selectedRoom === "all"
@@ -320,6 +331,7 @@ export default function Home() {
                   onClick={() => {
                     setSelectedRoom(room.id);
                     setSelectedSubType("all");
+                    setSelectedMaterial("all");
                   }}
                   className={`group relative rounded-2xl overflow-hidden p-3.5 text-left border transition-all duration-300 flex flex-col justify-between min-h-[110px] ${
                     isSelected
@@ -379,7 +391,10 @@ export default function Home() {
               {currentRoomObj.subTypes.map((sub) => (
                 <button
                   key={sub.id}
-                  onClick={() => setSelectedSubType(sub.id)}
+                  onClick={() => {
+                    setSelectedSubType(sub.id);
+                    setSelectedMaterial("all");
+                  }}
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
                     selectedSubType === sub.id
                       ? "bg-[#14171c] text-white shadow-xs"
@@ -393,79 +408,81 @@ export default function Home() {
           </div>
         )}
 
-        {/* 3. Visual Material Selector with Macro Swatch Photos */}
-        <div className="bg-white p-5 rounded-3xl border border-[#e8ddcf] shadow-xs space-y-3.5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Palette className="w-4 h-4 text-[#9e7753]" />
-              <span className="text-xs uppercase tracking-widest text-[#805e43] font-bold">
-                2. Válassz Alapanyagot & Textúrát:
+        {/* 3. Visual Material Selector with Macro Swatch Photos (Shows only available materials for the selected category) */}
+        {availableMaterialsForCategory.length > 1 && (
+          <div className="bg-white p-5 rounded-3xl border border-[#e8ddcf] shadow-xs space-y-3.5 animate-in fade-in">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Palette className="w-4 h-4 text-[#9e7753]" />
+                <span className="text-xs uppercase tracking-widest text-[#805e43] font-bold">
+                  2. Válassz Alapanyagot {currentRoomObj ? `(${currentRoomObj.name})` : ""}:
+                </span>
+              </div>
+              <span className="text-xs text-[#805e43] font-medium hidden sm:inline-block">
+                {availableMaterialsForCategory.length - 1} elérhető anyag ebben a kategóriában
               </span>
             </div>
-            <span className="text-xs text-[#805e43] font-medium hidden sm:inline-block">
-              100% Valódi Olasz Kőzetek & Nemes Tömörfa
-            </span>
-          </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            {MATERIALS.map((mat) => {
-              const isSelected = selectedMaterial === mat.id;
-              const count = PRODUCTS.filter((p) => {
-                const matchesRoom = selectedRoom === "all" || p.room === selectedRoom;
-                const matchesSubType = selectedSubType === "all" || p.subType === selectedSubType;
-                const matchesMaterial = mat.id === "all" || p.materialType === mat.id;
-                return matchesRoom && matchesSubType && matchesMaterial;
-              }).length;
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+              {availableMaterialsForCategory.map((mat) => {
+                const isSelected = selectedMaterial === mat.id;
+                const count = PRODUCTS.filter((p) => {
+                  const matchesRoom = selectedRoom === "all" || p.room === selectedRoom;
+                  const matchesSubType = selectedSubType === "all" || p.subType === selectedSubType;
+                  const matchesMaterial = mat.id === "all" || p.materialType === mat.id;
+                  return matchesRoom && matchesSubType && matchesMaterial;
+                }).length;
 
-              return (
-                <button
-                  key={mat.id}
-                  onClick={() => setSelectedMaterial(mat.id)}
-                  className={`group rounded-2xl p-2.5 text-left border transition-all duration-300 flex items-center gap-3 relative overflow-hidden ${
-                    isSelected
-                      ? "bg-[#14171c] text-white border-[#9e7753] shadow-md ring-2 ring-[#9e7753]/50"
-                      : "bg-[#faf8f5] text-[#14171c] border-[#e8ddcf] hover:border-[#9e7753] hover:bg-white"
-                  }`}
-                >
-                  {/* Swatch Thumbnail */}
-                  <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-black/10 relative shadow-2xs">
-                    {mat.imageUrl ? (
-                      <img
-                        src={mat.imageUrl}
-                        alt={mat.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div
-                        className="w-full h-full flex items-center justify-center font-bold text-xs"
-                        style={{ backgroundColor: mat.colorHex || "#e8ddcf" }}
-                      >
-                        ✨
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Info */}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between gap-1">
-                      <h5 className="font-serif font-bold text-xs truncate">
-                        {mat.name}
-                      </h5>
-                      <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded ${
-                        isSelected ? "bg-white/20 text-amber-300" : "bg-white text-[#805e43] border border-[#e8ddcf]"
-                      }`}>
-                        {count}
-                      </span>
+                return (
+                  <button
+                    key={mat.id}
+                    onClick={() => setSelectedMaterial(mat.id)}
+                    className={`group rounded-2xl p-2.5 text-left border transition-all duration-300 flex items-center gap-3 relative overflow-hidden ${
+                      isSelected
+                        ? "bg-[#14171c] text-white border-[#9e7753] shadow-md ring-2 ring-[#9e7753]/50"
+                        : "bg-[#faf8f5] text-[#14171c] border-[#e8ddcf] hover:border-[#9e7753] hover:bg-white"
+                    }`}
+                  >
+                    {/* Swatch Thumbnail */}
+                    <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-black/10 relative shadow-2xs">
+                      {mat.imageUrl ? (
+                        <img
+                          src={mat.imageUrl}
+                          alt={mat.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div
+                          className="w-full h-full flex items-center justify-center font-bold text-xs"
+                          style={{ backgroundColor: mat.colorHex || "#e8ddcf" }}
+                        >
+                          ✨
+                        </div>
+                      )}
                     </div>
-                    <p className={`text-[10px] truncate mt-0.5 ${isSelected ? "text-gray-300" : "text-[#805e43]"}`}>
-                      {mat.description || mat.tag || "Prémium anyag"}
-                    </p>
-                  </div>
-                </button>
-              );
-            })}
+
+                    {/* Info */}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-1">
+                        <h5 className="font-serif font-bold text-xs truncate">
+                          {mat.name}
+                        </h5>
+                        <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded ${
+                          isSelected ? "bg-white/20 text-amber-300" : "bg-white text-[#805e43] border border-[#e8ddcf]"
+                        }`}>
+                          {count}
+                        </span>
+                      </div>
+                      <p className={`text-[10px] truncate mt-0.5 ${isSelected ? "text-gray-300" : "text-[#805e43]"}`}>
+                        {mat.description || mat.tag || "Prémium anyag"}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Product Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

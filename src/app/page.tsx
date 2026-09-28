@@ -178,16 +178,17 @@ export default function Home() {
                   <div className="w-[86%] h-4 bg-[#14171c]/12 rounded-full blur-md -mt-3 pointer-events-none" />
                 </div>
 
-                {/* Enlarged Tabletop Stone Macro Texture Under the Table */}
-                <div className="mt-1 w-full max-w-[480px] rounded-2xl overflow-hidden border border-[#d7c4ac] shadow-lg relative group/macro">
+                {/* Full-Bleed 8K Tabletop Stone Macro Texture with Interactive Zoom on Hover */}
+                <div className="mt-2 w-full max-w-[500px] h-32 sm:h-36 rounded-2xl overflow-hidden border border-[#d7c4ac] shadow-lg relative group/macro cursor-zoom-in bg-[#3a3028]">
                   <img
-                    src="/kepek/showcase/travertin_dome_top_wide.jpg"
-                    alt="TerraSilva Navona Travertin Asztallap 8K Makró Részlet"
-                    className="w-full h-28 sm:h-32 object-cover group-hover/macro:scale-105 transition-transform duration-700"
+                    src="/kepek/showcase/travertin_surface_macro_8k.jpg"
+                    alt="TerraSilva 8K Navona Travertin Asztallap Kőtextúra"
+                    className="w-full h-full object-cover group-hover/macro:scale-135 transition-transform duration-700 ease-out"
                   />
-                  <div className="absolute bottom-2.5 left-3 bg-black/65 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 text-white flex items-center gap-1.5 text-[10px] font-semibold tracking-wide">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#d7c4ac]" />
-                    <span>8K Kőfelület & Finomcsiszolt Élrészlet</span>
+                  <div className="absolute inset-0 bg-black/0 group-hover/macro:bg-black/10 transition-colors pointer-events-none" />
+                  <div className="absolute bottom-2.5 left-3 bg-black/70 backdrop-blur-md px-3 py-1 rounded-lg border border-white/15 text-white flex items-center gap-2 text-[10px] font-semibold tracking-wide pointer-events-none transition-opacity duration-300">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>8K Navona Travertin Textúra • Finomcsiszolt Kőpórusok</span>
                   </div>
                 </div>
 

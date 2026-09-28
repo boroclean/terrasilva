@@ -3,12 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { 
-  Boxes, 
   Plus, 
   Search, 
   Filter, 
   Sparkles, 
-  Gem, 
   Layers, 
   Eye, 
   EyeOff,
@@ -18,15 +16,14 @@ import {
   Wand2, 
   Camera, 
   ArrowRight,
-  TrendingUp,
-  Tag,
-  DollarSign,
   Settings,
   X,
   CheckCircle2,
   AlertTriangle,
   FolderPlus,
-  Palette
+  Palette,
+  Globe,
+  Languages
 } from "lucide-react";
 import { ROOM_CATEGORIES, MATERIALS, RoomCategory, MaterialOption } from "@/lib/categories";
 
@@ -34,10 +31,13 @@ export interface CatalogItem {
   id: string;
   sku: string;
   name: string;
+  nameEn?: string;
   room: string;
   subType: string;
+  subTypeEn?: string;
   materialType: string;
   materialDesc: string;
+  materialDescEn?: string;
   dimensions: string;
   sellingPriceHuf: number;
   purchasePriceUsd: number;
@@ -55,10 +55,13 @@ const INITIAL_CATALOG: CatalogItem[] = [
     id: "ts-01",
     sku: "TS-TRAV-NAV-01",
     name: "Aura Navona Travertin Dohányzóasztal",
+    nameEn: "Aura Navona Travertine Coffee Table",
     room: "nappali",
     subType: "Dohányzóasztalok",
+    subTypeEn: "Coffee Tables",
     materialType: "travertine",
     materialDesc: "100% Természetes Olasz Navona Travertin, Matt Csiszolt",
+    materialDescEn: "100% Authentic Italian Navona Travertine, Matte Honed",
     dimensions: "110 x 60 x 38 cm",
     sellingPriceHuf: 389000,
     purchasePriceUsd: 140,
@@ -74,10 +77,13 @@ const INITIAL_CATALOG: CatalogItem[] = [
     id: "ts-02",
     sku: "TS-TRAV-TV-02",
     name: "Monolit Travertin TV-Szekrény & Médiafal",
+    nameEn: "Monolith Travertine TV Console & Media Unit",
     room: "nappali",
     subType: "TV-szekrények",
+    subTypeEn: "Media Consoles",
     materialType: "travertine",
     materialDesc: "Romano Travertin Keret + Diófa Lamellás Front",
+    materialDescEn: "Solid Romano Travertine Shell + Walnut Slatted Front",
     dimensions: "200 x 45 x 50 cm",
     sellingPriceHuf: 649000,
     purchasePriceUsd: 260,
@@ -93,10 +99,13 @@ const INITIAL_CATALOG: CatalogItem[] = [
     id: "ts-03",
     sku: "TS-MAR-CAR-03",
     name: "Silva Carrara Étkezőasztal (8 személyes)",
+    nameEn: "Silva Bianco Carrara Dining Table (Seats 8)",
     room: "etkezo",
     subType: "Étkezőasztalok",
+    subTypeEn: "Dining Tables",
     materialType: "marble",
     materialDesc: "Fehér Carrara Márványlap + Tömör Amerikai Diófa Talapzat",
+    materialDescEn: "Bianco Carrara Marble Slab + American Walnut Pedestal",
     dimensions: "220 x 100 x 76 cm",
     sellingPriceHuf: 749000,
     purchasePriceUsd: 380,
@@ -112,10 +121,13 @@ const INITIAL_CATALOG: CatalogItem[] = [
     id: "ts-04",
     sku: "TS-WOOD-DIN-04",
     name: "Silva Tömör Diófa Étkezőasztal",
+    nameEn: "Silva Solid American Walnut Dining Table",
     room: "etkezo",
     subType: "Étkezőasztalok",
+    subTypeEn: "Dining Tables",
     materialType: "wood",
     materialDesc: "Tömör Amerikai Diófa Palló, Matt Kézműves Olajozás",
+    materialDescEn: "Solid American Walnut Planks, Handcrafted Organic Oil",
     dimensions: "200 x 95 x 76 cm",
     sellingPriceHuf: 489000,
     purchasePriceUsd: 210,
@@ -131,10 +143,13 @@ const INITIAL_CATALOG: CatalogItem[] = [
     id: "ts-05",
     sku: "TS-MON-COL-05",
     name: "Monolit Fluted Travertin Oszlop Console",
+    nameEn: "Monolith Fluted Travertine Console Table",
     room: "eloszoba",
     subType: "Monolit Konzolok",
+    subTypeEn: "Monolith Consoles",
     materialType: "travertine",
     materialDesc: "Tömör Kannelúrázott Travertin Kőtömb Faragvány",
+    materialDescEn: "Hand-Carved Fluted Solid Travertine Monolith",
     dimensions: "120 x 40 x 85 cm",
     sellingPriceHuf: 289000,
     purchasePriceUsd: 110,
@@ -150,10 +165,13 @@ const INITIAL_CATALOG: CatalogItem[] = [
     id: "ts-06",
     sku: "TS-FOT-BOU-06",
     name: "Silva Royale Lounge Fotel",
+    nameEn: "Silva Royale Lounge Chair in Walnut & Bouclé",
     room: "nappali",
     subType: "Fotelek",
+    subTypeEn: "Lounge Chairs",
     materialType: "upholstery",
     materialDesc: "Tömör Natúr Diófa Keret, Prémium Olasz Bouclé Kárpit",
+    materialDescEn: "Solid Walnut Frame, Tactile Italian Wool Bouclé",
     dimensions: "85 x 82 x 75 cm",
     sellingPriceHuf: 269000,
     purchasePriceUsd: 115,
@@ -169,10 +187,13 @@ const INITIAL_CATALOG: CatalogItem[] = [
     id: "ts-07",
     sku: "TS-LAMP-TRAV-07",
     name: "Aura Alabástrom & Travertin Asztali Lámpa",
+    nameEn: "Aura Translucent Alabaster & Travertine Lamp",
     room: "vilagitas",
     subType: "Kő Lámpatestek",
+    subTypeEn: "Stone Lamps",
     materialType: "travertine",
     materialDesc: "Faragott Travertin Talp, Átvilágítható Alabástrom Gömb",
+    materialDescEn: "Carved Travertine Base, Translucent Alabaster Orb",
     dimensions: "28 x 28 x 45 cm",
     sellingPriceHuf: 149000,
     purchasePriceUsd: 48,
@@ -207,12 +228,15 @@ export default function CatalogManagerPage() {
   const [activeItem, setActiveItem] = useState<CatalogItem | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
 
-  // Category Manager Inputs
+  // Category Manager Inputs (with English support)
   const [newRoomName, setNewRoomName] = useState("");
+  const [newRoomNameEn, setNewRoomNameEn] = useState("");
   const [newMaterialName, setNewMaterialName] = useState("");
+  const [newMaterialNameEn, setNewMaterialNameEn] = useState("");
   const [newMaterialColor, setNewMaterialColor] = useState("#c5a880");
   const [targetRoomForSubType, setTargetRoomForSubType] = useState<string>("nappali");
   const [newSubTypeName, setNewSubTypeName] = useState("");
+  const [newSubTypeNameEn, setNewSubTypeNameEn] = useState("");
 
   // Load from LocalStorage on mount
   useEffect(() => {
@@ -220,297 +244,286 @@ export default function CatalogManagerPage() {
     if (saved) {
       try {
         setItems(JSON.parse(saved));
-      } catch (e) {}
-    }
-    const savedRooms = localStorage.getItem("terrasilva_rooms");
-    if (savedRooms) {
-      try {
-        setRooms(JSON.parse(savedRooms));
-      } catch (e) {}
-    }
-    const savedMats = localStorage.getItem("terrasilva_materials");
-    if (savedMats) {
-      try {
-        setMaterials(JSON.parse(savedMats));
-      } catch (e) {}
+      } catch (e) {
+        console.error("Failed to parse saved catalog", e);
+      }
     }
   }, []);
 
-  // Save to LocalStorage on updates
-  const saveCatalogState = (newItems: CatalogItem[]) => {
-    setItems(newItems);
-    localStorage.setItem("terrasilva_catalog", JSON.stringify(newItems));
+  // Save to LocalStorage whenever items change
+  const saveItems = (updated: CatalogItem[]) => {
+    setItems(updated);
+    localStorage.setItem("terrasilva_catalog", JSON.stringify(updated));
   };
 
-  const saveRoomsState = (newRooms: RoomCategory[]) => {
-    setRooms(newRooms);
-    localStorage.setItem("terrasilva_rooms", JSON.stringify(newRooms));
-  };
-
-  const showNotification = (msg: string) => {
+  const showFeedbackMsg = (msg: string) => {
     setFeedback(msg);
-    setTimeout(() => setFeedback(null), 3500);
+    setTimeout(() => setFeedback(null), 3000);
   };
 
-  // Toggle Live Status
-  const toggleLiveStatus = (id: string, e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    const updated = items.map((it) => {
-      if (it.id === id) {
-        const newStatus = !it.isLive;
-        showNotification(`"${it.name}" webshop státusza: ${newStatus ? "Éles (Látható a vásárlóknak)" : "Rejtett / Piszkozat"}`);
-        return { ...it, isLive: newStatus };
-      }
-      return it;
+  // Helper to Auto-Generate Luxury English Name
+  const autoGenerateEnglishName = () => {
+    if (!activeItem) return;
+    let enName = activeItem.name
+      .replace(/Étkezőasztal/gi, "Dining Table")
+      .replace(/Dohányzóasztal/gi, "Coffee Table")
+      .replace(/TV-Szekrény/gi, "TV Console")
+      .replace(/Médiafal/gi, "Media Wall")
+      .replace(/Fotel/gi, "Lounge Chair")
+      .replace(/Asztali Lámpa/gi, "Table Lamp")
+      .replace(/Konzol/gi, "Console Table")
+      .replace(/Oszlop/gi, "Column Pedestal")
+      .replace(/Travertin/gi, "Travertine")
+      .replace(/Márvány/gi, "Marble")
+      .replace(/Diófa/gi, "American Walnut")
+      .replace(/Tölgyfa/gi, "Oak");
+
+    let enDesc = activeItem.materialDesc
+      .replace(/Természetes/gi, "Natural")
+      .replace(/Olasz/gi, "Italian")
+      .replace(/Mészkő/gi, "Limestone")
+      .replace(/Matt Csiszolt/gi, "Matte Honed")
+      .replace(/Tömör/gi, "Solid")
+      .replace(/Márvány/gi, "Marble");
+
+    setActiveItem({
+      ...activeItem,
+      nameEn: enName,
+      materialDescEn: enDesc,
     });
-    saveCatalogState(updated);
+    showFeedbackMsg("✨ Angol elnevezés és anyagleírás automatikusan legenerálva!");
   };
 
-  // Delete Item
-  const handleDeleteItem = (id: string) => {
-    const itemToDelete = items.find((it) => it.id === id);
-    const updated = items.filter((it) => it.id !== id);
-    saveCatalogState(updated);
-    setShowDeleteConfirmId(null);
-    showNotification(`"${itemToDelete?.name || 'Termék'}" sikeresen törölve a katalógusból!`);
+  // Quick 1-Click Toggle for Webshop Visibility
+  const handleToggleLive = (id: string) => {
+    const updated = items.map((item) => {
+      if (item.id === id) {
+        const nextState = !item.isLive;
+        showFeedbackMsg(
+          nextState 
+            ? `🟢 "${item.name}" közzétéve a termékkatalógusban!` 
+            : `⚪ "${item.name}" rejtve lett (Piszkozat).`
+        );
+        return { ...item, isLive: nextState };
+      }
+      return item;
+    });
+    saveItems(updated);
   };
 
   // Open Edit Modal
-  const handleOpenEdit = (item: CatalogItem) => {
+  const handleEditClick = (item: CatalogItem) => {
     setActiveItem({ ...item });
     setShowEditModal(true);
   };
 
-  // Save Edited Item
+  // Save Edited Product
   const handleSaveEdit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeItem) return;
 
-    const landedHuf = Math.round(activeItem.purchasePriceUsd * 370 * 1.55);
-    const margin = activeItem.sellingPriceHuf > 0 
-      ? Math.round(((activeItem.sellingPriceHuf - landedHuf) / activeItem.sellingPriceHuf) * 1000) / 10 
-      : 0;
-
-    const updatedItem = {
-      ...activeItem,
-      landedCostHuf: landedHuf,
-      marginPercent: margin,
-    };
-
-    const updated = items.map((it) => (it.id === updatedItem.id ? updatedItem : it));
-    saveCatalogState(updated);
+    const updated = items.map((i) => (i.id === activeItem.id ? activeItem : i));
+    saveItems(updated);
     setShowEditModal(false);
-    showNotification(`"${updatedItem.name}" adatai sikeresen frissítve!`);
+    showFeedbackMsg(`✓ "${activeItem.name}" és angol adatai frissítve!`);
+  };
+
+  // Open Add Product Modal
+  const handleOpenAdd = () => {
+    const newSkuNum = items.length + 1;
+    const newItem: CatalogItem = {
+      id: `ts-${Date.now().toString().slice(-4)}`,
+      sku: `TS-PROD-${String(newSkuNum).padStart(2, "0")}`,
+      name: "",
+      nameEn: "",
+      room: selectedRoom === "all" ? "nappali" : selectedRoom,
+      subType: selectedSubType === "all" ? "Dohányzóasztalok" : selectedSubType,
+      subTypeEn: "",
+      materialType: selectedMaterial === "all" ? "travertine" : selectedMaterial,
+      materialDesc: "100% Természetes Olasz Travertin",
+      materialDescEn: "100% Natural Italian Travertine",
+      dimensions: "120 x 60 x 40 cm",
+      sellingPriceHuf: 299000,
+      purchasePriceUsd: 120,
+      landedCostHuf: 75000,
+      marginPercent: 74.9,
+      physicalStock: 1,
+      inTransitStock: 0,
+      cbm: 0.4,
+      isLive: true,
+      imageTag: "Staging Folyamatban",
+    };
+    setActiveItem(newItem);
+    setShowAddModal(true);
   };
 
   // Create New Product
   const handleCreateProduct = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!activeItem) return;
+    if (!activeItem || !activeItem.name) return;
 
-    const landedHuf = Math.round(activeItem.purchasePriceUsd * 370 * 1.55);
-    const margin = activeItem.sellingPriceHuf > 0 
-      ? Math.round(((activeItem.sellingPriceHuf - landedHuf) / activeItem.sellingPriceHuf) * 1000) / 10 
-      : 0;
-
-    const newItem: CatalogItem = {
-      ...activeItem,
-      id: `p-${Date.now()}`,
-      sku: activeItem.sku || `TS-${activeItem.materialType.substring(0, 4).toUpperCase()}-${Math.floor(10 + Math.random() * 90)}`,
-      landedCostHuf: landedHuf,
-      marginPercent: margin,
-    };
-
-    const updated = [newItem, ...items];
-    saveCatalogState(updated);
+    const updated = [activeItem, ...items];
+    saveItems(updated);
     setShowAddModal(false);
-    showNotification(`"${newItem.name}" sikeresen hozzáadva a katalógushoz!`);
+    showFeedbackMsg(`🎉 "${activeItem.name}" sikeresen felvéve a katalógusba!`);
   };
 
-  // Add Custom Room Category
-  const handleAddRoom = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newRoomName.trim()) return;
-    const slug = newRoomName.toLowerCase().replace(/[^a-z0-9]/g, "-");
-    const newRoom: RoomCategory = {
-      id: slug,
-      name: newRoomName,
-      slug: slug,
-      iconName: "FolderPlus",
-      subTypes: [{ id: "all", name: `Összes ${newRoomName}`, slug: "all" }],
-    };
-    const updated = [...rooms, newRoom];
-    saveRoomsState(updated);
-    setNewRoomName("");
-    showNotification(`Új kategória létrehozva: "${newRoomName}"`);
+  // Delete Product
+  const handleDeleteItem = (id: string) => {
+    const target = items.find((i) => i.id === id);
+    const updated = items.filter((i) => i.id !== id);
+    saveItems(updated);
+    setShowDeleteConfirmId(null);
+    showFeedbackMsg(`🗑️ "${target?.name || "Termék"}" törölve.`);
   };
 
-  // Add Custom SubType to a Room
+  // Add New Subtype to a Room Category
   const handleAddSubType = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newSubTypeName.trim() || !targetRoomForSubType) return;
-    const slug = newSubTypeName.toLowerCase().replace(/[^a-z0-9]/g, "-");
-    
-    const updated = rooms.map((r) => {
+    if (!newSubTypeName) return;
+
+    const newSlug = newSubTypeName.toLowerCase().replace(/\s+/g, "-");
+    const updatedRooms = rooms.map((r) => {
       if (r.id === targetRoomForSubType) {
-        const exists = r.subTypes.some((st) => st.id === slug || st.name.toLowerCase() === newSubTypeName.toLowerCase());
-        if (exists) return r;
         return {
           ...r,
-          subTypes: [...r.subTypes, { id: slug, name: newSubTypeName, slug }],
+          subTypes: [
+            ...r.subTypes,
+            { id: newSlug, name: newSubTypeName, nameEn: newSubTypeNameEn || newSubTypeName, slug: newSlug }
+          ]
         };
       }
       return r;
     });
 
-    saveRoomsState(updated);
+    setRooms(updatedRooms);
     setNewSubTypeName("");
-    showNotification(`Új bútortípus ("${newSubTypeName}") hozzáadva a(z) "${rooms.find(r => r.id === targetRoomForSubType)?.name}" kategóriához!`);
+    setNewSubTypeNameEn("");
+    showFeedbackMsg(`✓ Új bútortípus hozzáadva: "${newSubTypeName}"`);
   };
 
-  // Delete SubType from Room
+  // Delete Subtype from a Room
   const handleDeleteSubType = (roomId: string, subTypeId: string) => {
-    if (subTypeId === "all") return;
-    const updated = rooms.map((r) => {
+    const updatedRooms = rooms.map((r) => {
       if (r.id === roomId) {
         return {
           ...r,
-          subTypes: r.subTypes.filter((st) => st.id !== subTypeId),
+          subTypes: r.subTypes.filter((st) => st.id !== subTypeId)
         };
       }
       return r;
     });
-    saveRoomsState(updated);
-    showNotification("Bútortípus eltávolítva!");
+    setRooms(updatedRooms);
+    showFeedbackMsg("✓ Bútortípus eltávolítva a kategóriából.");
   };
 
-  // Add Custom Material
+  // Add New Room Category
+  const handleAddRoom = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newRoomName) return;
+
+    const newSlug = newRoomName.toLowerCase().replace(/\s+/g, "-");
+    const newRoom: RoomCategory = {
+      id: newSlug,
+      name: newRoomName,
+      nameEn: newRoomNameEn || newRoomName,
+      slug: newSlug,
+      iconName: "Boxes",
+      imageUrl: "/kepek/categories/nappali.jpg",
+      description: "Egyedi kategória bútorai",
+      descriptionEn: "Custom room collection pieces",
+      subTypes: [
+        { id: "all", name: `Összes ${newRoomName}`, nameEn: `All ${newRoomNameEn || newRoomName}`, slug: "all" },
+        { id: "alap-tipus", name: "Alap Bútortípus", nameEn: "Standard Piece", slug: "alap-tipus" }
+      ]
+    };
+
+    setRooms([...rooms, newRoom]);
+    setNewRoomName("");
+    setNewRoomNameEn("");
+    showFeedbackMsg(`✓ Új fő kategória hozzáadva: "${newRoomName}"`);
+  };
+
+  // Add New Material
   const handleAddMaterial = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMaterialName.trim()) return;
-    const id = newMaterialName.toLowerCase().replace(/[^a-z0-9]/g, "-");
+    if (!newMaterialName) return;
+
+    const newSlug = newMaterialName.toLowerCase().replace(/\s+/g, "-");
     const newMat: MaterialOption = {
-      id: id,
+      id: newSlug,
       name: newMaterialName,
+      nameEn: newMaterialNameEn || newMaterialName,
       colorHex: newMaterialColor,
+      description: "Egyedi felület & prémium minőség",
+      descriptionEn: "Custom surface & premium quality",
     };
-    const updated = [...materials, newMat];
-    setMaterials(updated);
-    localStorage.setItem("terrasilva_materials", JSON.stringify(updated));
+
+    setMaterials([...materials, newMat]);
     setNewMaterialName("");
-    showNotification(`Új anyag felvéve: "${newMaterialName}"`);
+    setNewMaterialNameEn("");
+    showFeedbackMsg(`✓ Új anyag hozzáadva: "${newMaterialName}"`);
   };
 
-  // Active room object for subtypes
-  const currentRoomObj = rooms.find((r) => r.id === selectedRoom);
-
-  // Available subtypes to display in the filter bar
-  const displaySubTypes = selectedRoom === "all"
-    ? Array.from(
-        new Map(
-          rooms.flatMap((r) => r.subTypes.filter((st) => st.id !== "all")).map((st) => [st.id, st])
-        ).values()
-      )
-    : (currentRoomObj?.subTypes.filter((st) => st.id !== "all") || []);
-
-  // Filter items
-  const filteredItems = items.filter((it) => {
-    const matchesRoom = selectedRoom === "all" || it.room === selectedRoom;
+  // Filter Items
+  const filteredItems = items.filter((item) => {
+    const matchesRoom = selectedRoom === "all" || item.room === selectedRoom;
+    const matchesSubType = 
+      selectedSubType === "all" || 
+      item.subType.toLowerCase().includes(selectedSubType.toLowerCase()) ||
+      (selectedSubType === "dohanzoasztal" && item.subType.toLowerCase().includes("dohányzó"));
+    const matchesMaterial = selectedMaterial === "all" || item.materialType === selectedMaterial;
     
-    // Subtype matching: checks against slug or Hungarian display name
-    let matchesSubType = selectedSubType === "all";
-    if (!matchesSubType) {
-      const itemSub = (it.subType || "").toLowerCase();
-      const targetSub = selectedSubType.toLowerCase();
-      const foundSubObj = displaySubTypes.find((st) => st.id === selectedSubType);
-      const foundName = foundSubObj ? foundSubObj.name.toLowerCase() : "";
-
-      matchesSubType = 
-        itemSub === targetSub || 
-        (foundName !== "" && (itemSub.includes(foundName) || foundName.includes(itemSub))) ||
-        itemSub.includes(targetSub);
-    }
-
-    const matchesMaterial = selectedMaterial === "all" || it.materialType === selectedMaterial;
     const matchesVisibility = 
       visibilityFilter === "all" || 
-      (visibilityFilter === "live" && it.isLive) || 
-      (visibilityFilter === "draft" && !it.isLive);
+      (visibilityFilter === "live" && item.isLive) || 
+      (visibilityFilter === "draft" && !item.isLive);
 
     const matchesSearch = 
-      it.name.toLowerCase().includes(search.toLowerCase()) ||
-      it.sku.toLowerCase().includes(search.toLowerCase()) ||
-      it.materialDesc.toLowerCase().includes(search.toLowerCase()) ||
-      (it.subType || "").toLowerCase().includes(search.toLowerCase());
+      item.name.toLowerCase().includes(search.toLowerCase()) ||
+      (item.nameEn && item.nameEn.toLowerCase().includes(search.toLowerCase())) ||
+      item.sku.toLowerCase().includes(search.toLowerCase()) ||
+      item.materialDesc.toLowerCase().includes(search.toLowerCase());
 
     return matchesRoom && matchesSubType && matchesMaterial && matchesVisibility && matchesSearch;
   });
 
   return (
-    <div className="space-y-6">
-      {/* Toast Alert */}
+    <div className="space-y-6 pb-20">
+      {/* Toast Feedback Notification */}
       {feedback && (
-        <div className="fixed top-20 right-6 z-50 bg-emerald-900 text-white px-5 py-3 rounded-2xl shadow-2xl border border-emerald-700 flex items-center gap-3 animate-in fade-in slide-in-from-top-4">
-          <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-          <span className="text-xs font-bold">{feedback}</span>
+        <div className="fixed top-20 right-6 z-50 bg-[#14171c] text-white px-4 py-3 rounded-2xl shadow-2xl border border-[#9e7753] flex items-center gap-2.5 text-xs font-semibold animate-in fade-in slide-in-from-top duration-300">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <span>{feedback}</span>
         </div>
       )}
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-[#e8ddcf] shadow-xs">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#faf7f2] border border-[#d7c4ac] text-xs font-semibold text-[#805e43] mb-2">
-            <Gem className="w-3.5 h-3.5 text-[#9e7753]" />
-            <span>TerraSilva Hivatalos Termékkatalógus & Bútorkezelő</span>
-          </div>
-          <h1 className="text-xl lg:text-2xl font-bold text-[#14171c]">Kategóriák, Típusok & Termékkezelés</h1>
-          <p className="text-xs text-[#684d39] mt-1">
-            Módosíts, törölj vagy adj hozzá bármilyen bútort, szobatípust, alapanyagot és kapcsold be a weboldali megjelenítést 1 kattintással.
+          <span className="text-xs uppercase tracking-widest text-[#9e7753] font-bold">
+            Bútor Kereskedelmi & Webshop Rendszer
+          </span>
+          <h1 className="text-2xl md:text-3xl font-bold font-serif text-[#14171c]">
+            Termékkatalógus & Kétnyelvű Tartalomkezelő (HU / EN)
+          </h1>
+          <p className="text-xs text-[#805e43] mt-1">
+            Kezeld a webshopban megjelenő bútorokat, magyar és angol elnevezéseket, szobakategóriákat és azonnali élő megjelenítést.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex items-center gap-2.5">
           <button
             onClick={() => setShowCategoryModal(true)}
-            className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-[#d7c4ac] bg-white text-[#553f31] text-xs font-semibold hover:bg-[#faf7f2] transition shadow-xs"
-            title="Kategóriák & Anyagok Testreszabása"
+            className="px-3.5 py-2.5 rounded-xl border border-[#d7c4ac] bg-white text-[#805e43] font-semibold text-xs hover:bg-[#faf7f2] transition flex items-center gap-1.5 shadow-2xs"
           >
-            <Settings className="w-4 h-4 text-[#9e7753]" />
-            <span>Kategóriák & Anyagok Kezelése</span>
+            <Settings className="w-3.5 h-3.5 text-[#9e7753]" />
+            <span>Kategóriák & Angol Nevek</span>
           </button>
 
-          <Link
-            href="/admin/studio"
-            className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-[#d7c4ac] bg-white text-[#14171c] text-xs font-semibold hover:bg-[#faf7f2] transition shadow-xs"
-          >
-            <Wand2 className="w-4 h-4 text-[#9e7753]" />
-            <span>AI Fotóstúdió</span>
-          </Link>
-
           <button
-            onClick={() => {
-              setActiveItem({
-                id: "",
-                sku: `TS-TRAV-${Math.floor(10 + Math.random() * 90)}`,
-                name: "",
-                room: rooms[0]?.id || "nappali",
-                subType: "Dohányzóasztal",
-                materialType: "travertine",
-                materialDesc: "100% Természetes Olasz Navona Travertin, Matt Csiszolt",
-                dimensions: "120 x 70 x 40 cm",
-                sellingPriceHuf: 389000,
-                purchasePriceUsd: 140,
-                landedCostHuf: 82000,
-                marginPercent: 78.9,
-                physicalStock: 1,
-                inTransitStock: 10,
-                cbm: 0.35,
-                isLive: true,
-                imageTag: "Staging Szükséges",
-              });
-              setShowAddModal(true);
-            }}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#14171c] text-white text-xs font-bold hover:bg-[#2e2118] transition shadow-xs"
+            onClick={handleOpenAdd}
+            className="px-4 py-2.5 rounded-xl bg-[#14171c] text-white font-bold text-xs hover:bg-[#2e2118] transition flex items-center gap-1.5 shadow-xs"
           >
             <Plus className="w-4 h-4 text-[#d7c4ac]" />
             <span>+ Új Bútor Felvitele</span>
@@ -518,21 +531,13 @@ export default function CatalogManagerPage() {
         </div>
       </div>
 
-      {/* Filter & Search Bar */}
-      <div className="bg-white p-5 rounded-3xl border border-[#e8ddcf] shadow-xs space-y-4">
-        {/* 1. Room Types */}
+      {/* Multi-Level Filtering Panel */}
+      <div className="bg-white rounded-3xl border border-[#e8ddcf] p-5 shadow-xs space-y-4">
+        {/* 1. Room Level */}
         <div>
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] uppercase tracking-wider text-[#805e43] font-bold block">
-              1. Szobatípus Szerinti Szűrés:
-            </span>
-            <button
-              onClick={() => setShowCategoryModal(true)}
-              className="text-[11px] text-[#9e7753] font-bold hover:underline flex items-center gap-1"
-            >
-              <Plus className="w-3 h-3" /> Kategóriák & Bútortípusok Kezelése
-            </button>
-          </div>
+          <span className="text-[11px] uppercase tracking-wider text-[#805e43] font-bold block mb-2">
+            1. Szobatípus Kategória:
+          </span>
           <div className="flex items-center gap-2 overflow-x-auto pb-1">
             <button
               onClick={() => {
@@ -545,7 +550,7 @@ export default function CatalogManagerPage() {
                   : "bg-[#faf7f2] text-[#553f31] border border-[#e8ddcf] hover:bg-[#f4efe8]"
               }`}
             >
-              🛋️ Összes Szoba ({items.length})
+              Összes Szoba ({items.length})
             </button>
             {rooms.map((room) => {
               const count = items.filter((i) => i.room === room.id).length;
@@ -556,35 +561,30 @@ export default function CatalogManagerPage() {
                     setSelectedRoom(room.id);
                     setSelectedSubType("all");
                   }}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 ${
                     selectedRoom === room.id
                       ? "bg-[#14171c] text-white shadow-xs"
                       : "bg-[#faf7f2] text-[#553f31] border border-[#e8ddcf] hover:bg-[#f4efe8]"
                   }`}
                 >
-                  {room.name} ({count})
+                  <span>{room.name}</span>
+                  {room.nameEn && <span className="text-[10px] opacity-70 font-normal">({room.nameEn})</span>}
+                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                    selectedRoom === room.id ? "bg-white/20 text-white" : "bg-white text-[#805e43] border border-[#e8ddcf]"
+                  }`}>
+                    {count}
+                  </span>
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* 2. Room SubTypes (Bútortípusok) Filter */}
+        {/* 2. Subtypes in Room */}
         <div className="pt-3 border-t border-[#f4ede4]">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] uppercase tracking-wider text-[#805e43] font-bold block">
-              2. Bútortípus Szerinti Szűrés ({currentRoomObj ? currentRoomObj.name : "Összes Kategória"}):
-            </span>
-            <button
-              onClick={() => {
-                if (currentRoomObj) setTargetRoomForSubType(currentRoomObj.id);
-                setShowCategoryModal(true);
-              }}
-              className="text-[11px] text-[#9e7753] font-bold hover:underline flex items-center gap-1"
-            >
-              <Plus className="w-3 h-3" /> Új Típus Hozzáadása
-            </button>
-          </div>
+          <span className="text-[11px] uppercase tracking-wider text-[#805e43] font-bold block mb-2">
+            2. Bútortípus (Szűrés):
+          </span>
           <div className="flex items-center gap-2 overflow-x-auto pb-1">
             <button
               onClick={() => setSelectedSubType("all")}
@@ -594,15 +594,14 @@ export default function CatalogManagerPage() {
                   : "bg-[#faf7f2] text-[#553f31] border border-[#e8ddcf] hover:bg-[#f4efe8]"
               }`}
             >
-              Összes Bútortípus
+              Összes Típus
             </button>
-            {displaySubTypes.map((sub) => {
+            {rooms.find(r => r.id === selectedRoom)?.subTypes.filter(st => st.id !== "all").map((sub) => {
               const count = items.filter((i) => {
                 const matchesRoom = selectedRoom === "all" || i.room === selectedRoom;
                 const itemSub = (i.subType || "").toLowerCase();
                 const subName = sub.name.toLowerCase();
-                const subSlug = sub.slug.toLowerCase();
-                return matchesRoom && (itemSub === subSlug || itemSub.includes(subName) || subName.includes(itemSub));
+                return matchesRoom && (itemSub === sub.slug || itemSub.includes(subName) || subName.includes(itemSub));
               }).length;
 
               return (
@@ -622,41 +621,13 @@ export default function CatalogManagerPage() {
           </div>
         </div>
 
-        {/* 3. Materials Filter */}
-        <div className="pt-3 border-t border-[#f4ede4]">
-          <span className="text-[11px] uppercase tracking-wider text-[#805e43] font-bold block mb-2">
-            3. Anyaghasználat Szerinti Szűrés:
-          </span>
-          <div className="flex items-center gap-2 overflow-x-auto pb-1">
-            {materials.map((mat) => (
-              <button
-                key={mat.id}
-                onClick={() => setSelectedMaterial(mat.id)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition flex items-center gap-1.5 ${
-                  selectedMaterial === mat.id
-                    ? "bg-[#553f31] text-white shadow-xs"
-                    : "bg-[#faf7f2] text-[#553f31] border border-[#e8ddcf] hover:bg-[#f4efe8]"
-                }`}
-              >
-                {mat.colorHex && (
-                  <span
-                    className="w-2.5 h-2.5 rounded-full border border-black/20"
-                    style={{ backgroundColor: mat.colorHex }}
-                  />
-                )}
-                <span>{mat.name}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
         {/* Search & Webshop Visibility Status Filter */}
         <div className="pt-3 border-t border-[#f4ede4] flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div className="relative flex-1">
             <Search className="w-4 h-4 text-[#805e43] absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Keresés bútor név, cikkszám (SKU), travertin/márvány leírás alapján..."
+              placeholder="Keresés magyar vagy angol név, cikkszám (SKU), leírás alapján..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-[#e8ddcf] bg-[#faf8f5] focus:outline-none focus:ring-2 focus:ring-[#9e7753]/30"
@@ -704,7 +675,7 @@ export default function CatalogManagerPage() {
       {/* Catalog Table */}
       <div className="bg-white rounded-3xl border border-[#e8ddcf] p-6 shadow-xs space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-[#14171c]">Bútorkatalógus Tételei</h2>
+          <h2 className="text-sm font-bold text-[#14171c]">Bútorkatalógus Tételei (Kétnyelvű Rendszer)</h2>
           <span className="text-xs text-[#805e43] font-medium">{filteredItems.length} bútor megjelenítve</span>
         </div>
 
@@ -712,14 +683,11 @@ export default function CatalogManagerPage() {
           <table className="w-full text-left text-xs">
             <thead className="bg-[#f4efe8] text-[#553f31]">
               <tr>
-                <th className="p-3 font-semibold rounded-l-lg">Bútor & Anyaghasználat</th>
+                <th className="p-3 font-semibold rounded-l-lg">Bútor (HU & EN)</th>
                 <th className="p-3 font-semibold">Szoba & Típus</th>
                 <th className="p-3 font-semibold text-center">Fizikai Raktár</th>
                 <th className="p-3 font-semibold text-center">Konténerben Úton</th>
-                <th className="p-3 font-semibold text-right">Gyári Ár (USD)</th>
-                <th className="p-3 font-semibold text-right">Landed Önköltség</th>
                 <th className="p-3 font-semibold text-right">Eladási Ár (HUF)</th>
-                <th className="p-3 font-semibold text-center">Árrés</th>
                 <th className="p-3 font-semibold text-center">Weboldali Megjelenítés</th>
                 <th className="p-3 font-semibold text-center rounded-r-lg">Műveletek</th>
               </tr>
@@ -729,7 +697,17 @@ export default function CatalogManagerPage() {
                 <tr key={item.id} className="hover:bg-[#faf8f5] transition group">
                   <td className="p-3">
                     <span className="font-bold text-[#14171c] block text-sm">{item.name}</span>
-                    <span className="text-[11px] text-[#805e43] block mt-0.5">{item.materialDesc}</span>
+                    {item.nameEn ? (
+                      <span className="text-[11px] text-[#9e7753] font-semibold flex items-center gap-1 mt-0.5">
+                        <span>🇬🇧</span>
+                        <span>{item.nameEn}</span>
+                      </span>
+                    ) : (
+                      <span className="text-[10px] text-amber-600 italic mt-0.5 block">
+                        ⚠️ Nincs megadva angol név
+                      </span>
+                    )}
+                    <span className="text-[11px] text-[#805e43] block mt-1">{item.materialDesc}</span>
                     <div className="flex items-center gap-2 mt-1">
                       <span className="font-mono text-[10px] text-[#9e7753] font-semibold">{item.sku}</span>
                       <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#faf7f2] text-[#805e43] border border-[#d7c4ac]">
@@ -748,82 +726,53 @@ export default function CatalogManagerPage() {
                   </td>
                   <td className="p-3 text-center">
                     <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-bold ${
-                      item.physicalStock > 0 ? "bg-emerald-100 text-emerald-800" : "bg-amber-50 text-amber-800"
+                      item.physicalStock > 0 ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"
                     }`}>
                       {item.physicalStock} db
                     </span>
                   </td>
                   <td className="p-3 text-center">
-                    <span className="inline-block px-2.5 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-800 border border-blue-200">
+                    <span className="inline-block px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">
                       +{item.inTransitStock} db
                     </span>
                   </td>
-                  <td className="p-3 text-right font-medium text-[#14171c]">
-                    ${item.purchasePriceUsd}
-                  </td>
-                  <td className="p-3 text-right font-medium text-[#684d39]">
-                    {new Intl.NumberFormat("hu-HU").format(item.landedCostHuf)} Ft
-                  </td>
-                  <td className="p-3 text-right font-bold text-[#14171c] text-sm font-serif">
-                    {new Intl.NumberFormat("hu-HU").format(item.sellingPriceHuf)} Ft
-                  </td>
-                  <td className="p-3 text-center font-bold text-emerald-700">
-                    <span className="bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                      {item.marginPercent}%
+                  <td className="p-3 text-right">
+                    <span className="font-bold text-[#14171c] text-sm font-serif block">
+                      {item.sellingPriceHuf.toLocaleString("hu-HU")} Ft
+                    </span>
+                    <span className="text-[10px] text-emerald-600 font-semibold">
+                      +{item.marginPercent}% árrés
                     </span>
                   </td>
-                  
-                  {/* Webshop Visibility Switch */}
                   <td className="p-3 text-center">
                     <button
-                      onClick={(e) => toggleLiveStatus(item.id, e)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-bold transition shadow-xs ${
+                      onClick={() => handleToggleLive(item.id)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 mx-auto ${
                         item.isLive
-                          ? "bg-emerald-100 text-emerald-900 border border-emerald-300 hover:bg-emerald-200"
-                          : "bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200"
+                          ? "bg-emerald-600 text-white shadow-xs hover:bg-emerald-700"
+                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                       }`}
-                      title="Kattints a láthatóság váltásához"
+                      title={item.isLive ? "Kattints az elrejtéshez" : "Kattints az élesítéshez"}
                     >
-                      {item.isLive ? (
-                        <>
-                          <Eye className="w-3.5 h-3.5 text-emerald-600" />
-                          <span>Éles Webshopon</span>
-                        </>
-                      ) : (
-                        <>
-                          <EyeOff className="w-3.5 h-3.5 text-gray-500" />
-                          <span>Rejtett / Vázlat</span>
-                        </>
-                      )}
+                      {item.isLive ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                      <span>{item.isLive ? "Éles" : "Piszkozat"}</span>
                     </button>
                   </td>
-
-                  {/* Actions (View on Webshop, Edit & Delete) */}
                   <td className="p-3 text-center">
-                    <div className="inline-flex items-center gap-1">
-                      <Link
-                        href={`/termek/${item.id}`}
-                        target="_blank"
-                        className="p-1.5 rounded-lg text-[#805e43] hover:text-[#14171c] hover:bg-[#f4efe8] transition"
-                        title="Megtekintés / Konfigurátor tesztelése új lapon"
-                      >
-                        <ArrowRight className="w-4 h-4" />
-                      </Link>
-
+                    <div className="flex items-center justify-center gap-1.5">
                       <button
-                        onClick={() => handleOpenEdit(item)}
-                        className="p-1.5 rounded-lg text-[#553f31] hover:text-[#14171c] hover:bg-[#f4efe8] transition"
-                        title="Bútor módosítása"
+                        onClick={() => handleEditClick(item)}
+                        className="p-2 rounded-xl bg-[#faf7f2] hover:bg-[#9e7753] hover:text-white text-[#553f31] transition border border-[#e8ddcf]"
+                        title="Bútor & Angol Név Szerkesztése"
                       >
-                        <Edit3 className="w-4 h-4" />
+                        <Edit3 className="w-3.5 h-3.5" />
                       </button>
-
                       <button
                         onClick={() => setShowDeleteConfirmId(item.id)}
-                        className="p-1.5 rounded-lg text-gray-400 hover:text-rose-600 hover:bg-rose-50 transition"
-                        title="Bútor törlése"
+                        className="p-2 rounded-xl bg-[#faf7f2] hover:bg-rose-600 hover:text-white text-[#553f31] transition border border-[#e8ddcf]"
+                        title="Törlés"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </td>
@@ -834,14 +783,16 @@ export default function CatalogManagerPage() {
         </div>
       </div>
 
-      {/* EDIT PRODUCT MODAL */}
+      {/* EDIT MODAL WITH BILINGUAL HU / EN FIELDS */}
       {showEditModal && activeItem && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 border border-[#e8ddcf] shadow-2xl space-y-4 animate-in fade-in zoom-in-95">
+          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 border border-[#e8ddcf] shadow-2xl space-y-4 animate-in fade-in zoom-in-95 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-[#e8ddcf]">
               <div className="flex items-center gap-2">
                 <Edit3 className="w-5 h-5 text-[#9e7753]" />
-                <h3 className="font-bold text-base text-[#14171c]">Bútor Módosítása</h3>
+                <h3 className="font-bold text-base text-[#14171c]">
+                  Bútor és Angol Megnevezések Szerkesztése
+                </h3>
               </div>
               <button
                 onClick={() => setShowEditModal(false)}
@@ -851,58 +802,73 @@ export default function CatalogManagerPage() {
               </button>
             </div>
 
-            <form onSubmit={handleSaveEdit} className="space-y-3.5 text-xs">
-              <div>
-                <label className="font-bold text-[#553f31] block mb-1">Bútor Neve *</label>
-                <input
-                  type="text"
-                  required
-                  value={activeItem.name}
-                  onChange={(e) => setActiveItem({ ...activeItem, name: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#e8ddcf] bg-[#faf8f5] focus:outline-none focus:ring-2 focus:ring-[#9e7753]/30 font-bold text-[#14171c]"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="font-bold text-[#553f31] block mb-1">Cikkszám (SKU)</label>
-                  <input
-                    type="text"
-                    value={activeItem.sku}
-                    onChange={(e) => setActiveItem({ ...activeItem, sku: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5] font-mono"
-                  />
+            <form onSubmit={handleSaveEdit} className="space-y-4 text-xs">
+              
+              {/* Multilingual Names Box */}
+              <div className="p-4 rounded-2xl bg-[#faf8f5] border border-[#e8ddcf] space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-[#14171c] flex items-center gap-1.5">
+                    <Globe className="w-4 h-4 text-[#9e7753]" />
+                    <span>Kétnyelvű Terméknév (HU / EN)</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={autoGenerateEnglishName}
+                    className="px-2.5 py-1 rounded-lg bg-white border border-[#d7c4ac] text-[11px] font-bold text-[#805e43] hover:bg-[#14171c] hover:text-white transition flex items-center gap-1"
+                  >
+                    <Wand2 className="w-3 h-3 text-[#9e7753]" />
+                    <span>✨ Angol név AI kitöltése</span>
+                  </button>
                 </div>
 
-                <div>
-                  <label className="font-bold text-[#553f31] block mb-1">Bútortípus (Szobán belül) *</label>
-                  <div className="space-y-1">
-                    <select
-                      value={activeItem.subType}
-                      onChange={(e) => setActiveItem({ ...activeItem, subType: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5] font-semibold"
-                    >
-                      <option value="">-- Válassz típust --</option>
-                      {rooms
-                        .find((r) => r.id === activeItem.room)
-                        ?.subTypes.filter((st) => st.id !== "all")
-                        .map((st) => (
-                          <option key={st.id} value={st.name}>
-                            {st.name}
-                          </option>
-                        ))}
-                    </select>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="font-bold text-[#553f31] block mb-1">🇭🇺 Név (Magyar) *</label>
                     <input
                       type="text"
-                      placeholder="Vagy írj be egyedi típust..."
-                      value={activeItem.subType}
-                      onChange={(e) => setActiveItem({ ...activeItem, subType: e.target.value })}
-                      className="w-full px-3 py-1.5 rounded-xl border border-[#e8ddcf] bg-white text-[11px]"
+                      required
+                      value={activeItem.name}
+                      onChange={(e) => setActiveItem({ ...activeItem, name: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#e8ddcf] bg-white font-bold text-[#14171c]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="font-bold text-[#553f31] block mb-1">🇬🇧 Név (Angol / English Name)</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Aura Monolith Travertine Dining Table"
+                      value={activeItem.nameEn || ""}
+                      onChange={(e) => setActiveItem({ ...activeItem, nameEn: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#e8ddcf] bg-white font-bold text-[#14171c]"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                  <div>
+                    <label className="font-bold text-[#553f31] block mb-1">🇭🇺 Anyagleírás (Magyar)</label>
+                    <input
+                      type="text"
+                      value={activeItem.materialDesc}
+                      onChange={(e) => setActiveItem({ ...activeItem, materialDesc: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-white text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-bold text-[#553f31] block mb-1">🇬🇧 Anyagleírás (Angol)</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. 100% Authentic Italian Travertine, Honed"
+                      value={activeItem.materialDescEn || ""}
+                      onChange={(e) => setActiveItem({ ...activeItem, materialDescEn: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-white text-xs"
                     />
                   </div>
                 </div>
               </div>
 
+              {/* Category and SubType */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="font-bold text-[#553f31] block mb-1">Szoba Kategória</label>
@@ -912,180 +878,7 @@ export default function CatalogManagerPage() {
                     className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5]"
                   >
                     {rooms.map((r) => (
-                      <option key={r.id} value={r.id}>{r.name}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="font-bold text-[#553f31] block mb-1">Anyag Típus</label>
-                  <select
-                    value={activeItem.materialType}
-                    onChange={(e) => setActiveItem({ ...activeItem, materialType: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5]"
-                  >
-                    {materials.filter((m) => m.id !== "all").map((m) => (
-                      <option key={m.id} value={m.id}>{m.name}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="font-bold text-[#553f31] block mb-1">Részletes Anyagleírás</label>
-                <input
-                  type="text"
-                  value={activeItem.materialDesc}
-                  onChange={(e) => setActiveItem({ ...activeItem, materialDesc: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5]"
-                />
-              </div>
-
-              <div className="grid grid-cols-3 gap-3">
-                <div>
-                  <label className="font-bold text-[#553f31] block mb-1">Eladási Ár (HUF)</label>
-                  <input
-                    type="number"
-                    value={activeItem.sellingPriceHuf}
-                    onChange={(e) => setActiveItem({ ...activeItem, sellingPriceHuf: Number(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5] font-bold"
-                  />
-                </div>
-                <div>
-                  <label className="font-bold text-[#553f31] block mb-1">Gyári Ár (USD)</label>
-                  <input
-                    type="number"
-                    value={activeItem.purchasePriceUsd}
-                    onChange={(e) => setActiveItem({ ...activeItem, purchasePriceUsd: Number(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5]"
-                  />
-                </div>
-                <div>
-                  <label className="font-bold text-[#553f31] block mb-1">Méretek</label>
-                  <input
-                    type="text"
-                    value={activeItem.dimensions}
-                    onChange={(e) => setActiveItem({ ...activeItem, dimensions: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5]"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="font-bold text-[#553f31] block mb-1">Fizikai Raktárkészlet (db)</label>
-                  <input
-                    type="number"
-                    value={activeItem.physicalStock}
-                    onChange={(e) => setActiveItem({ ...activeItem, physicalStock: Number(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5]"
-                  />
-                </div>
-                <div>
-                  <label className="font-bold text-[#553f31] block mb-1">Konténerben Úton (db)</label>
-                  <input
-                    type="number"
-                    value={activeItem.inTransitStock}
-                    onChange={(e) => setActiveItem({ ...activeItem, inTransitStock: Number(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5]"
-                  />
-                </div>
-              </div>
-
-              {/* Webshop Visibility Toggle in Edit Modal */}
-              <div className="p-3 rounded-2xl bg-[#faf7f2] border border-[#e8ddcf] flex items-center justify-between">
-                <div>
-                  <span className="font-bold text-[#14171c] block">Megjelenítés a Weboldalon</span>
-                  <span className="text-[11px] text-[#805e43]">
-                    {activeItem.isLive ? "A termék azonnal látható és konfigurálható a vásárlóknak" : "A termék elrejtve, csak adminisztrátorok látják"}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setActiveItem({ ...activeItem, isLive: !activeItem.isLive })}
-                  className={`px-3.5 py-2 rounded-xl font-bold text-xs transition flex items-center gap-1.5 ${
-                    activeItem.isLive
-                      ? "bg-emerald-600 text-white shadow-xs"
-                      : "bg-gray-200 text-gray-700"
-                  }`}
-                >
-                  {activeItem.isLive ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                  <span>{activeItem.isLive ? "Éles (Bekapcsolva)" : "Kikapcsolva"}</span>
-                </button>
-              </div>
-
-              <div className="pt-3 border-t border-[#e8ddcf] flex items-center justify-between">
-                <Link
-                  href={`/termek/${activeItem.id}`}
-                  target="_blank"
-                  className="text-xs text-[#9e7753] font-bold hover:underline flex items-center gap-1"
-                >
-                  <span>Termékoldal & Konfigurátor tesztelése</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-
-                <div className="flex items-center gap-2.5">
-                  <button
-                    type="button"
-                    onClick={() => setShowEditModal(false)}
-                    className="px-4 py-2 rounded-xl border border-[#e8ddcf] text-xs font-semibold text-[#553f31] hover:bg-[#faf8f5]"
-                  >
-                    Mégse
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-6 py-2 rounded-xl bg-[#14171c] text-white text-xs font-bold hover:bg-[#2e2118] shadow-xs flex items-center gap-1.5"
-                  >
-                    <Check className="w-4 h-4 text-emerald-400" />
-                    <span>Változtatások Mentése</span>
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* CREATE NEW PRODUCT MODAL */}
-      {showAddModal && activeItem && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 border border-[#e8ddcf] shadow-2xl space-y-4 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between pb-3 border-b border-[#e8ddcf]">
-              <div className="flex items-center gap-2">
-                <Plus className="w-5 h-5 text-[#9e7753]" />
-                <h3 className="font-bold text-base text-[#14171c]">Új Bútor Felvitele a Katalógusba</h3>
-              </div>
-              <button
-                onClick={() => setShowAddModal(false)}
-                className="p-1.5 rounded-full hover:bg-gray-100 text-gray-500"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleCreateProduct} className="space-y-3.5 text-xs">
-              <div>
-                <label className="font-bold text-[#553f31] block mb-1">Bútor Neve *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="pl. Monolit Romano Travertin TV-Szekrény"
-                  value={activeItem.name}
-                  onChange={(e) => setActiveItem({ ...activeItem, name: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#e8ddcf] bg-[#faf8f5] font-bold text-[#14171c]"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="font-bold text-[#553f31] block mb-1">Szoba Kategória</label>
-                  <select
-                    value={activeItem.room}
-                    onChange={(e) => setActiveItem({ ...activeItem, room: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5]"
-                  >
-                    {rooms.map((r) => (
-                      <option key={r.id} value={r.id}>{r.name}</option>
+                      <option key={r.id} value={r.id}>{r.name} ({r.nameEn || r.id})</option>
                     ))}
                   </select>
                 </div>
@@ -1106,42 +899,185 @@ export default function CatalogManagerPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-bold text-[#553f31] block mb-1">Bútortípus (Szobán belül) *</label>
-                  <div className="space-y-1">
-                    <select
-                      value={activeItem.subType}
-                      onChange={(e) => setActiveItem({ ...activeItem, subType: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5] font-semibold"
-                    >
-                      <option value="">-- Válassz típust --</option>
-                      {rooms
-                        .find((r) => r.id === activeItem.room)
-                        ?.subTypes.filter((st) => st.id !== "all")
-                        .map((st) => (
-                          <option key={st.id} value={st.name}>
-                            {st.name}
-                          </option>
-                        ))}
-                    </select>
-                    <input
-                      type="text"
-                      placeholder="Vagy írj be egyedi típust..."
-                      value={activeItem.subType}
-                      onChange={(e) => setActiveItem({ ...activeItem, subType: e.target.value })}
-                      className="w-full px-3 py-1.5 rounded-xl border border-[#e8ddcf] bg-white text-[11px]"
-                    />
-                  </div>
+                  <label className="font-bold text-[#553f31] block mb-1">Bútortípus</label>
+                  <input
+                    type="text"
+                    value={activeItem.subType}
+                    onChange={(e) => setActiveItem({ ...activeItem, subType: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5]"
+                  />
                 </div>
-
                 <div>
                   <label className="font-bold text-[#553f31] block mb-1">Méretek</label>
                   <input
                     type="text"
-                    placeholder="pl. 200 x 45 x 50 cm"
                     value={activeItem.dimensions}
                     onChange={(e) => setActiveItem({ ...activeItem, dimensions: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5]"
                   />
+                </div>
+              </div>
+
+              {/* Price and Stock */}
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="font-bold text-[#553f31] block mb-1">Eladási Ár (HUF)</label>
+                  <input
+                    type="number"
+                    value={activeItem.sellingPriceHuf}
+                    onChange={(e) => setActiveItem({ ...activeItem, sellingPriceHuf: Number(e.target.value) })}
+                    className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5] font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="font-bold text-[#553f31] block mb-1">Raktárkészlet (db)</label>
+                  <input
+                    type="number"
+                    value={activeItem.physicalStock}
+                    onChange={(e) => setActiveItem({ ...activeItem, physicalStock: Number(e.target.value) })}
+                    className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5]"
+                  />
+                </div>
+                <div>
+                  <label className="font-bold text-[#553f31] block mb-1">Konténerben Úton (db)</label>
+                  <input
+                    type="number"
+                    value={activeItem.inTransitStock}
+                    onChange={(e) => setActiveItem({ ...activeItem, inTransitStock: Number(e.target.value) })}
+                    className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5]"
+                  />
+                </div>
+              </div>
+
+              {/* Webshop Visibility Toggle */}
+              <div className="p-3.5 rounded-2xl bg-[#faf7f2] border border-[#e8ddcf] flex items-center justify-between">
+                <div>
+                  <span className="font-bold text-[#14171c] block">Weboldali Megjelenítés</span>
+                  <span className="text-[11px] text-[#805e43]">
+                    {activeItem.isLive ? "A termék azonnal látható a vásárlóknak" : "Rejtve (piszkozat állapotban)"}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveItem({ ...activeItem, isLive: !activeItem.isLive })}
+                  className={`px-3.5 py-2 rounded-xl font-bold text-xs transition flex items-center gap-1.5 ${
+                    activeItem.isLive
+                      ? "bg-emerald-600 text-white shadow-xs"
+                      : "bg-gray-200 text-gray-700"
+                  }`}
+                >
+                  {activeItem.isLive ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                  <span>{activeItem.isLive ? "Éles" : "Piszkozat"}</span>
+                </button>
+              </div>
+
+              <div className="pt-3 border-t border-[#e8ddcf] flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setShowEditModal(false)}
+                  className="px-4 py-2 rounded-xl border border-[#e8ddcf] text-xs font-semibold text-[#553f31] hover:bg-[#faf8f5]"
+                >
+                  Mégse
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2 rounded-xl bg-[#14171c] text-white text-xs font-bold hover:bg-[#2e2118] shadow-xs flex items-center gap-1.5"
+                >
+                  <Check className="w-4 h-4 text-emerald-400" />
+                  <span>Változtatások Mentése</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* CREATE MODAL */}
+      {showAddModal && activeItem && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 border border-[#e8ddcf] shadow-2xl space-y-4 animate-in fade-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-[#e8ddcf]">
+              <div className="flex items-center gap-2">
+                <Plus className="w-5 h-5 text-[#9e7753]" />
+                <h3 className="font-bold text-base text-[#14171c]">Új Bútor Felvitele (Kétnyelvű Támogatással)</h3>
+              </div>
+              <button
+                onClick={() => setShowAddModal(false)}
+                className="p-1.5 rounded-full hover:bg-gray-100 text-gray-500"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateProduct} className="space-y-4 text-xs">
+              
+              <div className="p-4 rounded-2xl bg-[#faf8f5] border border-[#e8ddcf] space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-[#14171c] flex items-center gap-1.5">
+                    <Globe className="w-4 h-4 text-[#9e7753]" />
+                    <span>Termék Megnevezése (HU & EN)</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={autoGenerateEnglishName}
+                    className="px-2.5 py-1 rounded-lg bg-white border border-[#d7c4ac] text-[11px] font-bold text-[#805e43] hover:bg-[#14171c] hover:text-white transition flex items-center gap-1"
+                  >
+                    <Wand2 className="w-3 h-3 text-[#9e7753]" />
+                    <span>✨ Angol név AI kitöltése</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="font-bold text-[#553f31] block mb-1">🇭🇺 Bútor Neve (Magyar) *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="pl. Aura Monolit Travertin Étkezőasztal"
+                      value={activeItem.name}
+                      onChange={(e) => setActiveItem({ ...activeItem, name: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#e8ddcf] bg-white font-bold text-[#14171c]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="font-bold text-[#553f31] block mb-1">🇬🇧 Bútor Neve (Angol)</label>
+                    <input
+                      type="text"
+                      placeholder="pl. Aura Monolith Travertine Dining Table"
+                      value={activeItem.nameEn || ""}
+                      onChange={(e) => setActiveItem({ ...activeItem, nameEn: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#e8ddcf] bg-white font-bold text-[#14171c]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold text-[#553f31] block mb-1">Szoba Kategória</label>
+                  <select
+                    value={activeItem.room}
+                    onChange={(e) => setActiveItem({ ...activeItem, room: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5]"
+                  >
+                    {rooms.map((r) => (
+                      <option key={r.id} value={r.id}>{r.name} ({r.nameEn || r.id})</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="font-bold text-[#553f31] block mb-1">Fő Anyag</label>
+                  <select
+                    value={activeItem.materialType}
+                    onChange={(e) => setActiveItem({ ...activeItem, materialType: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5]"
+                  >
+                    {materials.filter((m) => m.id !== "all").map((m) => (
+                      <option key={m.id} value={m.id}>{m.name}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -1156,47 +1092,15 @@ export default function CatalogManagerPage() {
                   />
                 </div>
                 <div>
-                  <label className="font-bold text-[#553f31] block mb-1">Gyári Beszerzési Ár (USD)</label>
+                  <label className="font-bold text-[#553f31] block mb-1">Méretek</label>
                   <input
-                    type="number"
-                    value={activeItem.purchasePriceUsd}
-                    onChange={(e) => setActiveItem({ ...activeItem, purchasePriceUsd: Number(e.target.value) })}
+                    type="text"
+                    placeholder="pl. 200 x 100 x 76 cm"
+                    value={activeItem.dimensions}
+                    onChange={(e) => setActiveItem({ ...activeItem, dimensions: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5]"
                   />
                 </div>
-              </div>
-
-              <div>
-                <label className="font-bold text-[#553f31] block mb-1">Részletes Anyagleírás</label>
-                <input
-                  type="text"
-                  placeholder="pl. 100% Natúr Romano Travertin Mészkő, Matt Impregnált"
-                  value={activeItem.materialDesc}
-                  onChange={(e) => setActiveItem({ ...activeItem, materialDesc: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5]"
-                />
-              </div>
-
-              {/* Webshop Visibility Toggle */}
-              <div className="p-3 rounded-2xl bg-[#faf7f2] border border-[#e8ddcf] flex items-center justify-between">
-                <div>
-                  <span className="font-bold text-[#14171c] block">Azonnali Weboldali Megjelenítés</span>
-                  <span className="text-[11px] text-[#805e43]">
-                    {activeItem.isLive ? "A termék közzétéve a vásárlók felé" : "Rejtett vázlatként mentve"}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setActiveItem({ ...activeItem, isLive: !activeItem.isLive })}
-                  className={`px-3.5 py-2 rounded-xl font-bold text-xs transition flex items-center gap-1.5 ${
-                    activeItem.isLive
-                      ? "bg-emerald-600 text-white shadow-xs"
-                      : "bg-gray-200 text-gray-700"
-                  }`}
-                >
-                  {activeItem.isLive ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                  <span>{activeItem.isLive ? "Éles Webshopon" : "Piszkozat"}</span>
-                </button>
               </div>
 
               <div className="pt-3 border-t border-[#e8ddcf] flex items-center justify-end gap-2.5">
@@ -1227,7 +1131,9 @@ export default function CatalogManagerPage() {
             <div className="flex items-center justify-between pb-3 border-b border-[#e8ddcf]">
               <div className="flex items-center gap-2">
                 <Settings className="w-5 h-5 text-[#9e7753]" />
-                <h3 className="font-bold text-base text-[#14171c]">Kategóriák, Szobán Belüli Bútortípusok & Anyagok Kezelése</h3>
+                <h3 className="font-bold text-base text-[#14171c]">
+                  Kategóriák, Bútortípusok & Angol Nevek Kezelése
+                </h3>
               </div>
               <button
                 onClick={() => setShowCategoryModal(false)}
@@ -1238,15 +1144,14 @@ export default function CatalogManagerPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
-              {/* SECTION 1: Room SubTypes (Bútortípusok) Manager */}
+              {/* SECTION 1: SubTypes Manager */}
               <div className="space-y-3 md:col-span-2 bg-[#faf7f2] p-4 rounded-2xl border border-[#e8ddcf]">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div className="flex items-center gap-2 font-bold text-[#14171c]">
                     <Layers className="w-4 h-4 text-[#9e7753]" />
-                    <span>Szobán Belüli Bútortípusok Menedzsmentje (TV-állvány, Asztal, Fotel, stb.)</span>
+                    <span>Szobán Belüli Bútortípusok (HU / EN)</span>
                   </div>
 
-                  {/* Choose Room for SubTypes */}
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-[#805e43]">Szoba:</span>
                     <select
@@ -1263,55 +1168,56 @@ export default function CatalogManagerPage() {
                   </div>
                 </div>
 
-                {/* Subtypes List for Selected Room */}
                 <div className="space-y-1.5 max-h-44 overflow-y-auto pr-1">
                   {rooms
                     .find((r) => r.id === targetRoomForSubType)
                     ?.subTypes.filter((st) => st.id !== "all")
-                    .map((st) => {
-                      const count = items.filter((i) => {
-                        const itemSub = (i.subType || "").toLowerCase();
-                        return i.room === targetRoomForSubType && (itemSub === st.slug || itemSub.includes(st.name.toLowerCase()));
-                      }).length;
-
-                      return (
-                        <div
-                          key={st.id}
-                          className="flex items-center justify-between p-2 rounded-xl bg-white border border-[#e8ddcf]"
-                        >
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-[#14171c]">{st.name}</span>
-                            <span className="text-[10px] text-gray-500 font-mono">({count} bútor a katalógusban)</span>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteSubType(targetRoomForSubType, st.id)}
-                            className="p-1 text-gray-400 hover:text-rose-600 rounded"
-                            title="Bútortípus törlése"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                    .map((st) => (
+                      <div
+                        key={st.id}
+                        className="flex items-center justify-between p-2 rounded-xl bg-white border border-[#e8ddcf]"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-[#14171c]">{st.name}</span>
+                          {st.nameEn && (
+                            <span className="text-[10px] text-[#9e7753] font-semibold">🇬🇧 {st.nameEn}</span>
+                          )}
                         </div>
-                      );
-                    })}
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteSubType(targetRoomForSubType, st.id)}
+                          className="p-1 text-gray-400 hover:text-rose-600 rounded"
+                          title="Bútortípus törlése"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
                 </div>
 
-                {/* Add new Subtype form */}
-                <form onSubmit={handleAddSubType} className="flex gap-2 pt-2 border-t border-[#e8ddcf]">
+                {/* Add new Subtype form with HU and EN */}
+                <form onSubmit={handleAddSubType} className="grid grid-cols-1 sm:grid-cols-12 gap-2 pt-2 border-t border-[#e8ddcf]">
                   <input
                     type="text"
                     required
-                    placeholder={`Új bútortípus hozzáadása ide: ${rooms.find(r => r.id === targetRoomForSubType)?.name} (pl. TV-állvány, Dohányzóasztal, Pad)`}
+                    placeholder="Magyar név (pl. TV-állvány)"
                     value={newSubTypeName}
                     onChange={(e) => setNewSubTypeName(e.target.value)}
-                    className="flex-1 px-3 py-2 rounded-xl border border-[#e8ddcf] bg-white focus:outline-none text-xs font-semibold"
+                    className="sm:col-span-5 px-3 py-2 rounded-xl border border-[#e8ddcf] bg-white text-xs font-semibold"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Angol név (pl. TV Console)"
+                    value={newSubTypeNameEn}
+                    onChange={(e) => setNewSubTypeNameEn(e.target.value)}
+                    className="sm:col-span-4 px-3 py-2 rounded-xl border border-[#e8ddcf] bg-white text-xs font-semibold"
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2 rounded-xl bg-[#14171c] text-white font-bold hover:bg-[#2e2118] transition flex items-center gap-1.5"
+                    className="sm:col-span-3 px-3 py-2 rounded-xl bg-[#14171c] text-white font-bold hover:bg-[#2e2118] transition flex items-center justify-center gap-1"
                   >
                     <Plus className="w-3.5 h-3.5 text-[#d7c4ac]" />
-                    <span>+ Típus Hozzáadása</span>
+                    <span>+ Hozzáad</span>
                   </button>
                 </form>
               </div>
@@ -1326,26 +1232,37 @@ export default function CatalogManagerPage() {
                 <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
                   {rooms.map((r) => (
                     <div key={r.id} className="flex items-center justify-between p-2 rounded-xl bg-[#faf8f5] border border-[#e8ddcf]">
-                      <span className="font-bold text-[#553f31]">{r.name}</span>
+                      <div>
+                        <span className="font-bold text-[#553f31]">{r.name}</span>
+                        {r.nameEn && <span className="text-[10px] text-[#9e7753] block">🇬🇧 {r.nameEn}</span>}
+                      </div>
                       <span className="text-[10px] text-gray-500 font-mono">#{r.id}</span>
                     </div>
                   ))}
                 </div>
 
-                {/* Add new Room form */}
-                <form onSubmit={handleAddRoom} className="flex gap-2 pt-1">
-                  <input
-                    type="text"
-                    placeholder="Új szoba (pl. Hálószoba)"
-                    value={newRoomName}
-                    onChange={(e) => setNewRoomName(e.target.value)}
-                    className="flex-1 px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5] focus:outline-none text-xs"
-                  />
+                <form onSubmit={handleAddRoom} className="space-y-2 pt-1">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Magyar név (pl. Háló)"
+                      value={newRoomName}
+                      onChange={(e) => setNewRoomName(e.target.value)}
+                      className="flex-1 px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5] text-xs"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Angol név (Bedroom)"
+                      value={newRoomNameEn}
+                      onChange={(e) => setNewRoomNameEn(e.target.value)}
+                      className="flex-1 px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5] text-xs"
+                    />
+                  </div>
                   <button
                     type="submit"
-                    className="px-3 py-2 rounded-xl bg-[#9e7753] text-white font-bold hover:bg-[#866343] transition"
+                    className="w-full py-2 rounded-xl bg-[#9e7753] text-white font-bold hover:bg-[#866343] transition"
                   >
-                    + Hozzáad
+                    + Új Szoba Kategória
                   </button>
                 </form>
               </div>
@@ -1367,33 +1284,44 @@ export default function CatalogManagerPage() {
                             style={{ backgroundColor: m.colorHex }}
                           />
                         )}
-                        <span className="font-bold text-[#553f31]">{m.name}</span>
+                        <div>
+                          <span className="font-bold text-[#553f31]">{m.name}</span>
+                          {m.nameEn && <span className="text-[10px] text-[#9e7753] block">🇬🇧 {m.nameEn}</span>}
+                        </div>
                       </div>
                       <span className="text-[10px] text-gray-500 font-mono">#{m.id}</span>
                     </div>
                   ))}
                 </div>
 
-                {/* Add new Material form */}
-                <form onSubmit={handleAddMaterial} className="flex gap-2 pt-1">
-                  <input
-                    type="color"
-                    value={newMaterialColor}
-                    onChange={(e) => setNewMaterialColor(e.target.value)}
-                    className="w-9 h-9 p-0.5 rounded-xl border border-[#e8ddcf] cursor-pointer bg-white"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Új anyag (pl. Ónix Kő)"
-                    value={newMaterialName}
-                    onChange={(e) => setNewMaterialName(e.target.value)}
-                    className="flex-1 px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5] focus:outline-none text-xs"
-                  />
+                <form onSubmit={handleAddMaterial} className="space-y-2 pt-1">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={newMaterialColor}
+                      onChange={(e) => setNewMaterialColor(e.target.value)}
+                      className="w-9 h-9 p-0.5 rounded-xl border border-[#e8ddcf] cursor-pointer bg-white shrink-0"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Magyar név (pl. Ónix Kő)"
+                      value={newMaterialName}
+                      onChange={(e) => setNewMaterialName(e.target.value)}
+                      className="flex-1 px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5] text-xs"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Angol név (Onyx)"
+                      value={newMaterialNameEn}
+                      onChange={(e) => setNewMaterialNameEn(e.target.value)}
+                      className="flex-1 px-3 py-2 rounded-xl border border-[#e8ddcf] bg-[#faf8f5] text-xs"
+                    />
+                  </div>
                   <button
                     type="submit"
-                    className="px-3 py-2 rounded-xl bg-[#9e7753] text-white font-bold hover:bg-[#866343] transition"
+                    className="w-full py-2 rounded-xl bg-[#9e7753] text-white font-bold hover:bg-[#866343] transition"
                   >
-                    + Hozzáad
+                    + Új Anyagtípus
                   </button>
                 </form>
               </div>

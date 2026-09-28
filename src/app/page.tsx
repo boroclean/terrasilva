@@ -2,36 +2,32 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { 
   Sparkles, 
-  ShoppingBag, 
   ArrowRight, 
   Palette, 
-  Star, 
   Gem, 
   Check, 
   ChevronRight, 
-  Filter, 
   Layers, 
-  Search,
-  Maximize2,
-  ShieldCheck,
-  Eye,
-  Menu,
-  X,
-  Phone
+  Menu, 
+  X, 
+  Phone,
+  Globe
 } from "lucide-react";
 import { ROOM_CATEGORIES, MATERIALS } from "@/lib/categories";
-import { PRODUCTS, ProductItem } from "@/lib/products";
+import { PRODUCTS } from "@/lib/products";
 import ProductCard from "@/components/ProductCard";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export default function Home() {
+  const { language, setLanguage, t } = useLanguage();
   const [selectedRoom, setSelectedRoom] = useState<string>("all");
   const [selectedSubType, setSelectedSubType] = useState<string>("all");
   const [selectedMaterial, setSelectedMaterial] = useState<string>("all");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const isEn = language === "en";
   const currentRoomObj = ROOM_CATEGORIES.find((r) => r.id === selectedRoom);
 
   // Dynamically compute available materials that exist for the currently selected room & subtype
@@ -54,8 +50,18 @@ export default function Home() {
   return (
     <main className="min-h-screen flex flex-col bg-[#faf7f2] text-[#14171c]">
       {/* Top Notification Banner */}
-      <div className="bg-[#14171c] text-[#d7c4ac] py-2 px-3 sm:px-6 text-center text-[11px] sm:text-xs font-medium border-b border-[#262c36]">
-        <span>✨ Természetes travertin mészkő, olasz márvány és tömörfa bútorok közvetlen importból • 100% garancia</span>
+      <div className="bg-[#14171c] text-[#d7c4ac] py-2 px-3 sm:px-6 text-center text-[11px] sm:text-xs font-medium border-b border-[#262c36] flex items-center justify-between max-w-7xl mx-auto w-full">
+        <span className="truncate">
+          {isEn 
+            ? "✨ Authentic Italian travertine, natural Carrara marble & solid hardwood direct from quarry • 100% guarantee" 
+            : "✨ Természetes travertin mészkő, olasz márvány és tömörfa bútorok közvetlen importból • 100% kőgarancia"}
+        </span>
+        <div className="hidden sm:flex items-center gap-3 shrink-0 ml-4">
+          <a href="tel:+36204076858" className="hover:text-white transition flex items-center gap-1">
+            <Phone className="w-3 h-3 text-[#9e7753]" />
+            <span>+36 20 407 6858</span>
+          </a>
+        </div>
       </div>
 
       {/* Navigation */}
@@ -67,28 +73,64 @@ export default function Home() {
             </div>
             <div>
               <span className="text-lg sm:text-xl font-bold tracking-tight text-[#14171c] font-serif block leading-none">TERRASILVA</span>
-              <span className="text-[9px] sm:text-[10px] uppercase tracking-widest text-[#9e7753] block mt-0.5 font-semibold">Stone & Timber Living</span>
+              <span className="text-[9px] sm:text-[10px] uppercase tracking-widest text-[#9e7753] block mt-0.5 font-semibold">
+                {t("nav.brandSub")}
+              </span>
             </div>
           </Link>
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-[#553f31]">
-            <Link href="#katalogus" className="hover:text-[#14171c] transition">Bútorkollekciók & Anyagok</Link>
-            <Link href="#egyedi-gyartas" className="hover:text-[#14171c] transition">Egyedi Gyártás</Link>
-            <Link href="#mintacsomag" className="hover:text-[#14171c] transition">Anyagminta Csomag</Link>
+            <Link href="#katalogus" className="hover:text-[#14171c] transition">
+              {t("nav.collections")}
+            </Link>
+            <Link href="/anyagok" className="text-[#805e43] hover:text-[#14171c] font-semibold transition flex items-center gap-1">
+              <span>{t("nav.materials")}</span>
+              <span className="text-[9px] uppercase font-bold px-1.5 py-0.2 rounded-full bg-[#e8ddcf] text-[#805e43]">8K</span>
+            </Link>
+            <Link href="#egyedi-gyartas" className="hover:text-[#14171c] transition">
+              {t("nav.customization")}
+            </Link>
             <div className="flex items-center gap-1.5 cursor-default select-none text-[#7a6454]">
-              <span>Bemutatóterem</span>
+              <span>{t("nav.showroom")}</span>
               <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#e8ddcf]/70 text-[#805e43] border border-[#d7c4ac]/70 shadow-2xs">
-                Hamarosan
+                {t("nav.comingSoon")}
               </span>
             </div>
           </nav>
 
-          {/* Right Header Actions */}
+          {/* Right Header Actions & Language Switcher */}
           <div className="flex items-center gap-2 sm:gap-3">
+            
+            {/* Bilingual Language Switcher Pill */}
+            <div className="flex items-center p-0.5 rounded-xl bg-white border border-[#e8ddcf] shadow-2xs text-xs font-bold">
+              <button
+                onClick={() => setLanguage("hu")}
+                className={`px-2 py-1 rounded-lg transition flex items-center gap-1 ${
+                  language === "hu"
+                    ? "bg-[#14171c] text-white shadow-xs"
+                    : "text-[#805e43] hover:text-[#14171c]"
+                }`}
+                title="Magyar nyelv"
+              >
+                <span>🇭🇺 HU</span>
+              </button>
+              <button
+                onClick={() => setLanguage("en")}
+                className={`px-2 py-1 rounded-lg transition flex items-center gap-1 ${
+                  language === "en"
+                    ? "bg-[#14171c] text-white shadow-xs"
+                    : "text-[#805e43] hover:text-[#14171c]"
+                }`}
+                title="English Language"
+              >
+                <span>🇬🇧 EN</span>
+              </button>
+            </div>
+
             <Link
               href="/admin"
-              className="hidden sm:inline-block text-xs font-semibold text-[#805e43] hover:text-[#14171c] transition px-2.5 py-1.5"
+              className="hidden lg:inline-block text-xs font-semibold text-[#805e43] hover:text-[#14171c] transition px-2 py-1.5"
             >
               Admin
             </Link>
@@ -96,7 +138,7 @@ export default function Home() {
               href="#katalogus"
               className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-[#14171c] text-white hover:bg-[#2e2118] transition shadow-xs"
             >
-              <span>Katalógus</span>
+              <span>{t("nav.collections")}</span>
               <ArrowRight className="w-3.5 h-3.5 text-[#d7c4ac]" />
             </Link>
 
@@ -114,13 +156,48 @@ export default function Home() {
         {/* Mobile Slide-Down Navigation Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden bg-white/98 backdrop-blur-xl border-b border-[#e8ddcf] px-5 py-5 space-y-4 animate-in slide-in-from-top duration-300 shadow-xl">
-            <nav className="flex flex-col space-y-3 text-sm font-medium text-[#553f31]">
+            
+            {/* Mobile Language Switcher */}
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-[#faf7f2] border border-[#e8ddcf]">
+              <span className="text-xs font-bold text-[#805e43] flex items-center gap-1.5">
+                <Globe className="w-4 h-4 text-[#9e7753]" />
+                <span>{isEn ? "Language / Nyelv:" : "Nyelvválasztás / Language:"}</span>
+              </span>
+              <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-[#d7c4ac]">
+                <button
+                  onClick={() => setLanguage("hu")}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold ${
+                    language === "hu" ? "bg-[#14171c] text-white" : "text-[#805e43]"
+                  }`}
+                >
+                  🇭🇺 HU
+                </button>
+                <button
+                  onClick={() => setLanguage("en")}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold ${
+                    language === "en" ? "bg-[#14171c] text-white" : "text-[#805e43]"
+                  }`}
+                >
+                  🇬🇧 EN
+                </button>
+              </div>
+            </div>
+
+            <nav className="flex flex-col space-y-2 text-sm font-medium text-[#553f31]">
               <Link 
                 href="#katalogus" 
                 onClick={() => setMobileMenuOpen(false)}
                 className="p-2.5 rounded-xl hover:bg-[#faf7f2] text-[#14171c] font-semibold flex items-center justify-between"
               >
-                <span>Bútorkollekciók & Anyagok</span>
+                <span>{t("nav.collections")}</span>
+                <ChevronRight className="w-4 h-4 text-[#9e7753]" />
+              </Link>
+              <Link 
+                href="/anyagok" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2.5 rounded-xl bg-[#faf7f2] text-[#9e7753] font-bold flex items-center justify-between"
+              >
+                <span>{t("nav.materials")} (8K)</span>
                 <ChevronRight className="w-4 h-4 text-[#9e7753]" />
               </Link>
               <Link 
@@ -128,21 +205,13 @@ export default function Home() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="p-2.5 rounded-xl hover:bg-[#faf7f2] flex items-center justify-between"
               >
-                <span>Egyedi Gyártás</span>
-                <ChevronRight className="w-4 h-4 text-[#9e7753]" />
-              </Link>
-              <Link 
-                href="#mintacsomag" 
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-xl hover:bg-[#faf7f2] flex items-center justify-between"
-              >
-                <span>Anyagminta Csomag (1.990 Ft)</span>
+                <span>{t("nav.customization")}</span>
                 <ChevronRight className="w-4 h-4 text-[#9e7753]" />
               </Link>
               <div className="p-2.5 rounded-xl bg-[#faf7f2] flex items-center justify-between text-xs text-[#7a6454]">
-                <span>Bemutatóterem</span>
+                <span>{t("nav.showroom")}</span>
                 <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#e8ddcf] text-[#805e43]">
-                  Hamarosan
+                  {t("nav.comingSoon")}
                 </span>
               </div>
             </nav>
@@ -153,46 +222,43 @@ export default function Home() {
                 className="flex items-center gap-2 p-2.5 rounded-xl bg-[#f7f3ee] text-[#14171c] font-bold"
               >
                 <Phone className="w-4 h-4 text-[#9e7753]" />
-                <span>Közvetlen Hívás: +36 20 407 6858</span>
+                <span>+36 20 407 6858 (Boronkay Bence)</span>
               </a>
               <Link
                 href="/admin"
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-center py-2.5 rounded-xl border border-[#d7c4ac] text-[#805e43] font-semibold hover:bg-[#14171c] hover:text-white transition"
               >
-                Admin Belépés & ERP
+                {t("nav.adminLogin")}
               </Link>
             </div>
           </div>
         )}
       </header>
 
-      {/* Hero Section with Clean Side-by-Side Split Layout (Responsive on all laptops & screens) */}
+      {/* Hero Section with Clean Side-by-Side Split Layout */}
       <section className="relative overflow-hidden pt-8 pb-12 md:pt-12 md:pb-16 px-4 sm:px-6 border-b border-[#e8ddcf] bg-gradient-to-br from-[#faf7f2] via-[#f7f2ea] to-[#f4ede4]">
-        {/* Soft Ambient Radial Warmth in the background */}
         <div className="absolute top-1/3 right-1/4 w-[600px] h-[400px] bg-[#9e7753]/12 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center">
             
-            {/* Left Column: Premium Typography & CTAs (Takes 6 cols on tablets/laptops/desktops) */}
+            {/* Left Column: Premium Typography & CTAs */}
             <div className="md:col-span-6 lg:col-span-6 space-y-4 md:space-y-5 text-left">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-[#d7c4ac] bg-white/80 backdrop-blur-xs text-[11px] font-semibold text-[#805e43] shadow-2xs">
                 <Gem className="w-3.5 h-3.5 text-[#9e7753]" />
-                <span>Terra (Kő & Travertin) • Silva (Nemes Tömörfa)</span>
+                <span>{t("hero.badge")}</span>
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-[#14171c] font-serif leading-[1.1]">
-                A természet ereje, <br />
+                {t("hero.title1")} <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9e7753] via-[#755235] to-[#14171c]">
-                  időtálló travertin
-                </span>{" "}
-                és tömörfa formájában.
+                  {t("hero.title2")}
+                </span>
               </h1>
 
               <p className="max-w-lg text-xs sm:text-sm md:text-sm lg:text-base text-[#684d39] leading-relaxed">
-                Minden bútorunk természetes travertin mészkőtömbökből, olasz márványból és nemes dió- illetve tölgyfából készül. 
-                Közvetlen kőfaragó és manufaktúra importtal hozzuk el az igazi luxust.
+                {t("hero.lead")}
               </p>
 
               {/* Action Buttons */}
@@ -201,15 +267,15 @@ export default function Home() {
                   href="#katalogus"
                   className="px-6 py-3 rounded-xl bg-[#14171c] text-white font-semibold text-xs sm:text-sm hover:bg-[#2e2118] transition shadow-md flex items-center justify-center gap-2 group"
                 >
-                  <span>Bútorkatalógus Megtekintése</span>
+                  <span>{t("hero.ctaCatalog")}</span>
                   <ArrowRight className="w-4 h-4 text-[#d7c4ac] group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link
-                  href="#mintacsomag"
+                  href="/anyagok"
                   className="px-6 py-3 rounded-xl border border-[#d7c4ac] bg-white/90 backdrop-blur-xs text-[#14171c] font-semibold text-xs sm:text-sm hover:bg-[#f4ede4] transition shadow-xs flex items-center justify-center gap-2"
                 >
                   <Palette className="w-4 h-4 text-[#9e7753]" />
-                  <span>Valódi Kőminta Kérése</span>
+                  <span>{t("hero.ctaMaterials")}</span>
                 </Link>
               </div>
 
@@ -217,38 +283,37 @@ export default function Home() {
               <div className="pt-4 border-t border-[#e8ddcf]/80 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[11px] font-semibold text-[#553f31]">
                 <div className="flex items-center gap-1">
                   <Check className="w-3.5 h-3.5 text-emerald-700" />
-                  <span>100% Olasz Navona Travertin</span>
+                  <span>{isEn ? "100% Italian Navona Travertine" : "100% Olasz Navona Travertin"}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Check className="w-3.5 h-3.5 text-emerald-700" />
-                  <span>Kézműves Csiszolás</span>
+                  <span>{isEn ? "Artisanal Honed Edges" : "Kézműves Csiszolás"}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Check className="w-3.5 h-3.5 text-emerald-700" />
-                  <span>Közvetlen Gyártói Árak</span>
+                  <span>{isEn ? "Direct Quarry Sourcing" : "Közvetlen Gyártói Árak"}</span>
                 </div>
               </div>
             </div>
 
-            {/* Right Column: Dynamic Dual Perspective Hero Showcase (Front Elevation + Enlarged Tabletop Macro Detail) */}
+            {/* Right Column: Dynamic Dual Perspective Hero Showcase */}
             <div className="md:col-span-6 lg:col-span-6 relative flex flex-col items-center justify-center pt-2 md:pt-0">
               <div className="relative w-full max-w-[600px] group flex flex-col items-center">
                 
                 {/* Ambient Soft Glow Behind Table */}
                 <div className="absolute inset-0 bg-radial from-[#e8ddcf]/50 via-[#faf7f2]/20 to-transparent -z-10 blur-2xl scale-90 pointer-events-none" />
 
-                {/* Main Isolated Stone Table (Front Elevation with Monolithic Dome Pillars and Staged Styling) */}
+                {/* Main Isolated Stone Table */}
                 <div className="relative py-2 px-2 flex flex-col items-center w-full">
                   <img
                     src="/kepek/showcase/travertin_dome_staged_hd.png"
                     alt="TerraSilva Navona Travertin Monolit Dóm Étkezőasztal"
                     className="w-full h-auto max-h-[390px] object-contain group-hover:scale-102 transition-transform duration-700 ease-out mx-auto"
                   />
-                  {/* Natural Ground Contact Shadow */}
                   <div className="w-[86%] h-4 bg-[#14171c]/12 rounded-full blur-md -mt-3 pointer-events-none" />
                 </div>
 
-                {/* Full-Bleed 8K Tabletop Stone Macro Texture with Interactive Zoom on Hover */}
+                {/* Full-Bleed 8K Tabletop Stone Macro Texture */}
                 <div className="mt-2 w-full max-w-[500px] h-32 sm:h-36 rounded-2xl overflow-hidden border border-[#d7c4ac] shadow-lg relative group/macro cursor-zoom-in bg-[#3a3028]">
                   <img
                     src="/kepek/showcase/travertin_surface_macro_8k.jpg"
@@ -258,7 +323,7 @@ export default function Home() {
                   <div className="absolute inset-0 bg-black/0 group-hover/macro:bg-black/10 transition-colors pointer-events-none" />
                   <div className="absolute bottom-2.5 left-3 bg-black/70 backdrop-blur-md px-3 py-1 rounded-lg border border-white/15 text-white flex items-center gap-2 text-[10px] font-semibold tracking-wide pointer-events-none transition-opacity duration-300">
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span>8K Navona Travertin Textúra • Finomcsiszolt Kőpórusok</span>
+                    <span>{t("hero.stoneZoom")}</span>
                   </div>
                 </div>
 
@@ -267,7 +332,6 @@ export default function Home() {
 
           </div>
         </div>
-
       </section>
 
       {/* Main Dynamic Product Catalog with Room & Material Filtering */}
@@ -275,14 +339,14 @@ export default function Home() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <span className="text-xs uppercase tracking-widest text-[#9e7753] font-bold block mb-1">
-              Hivatalos Bútorkínálat
+              {t("catalog.title")}
             </span>
             <h2 className="text-2xl md:text-4xl font-bold font-serif text-[#14171c]">
-              Válogass Szobák & Anyagok Szerint
+              {t("catalog.subtitle")}
             </h2>
           </div>
           <span className="text-xs text-[#805e43] font-semibold bg-white border border-[#e8ddcf] px-3.5 py-2 rounded-xl shadow-2xs self-start md:self-auto">
-            {filteredProducts.length} bútor megjelenítve
+            {filteredProducts.length} {t("catalog.itemsCount")}
           </span>
         </div>
 
@@ -290,10 +354,10 @@ export default function Home() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-widest text-[#9e7753] font-bold">
-              1. Válassz Szobatípust
+              {isEn ? "1. Select Space / Category" : "1. Válassz Szobatípust"}
             </span>
             <span className="text-xs text-[#805e43]">
-              Kattints a kategóriára a szűréshez
+              {isEn ? "Click to filter collection" : "Kattints a kategóriára a szűréshez"}
             </span>
           </div>
 
@@ -316,13 +380,15 @@ export default function Home() {
                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                   selectedRoom === "all" ? "bg-white/20 text-white" : "bg-[#faf7f2] text-[#805e43] border border-[#e8ddcf]"
                 }`}>
-                  {PRODUCTS.length} bútor
+                  {PRODUCTS.length} {isEn ? "pieces" : "bútor"}
                 </span>
               </div>
               <div className="mt-2">
-                <h4 className="font-serif font-bold text-xs sm:text-sm">Összes Kollekció</h4>
+                <h4 className="font-serif font-bold text-xs sm:text-sm">
+                  {isEn ? "All Collections" : "Összes Kollekció"}
+                </h4>
                 <p className={`text-[10px] line-clamp-1 mt-0.5 ${selectedRoom === "all" ? "text-gray-300" : "text-[#805e43]"}`}>
-                  Minden szoba & bútor
+                  {isEn ? "Full stone & wood catalog" : "Minden szoba & bútor"}
                 </p>
               </div>
             </button>
@@ -331,6 +397,8 @@ export default function Home() {
             {ROOM_CATEGORIES.map((room) => {
               const count = PRODUCTS.filter((p) => p.room === room.id).length;
               const isSelected = selectedRoom === room.id;
+              const roomName = (isEn && room.nameEn) ? room.nameEn : room.name;
+              const roomDesc = (isEn && room.descriptionEn) ? room.descriptionEn : room.description;
 
               return (
                 <button
@@ -346,12 +414,11 @@ export default function Home() {
                       : "border-[#e8ddcf] text-white hover:border-[#9e7753] hover:shadow-md"
                   }`}
                 >
-                  {/* Photo Background */}
                   <div className="absolute inset-0 z-0">
                     {room.imageUrl ? (
                       <img
                         src={room.imageUrl}
-                        alt={room.name}
+                        alt={roomName}
                         className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                       />
                     ) : (
@@ -364,21 +431,19 @@ export default function Home() {
                     }`} />
                   </div>
 
-                  {/* Top Badge */}
                   <div className="relative z-10 flex items-center justify-between">
                     <span className={`w-2 h-2 rounded-full ${isSelected ? "bg-amber-400 animate-pulse" : "bg-white/40"}`} />
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20">
-                      {count} bútor
+                      {count} {isEn ? "items" : "bútor"}
                     </span>
                   </div>
 
-                  {/* Bottom Title */}
                   <div className="relative z-10 mt-2">
                     <h4 className="font-serif font-bold text-xs sm:text-sm text-white drop-shadow-xs">
-                      {room.name}
+                      {roomName}
                     </h4>
                     <p className="text-[10px] text-[#e8ddcf] line-clamp-1 mt-0.5 drop-shadow-xs">
-                      {room.description || "Prémium kollekció"}
+                      {roomDesc || "Luxury collection"}
                     </p>
                   </div>
                 </button>
@@ -392,7 +457,9 @@ export default function Home() {
           <div className="bg-white p-4 rounded-2xl border border-[#e8ddcf] shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2 text-xs font-bold text-[#805e43] shrink-0">
               <Layers className="w-4 h-4 text-[#9e7753]" />
-              <span>Bútortípusok ({currentRoomObj.name}):</span>
+              <span>
+                {isEn ? `Categories (${currentRoomObj.nameEn || currentRoomObj.name}):` : `Bútortípusok (${currentRoomObj.name}):`}
+              </span>
             </div>
             <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
               {currentRoomObj.subTypes.map((sub) => (
@@ -408,31 +475,33 @@ export default function Home() {
                       : "bg-[#faf7f2] text-[#553f31] border border-[#e8ddcf] hover:bg-[#f4ede4]"
                   }`}
                 >
-                  {sub.name}
+                  {(isEn && sub.nameEn) ? sub.nameEn : sub.name}
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        {/* 3. Visual Material Selector with Macro Swatch Photos (Shows only available materials for the selected category) */}
+        {/* 3. Visual Material Selector with Macro Swatch Photos */}
         {availableMaterialsForCategory.length > 1 && (
           <div className="bg-white p-5 rounded-3xl border border-[#e8ddcf] shadow-xs space-y-3.5 animate-in fade-in">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Palette className="w-4 h-4 text-[#9e7753]" />
                 <span className="text-xs uppercase tracking-widest text-[#805e43] font-bold">
-                  2. Válassz Alapanyagot {currentRoomObj ? `(${currentRoomObj.name})` : ""}:
+                  {isEn ? "2. Filter by Natural Material:" : `2. Válassz Alapanyagot ${currentRoomObj ? `(${currentRoomObj.name})` : ""}:`}
                 </span>
               </div>
               <span className="text-xs text-[#805e43] font-medium hidden sm:inline-block">
-                {availableMaterialsForCategory.length - 1} elérhető anyag ebben a kategóriában
+                {availableMaterialsForCategory.length - 1} {isEn ? "available materials in this category" : "elérhető anyag ebben a kategóriában"}
               </span>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
               {availableMaterialsForCategory.map((mat) => {
                 const isSelected = selectedMaterial === mat.id;
+                const matName = (isEn && mat.nameEn) ? mat.nameEn : mat.name;
+                const matDesc = (isEn && mat.descriptionEn) ? mat.descriptionEn : mat.description;
                 const count = PRODUCTS.filter((p) => {
                   const matchesRoom = selectedRoom === "all" || p.room === selectedRoom;
                   const matchesSubType = selectedSubType === "all" || p.subType === selectedSubType;
@@ -450,12 +519,11 @@ export default function Home() {
                         : "bg-[#faf8f5] text-[#14171c] border-[#e8ddcf] hover:border-[#9e7753] hover:bg-white"
                     }`}
                   >
-                    {/* Swatch Thumbnail */}
                     <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-black/10 relative shadow-2xs">
                       {mat.imageUrl ? (
                         <img
                           src={mat.imageUrl}
-                          alt={mat.name}
+                          alt={matName}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                         />
                       ) : (
@@ -468,11 +536,10 @@ export default function Home() {
                       )}
                     </div>
 
-                    {/* Info */}
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-1">
                         <h5 className="font-serif font-bold text-xs truncate">
-                          {mat.name}
+                          {matName}
                         </h5>
                         <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded ${
                           isSelected ? "bg-white/20 text-amber-300" : "bg-white text-[#805e43] border border-[#e8ddcf]"
@@ -481,12 +548,31 @@ export default function Home() {
                         </span>
                       </div>
                       <p className={`text-[10px] truncate mt-0.5 ${isSelected ? "text-gray-300" : "text-[#805e43]"}`}>
-                        {mat.description || mat.tag || "Prémium anyag"}
+                        {matDesc || mat.tag || "Stone & Hardwood"}
                       </p>
                     </div>
                   </button>
                 );
               })}
+            </div>
+
+            {/* Direct Link to Materials Showcase Page */}
+            <div className="pt-2 border-t border-[#f0ebe3] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+              <span className="text-[#553f31] flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[#9e7753]" />
+                <span>
+                  {isEn 
+                    ? "Discover our complete 12-slab natural travertine, marble & onyx library in 8K resolution!" 
+                    : "Tekintse meg teljes nemeskő, márvány és ónix választékunkat 8K makró felbontásban!"}
+                </span>
+              </span>
+              <Link 
+                href="/anyagok"
+                className="inline-flex items-center gap-1 font-bold text-[#9e7753] hover:text-[#805e43] hover:underline"
+              >
+                <span>{isEn ? "Open Materials Library" : "Megnyitás: Kő- & Márványtár"}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
           </div>
         )}
@@ -504,51 +590,56 @@ export default function Home() {
         <div className="p-8 md:p-12 rounded-3xl bg-white border border-[#e8ddcf] shadow-xs grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div className="space-y-4">
             <span className="text-xs uppercase tracking-widest text-[#9e7753] font-bold block">
-              Belsőépítészeknek & Magánszemélyeknek
+              {isEn ? "For Architects, Designers & Private Clients" : "Belsőépítészeknek & Magánszemélyeknek"}
             </span>
             <h2 className="text-2xl md:text-4xl font-bold font-serif text-[#14171c]">
-              Egyedi Méretre Vágott Travertin & Márvány Asztalok
+              {isEn ? "Bespoke Cut-to-Size Travertine & Marble Living" : "Egyedi Méretre Vágott Travertin & Márvány Asztalok"}
             </h2>
             <p className="text-sm text-[#684d39] leading-relaxed">
-              Speciális méretű étkezőasztalra, egyedi kőtömbre vagy saját tervezésű TV-médiabútorra van szükséged? 
-              Közvetlen kőfaragó manufaktúránkban bármilyen egyedi méretet és formát legyártunk.
+              {isEn
+                ? "Looking for specific dining dimensions, a custom-carved travertine pedestal, or a tailored walnut TV console? Our partner stone quarries sculpt any geometry with millimeter precision."
+                : "Speciális méretű étkezőasztalra, egyedi kőtömbre vagy saját tervezésű TV-médiabútorra van szükséged? Közvetlen kőfaragó manufaktúránkban bármilyen egyedi méretet és formát legyártunk."}
             </p>
             <div className="space-y-2 text-xs text-[#553f31]">
               <div className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-600" />
-                <span>Választható táblaerezethez igazított vágás</span>
+                <span>{isEn ? "Book-matched geological slab alignment" : "Választható táblaerezethez igazított vágás"}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-600" />
-                <span>Impregnált, víz- és folttaszító felületkezelés</span>
+                <span>{isEn ? "Hydrophobic deep stone sealing & stain resistance" : "Impregnált, víz- és folttaszító felületkezelés"}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-600" />
-                <span>Ingyenes 3D látványterv és méretezett ajánlat</span>
+                <span>{isEn ? "Complimentary 3D architectural staging & quote" : "Ingyenes 3D látványterv és méretezett ajánlat"}</span>
               </div>
             </div>
           </div>
 
           <div className="p-6 rounded-2xl bg-[#faf7f2] border border-[#e8ddcf] space-y-4">
-            <h3 className="font-serif font-bold text-lg text-[#14171c]">Kérj Egyedi Kőajánlatot</h3>
+            <h3 className="font-serif font-bold text-lg text-[#14171c]">
+              {isEn ? "Request Bespoke Stone Quote" : "Kérj Egyedi Kőajánlatot"}
+            </h3>
             <div className="space-y-3">
               <input
                 type="text"
-                placeholder="Neved vagy Irodád Neve"
+                placeholder={isEn ? "Your Name / Studio Name" : "Neved vagy Irodád Neve"}
                 className="w-full px-4 py-2.5 rounded-xl border border-[#e8ddcf] bg-white text-xs focus:outline-none focus:ring-2 focus:ring-[#9e7753]/30"
               />
               <input
                 type="tel"
-                placeholder="Telefonszámod (+36...)"
+                placeholder={isEn ? "Phone Number (+36...)" : "Telefonszámod (+36...)"}
                 className="w-full px-4 py-2.5 rounded-xl border border-[#e8ddcf] bg-white text-xs focus:outline-none focus:ring-2 focus:ring-[#9e7753]/30"
               />
               <textarea
-                placeholder="Milyen méretű és anyagú bútort keresel? (pl. 240x100 cm Navona travertin étkezőasztal vagy TV-szekrény)"
+                placeholder={isEn 
+                  ? "Describe desired dimensions and material (e.g. 240x100 cm Navona travertine dining table or custom console)" 
+                  : "Milyen méretű és anyagú bútort keresel? (pl. 240x100 cm Navona travertin étkezőasztal vagy TV-szekrény)"}
                 rows={3}
                 className="w-full px-4 py-2.5 rounded-xl border border-[#e8ddcf] bg-white text-xs focus:outline-none focus:ring-2 focus:ring-[#9e7753]/30"
               />
               <button className="w-full py-3 rounded-xl bg-[#14171c] text-white text-xs font-bold hover:bg-[#2e2118] transition shadow-xs">
-                Ajánlatkérés Elküldése
+                {isEn ? "Send Consultation Request" : "Ajánlatkérés Elküldése"}
               </button>
             </div>
           </div>
@@ -561,18 +652,20 @@ export default function Home() {
           <div className="space-y-4 max-w-xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold text-[#d7c4ac]">
               <Palette className="w-3.5 h-3.5 text-[#9e7753]" />
-              <span>Tapintsd meg a valódi kő és fa textúráját</span>
+              <span>{isEn ? "Experience genuine stone & wood textures" : "Tapintsd meg a valódi kő és fa textúráját"}</span>
             </div>
             <h2 className="text-2xl md:text-4xl font-bold font-serif tracking-tight">
-              Rendelj Valódi Travertin, Márvány és Diófa Anyagmintát
+              {isEn ? "Order Authentic Travertine, Marble & Walnut Swatch Pack" : "Rendelj Valódi Travertin, Márvány és Diófa Anyagmintát"}
             </h2>
             <p className="text-sm text-[#d7c4ac] leading-relaxed">
-              Minden kőtömb és fafelület egyedi erezettel rendelkezik. Rendelj prémium travertin mészkő, carrara márvány és diófa mintacsomagot, melynek teljes díját (1.990 Ft) jóváírjuk bútormegrendelésedkor!
+              {isEn
+                ? "Every geological block carries unique mineral character. Order our curated stone and wood sample box; the full fee is credited toward your first furniture order!"
+                : "Minden kőtömb és fafelület egyedi erezettel rendelkezik. Rendelj prémium travertin mészkő, carrara márvány és diófa mintacsomagot, melynek teljes díját jóváírjuk bútormegrendelésedkor!"}
             </p>
           </div>
 
           <button className="px-8 py-4 rounded-xl bg-[#9e7753] hover:bg-[#b08c65] text-white font-semibold text-sm transition shadow-lg shrink-0">
-            Mintacsomag Rendelése (1.990 Ft)
+            {isEn ? "Order Swatch Pack" : "Mintacsomag Rendelése"}
           </button>
         </div>
       </section>
@@ -584,10 +677,14 @@ export default function Home() {
             <span className="font-serif bg-[#14171c] text-white px-2 py-0.5 rounded text-[10px]">TS</span>
             <span className="font-serif">TERRASILVA</span>
             <span>•</span>
-            <span className="font-normal text-[#805e43]">Prémium Travertin, Márvány & Tömörfa Bútorok</span>
+            <span className="font-normal text-[#805e43]">
+              {isEn ? "Luxury Travertine, Marble & Solid Hardwood Living" : "Prémium Travertin, Márvány & Tömörfa Bútorok"}
+            </span>
           </div>
-          <p>Kapcsolat: +36 20 407 6858 • info@terrasilva.hu</p>
-          <p>© {new Date().getFullYear()} TerraSilva. Minden jog fenntartva.</p>
+          <p>
+            {isEn ? "Direct Line" : "Kapcsolat"}: +36 20 407 6858 • info@terrasilva.hu
+          </p>
+          <p>© {new Date().getFullYear()} TerraSilva. {t("footer.rights")}</p>
         </div>
       </footer>
     </main>

@@ -68,8 +68,7 @@ export default function Home() {
           </div>
 
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-[#553f31]">
-            <Link href="#katalogus" className="hover:text-[#14171c] transition">Bútorkollekciók</Link>
-            <Link href="#anyagok" className="hover:text-[#14171c] transition">Travertin Részletek</Link>
+            <Link href="#katalogus" className="hover:text-[#14171c] transition">Bútorkollekciók & Anyagok</Link>
             <Link href="#egyedi-gyartas" className="hover:text-[#14171c] transition">Egyedi Gyártás</Link>
             <Link href="#mintacsomag" className="hover:text-[#14171c] transition">Anyagminta Csomag</Link>
           </nav>
@@ -193,74 +192,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* ULTRA-CLEAN SHOWCASE SECTION */}
-        <div id="anyagok" className="max-w-6xl mx-auto mt-16 md:mt-20">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
-            {/* Left Large Showcase Card: Full Tabletop Slab Architecture */}
-            <div className="md:col-span-7 bg-white rounded-3xl border border-[#e8ddcf] p-6 shadow-sm flex flex-col justify-between overflow-hidden relative group">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#faf7f2] border border-[#d7c4ac] text-xs font-semibold text-[#805e43]">
-                    <Gem className="w-3.5 h-3.5 text-[#9e7753]" />
-                    <span>Természetes Olasz Navona Travertin</span>
-                  </div>
-                  <span className="text-[11px] font-mono text-[#805e43] font-bold">100% Tömör Kőtömb</span>
-                </div>
-                <h3 className="font-serif font-bold text-xl text-[#14171c]">
-                  Organikus Kőerezet & Kannelúrázott Kőtalp
-                </h3>
-                <p className="text-xs text-[#684d39] mt-1 max-w-md">
-                  A természet által formált egyedi párhuzamos rétegződések minden egyes asztallapot megismételhetetlen műalkotássá varázsolnak.
-                </p>
-              </div>
-
-              {/* Image Container */}
-              <div className="mt-6 rounded-2xl overflow-hidden bg-[#faf8f5] border border-[#e8ddcf] relative aspect-[4/3] group-hover:shadow-md transition-shadow">
-                <img
-                  src="/kepek/showcase/travertin_top_detail.jpg"
-                  alt="TerraSilva Travertin Étkezőasztal Részlet"
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-                />
-                <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-md px-3.5 py-2 rounded-xl border border-white/40 flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#14171c]">Aura Travertin Étkezőasztal</span>
-                  <span className="text-[#805e43] font-medium">200 x 100 x 76 cm</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Showcase Card: 8K Macro Edge & Pore Close-Up */}
-            <div className="md:col-span-5 bg-gradient-to-br from-[#14171c] to-[#262c36] rounded-3xl p-6 shadow-sm text-white flex flex-col justify-between overflow-hidden relative group border border-[#3e4756]">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold text-[#d7c4ac] border border-white/10">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                    <span>8K Makró Részlet</span>
-                  </span>
-                  <span className="text-[10px] uppercase tracking-wider text-emerald-400 font-bold">Matt Csiszolt</span>
-                </div>
-                <h3 className="font-serif font-bold text-xl text-white">
-                  Kézműves Lekerekítés & Természetes Pórusok
-                </h3>
-                <p className="text-xs text-[#d7c4ac] mt-1">
-                  Selymes tapintású, matt felületkezelés, amely megőrzi a valódi kő lélegző textúráját.
-                </p>
-              </div>
-
-              {/* Image Container */}
-              <div className="mt-6 rounded-2xl overflow-hidden bg-black/40 border border-white/10 relative aspect-square group-hover:shadow-lg transition-shadow">
-                <img
-                  src="/kepek/showcase/travertin_edge_macro.jpg"
-                  alt="TerraSilva 8K Travertin Makró Pórusok"
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-                />
-                <div className="absolute bottom-3 left-3 right-3 bg-black/75 backdrop-blur-md px-3.5 py-2 rounded-xl border border-white/20 flex items-center justify-between text-xs text-white">
-                  <span className="font-semibold text-[11px]">3 cm vastag tömör kőlap</span>
-                  <span className="text-amber-300 font-bold text-[11px]">Víz- és Folttaszító</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </section>
 
       {/* Main Dynamic Product Catalog with Room & Material Filtering */}
